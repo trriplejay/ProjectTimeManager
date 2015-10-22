@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration>
+<aktivitaeten>
+<sortierung>
+<kategorie/>
+</sortierung>
+<aktivitaet>
+<name>Verwaltung</name>
+<buchungsnummer>057668000</buchungsnummer>
+<kategorie>Verwaltung</kategorie>
+<default/>
+</aktivitaet>
+<aktivitaet>
+<name>Weiterbildung</name>
+<buchungsnummer>057368000</buchungsnummer>
+<kategorie>Weiterbildung</kategorie>
+</aktivitaet>
+</aktivitaeten>
+<spezial>
+<sonderaktivitaet typ="Urlaub" buchung="057868000"/>
+<sonderaktivitaet typ="Sonderurlaub" buchung="057968000"/>
+<sonderaktivitaet typ="Krankheit" buchung="057768000"/>
+<sonderaktivitaet typ="Gleittag"/>
+<sonderaktivitaet typ="Feiertag"/>
+</spezial>
+<delta dauer="3"/>
+<pausen>
+<pause>
+<startzeit>
+<uhrzeit minute="0" stunde="9"/>
+</startzeit>
+<endezeit>
+<uhrzeit minute="15" stunde="9"/>
+</endezeit>
+</pause>
+<pause>
+<startzeit>
+<uhrzeit minute="0" stunde="12"/>
+</startzeit>
+<endezeit>
+<uhrzeit minute="30" stunde="12"/>
+</endezeit>
+</pause>
+</pausen>
+</configuration>

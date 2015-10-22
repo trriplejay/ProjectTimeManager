@@ -1,0 +1,6 @@
+<definition>
+<factory>
+<typ>UIFactory</typ>
+<klasse>com.bosch.zeitverwaltung.swing_view.StandardUIFactory</klasse>
+</factory>
+</definition>

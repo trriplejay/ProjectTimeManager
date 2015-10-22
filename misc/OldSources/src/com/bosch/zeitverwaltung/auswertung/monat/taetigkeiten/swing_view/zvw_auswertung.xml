@@ -1,0 +1,8 @@
+<auswertungen>
+	<auswertung id="2">
+		<name>Monatsauswertung (Tätigkeiten)</name>
+		<kurzwahl>70</kurzwahl>
+		<modell>com.bosch.zeitverwaltung.auswertung.monat.taetigkeiten.modell.TaetigkeitenAuswertungsModell</modell>
+		<view>com.bosch.zeitverwaltung.auswertung.monat.taetigkeiten.swing_view.TaetigkeitenAuswertungsView</view>
+	</auswertung>
+</auswertungen>
