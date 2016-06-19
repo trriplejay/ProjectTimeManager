@@ -23,8 +23,24 @@
           <format>xml</format>
           <maxmem>256m</maxmem>
           <aggregate>true</aggregate>
-          <outputDirectory>../shippable/codecoverage</outputDirectory>
+          <outputDirectory>../../shippable/codecoverage</outputDirectory>
         </configuration>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>instrument</id>
+            <phase>test</phase>
+            <goals>
+              <goal>cobertura</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
