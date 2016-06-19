@@ -2,7 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.lgblaumeiser.ptm</groupId>
+  <parent>
+    <groupId>de.lgblaumeiser.ptm</groupId>
+    <artifactId>ptm</artifactId>
+    <version>1.0</version>
+    <relativePath>../..</relativePath>
+  </parent>
+ 
   <artifactId>datamanager</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -10,11 +16,13 @@
   <name>datamanager</name>
   <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.annotation</artifactId>
+      <version>2.0.0</version>
+      <scope>compile</scope>
+    </dependency>
   	<dependency>
   		<groupId>org.apache.commons</groupId>
   		<artifactId>commons-lang3</artifactId>
