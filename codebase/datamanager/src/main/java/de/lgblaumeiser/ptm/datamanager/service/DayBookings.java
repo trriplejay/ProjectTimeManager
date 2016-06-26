@@ -19,13 +19,12 @@ public interface DayBookings {
     /**
      * @return All stored bookings of the day
      */
-    Collection<Booking> getBookings();
+    Collection<@NonNull Booking> getBookings();
 
     /**
      * @return The last booking stored in the object, null if no bookings is
      *         stored
      */
-    @NonNull
     Booking getLastBooking();
 
     /**

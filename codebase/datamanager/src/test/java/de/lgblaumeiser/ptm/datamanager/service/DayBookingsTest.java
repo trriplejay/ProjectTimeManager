@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,13 +24,17 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
  * Tests for the DayBookings service
  */
 public class DayBookingsTest {
-    private static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
-    private static final LocalTime TIME1 = LocalTime.of(10, 12);
-    private static final LocalTime TIME2 = LocalTime.of(12, 15);
-    private static final LocalTime TIME3 = LocalTime.of(13, 45);
-    private static final Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
-    private static final Activity ACTIVITY2 = Activity.newProjectActivity("a1", "c");
-    private static final Booking BOOKING1 = Booking.newBooking(TIME1, ACTIVITY1);
+    @SuppressWarnings("null")
+    private static final @NonNull LocalDate DATE1 = LocalDate.of(2016, 06, 24);
+    @SuppressWarnings("null")
+    private static final @NonNull LocalTime TIME1 = LocalTime.of(10, 12);
+    @SuppressWarnings("null")
+    private static final @NonNull LocalTime TIME2 = LocalTime.of(12, 15);
+    @SuppressWarnings("null")
+    private static final @NonNull LocalTime TIME3 = LocalTime.of(13, 45);
+    private static final @NonNull Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
+    private static final @NonNull Activity ACTIVITY2 = Activity.newProjectActivity("a1", "c");
+    private static final @NonNull Booking BOOKING1 = Booking.newBooking(TIME1, ACTIVITY1);
 
     private DayBookings testee;
 
@@ -96,7 +101,7 @@ public class DayBookingsTest {
 	assertEquals(2, testee.getBookings().size());
 	assertEquals(testBooking, testee.getLastBooking());
 	assertFalse(testee.getLastBooking().hasEndtime());
-	assertTrue(Iterables.getFirst(testee.getBookings(), null).hasEndtime());
+	assertTrue(Iterables.getFirst(testee.getBookings(), BOOKING1).hasEndtime());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -177,7 +182,7 @@ public class DayBookingsTest {
     public void testRemoveBookingFirst() {
 	testee.addBooking(ACTIVITY1, TIME1);
 	testee.addBooking(ACTIVITY2, TIME2);
-	testee.removeBooking(Iterables.getFirst(testee.getBookings(), null));
+	testee.removeBooking(Iterables.getFirst(testee.getBookings(), BOOKING1));
 	assertEquals(1, testee.getBookings().size());
 	assertEquals(TIME2, testee.getLastBooking().getStarttime());
     }

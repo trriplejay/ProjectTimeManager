@@ -29,7 +29,7 @@ public class Booking {
     /**
      * Creates a new booking based on a start time and an activity. A booking
      * with an end time can only be created by an booking and an end time.
-     * 
+     *
      * @param starttime
      *            The start time of the booking
      * @param activity
@@ -45,7 +45,7 @@ public class Booking {
      * Creates a new booking based on a start time, an activity and a comment. A
      * booking with an end time can only be created by an booking and an end
      * time.
-     * 
+     *
      * @param starttime
      *            The start time of the booking
      * @param activity
@@ -66,7 +66,7 @@ public class Booking {
      * end time, this will be overwritten. If the end time is earlier than the
      * start time, an IllegalStateException will be thrown. Bookings over a day
      * border are not allowed.
-     * 
+     *
      * @param booking
      *            The booking with the start time given
      * @param endtime
@@ -81,7 +81,8 @@ public class Booking {
 	return new Booking(booking.starttime, endtime, booking.activity, booking.comment);
     }
 
-    private Booking(final LocalTime starttime, final LocalTime endtime, final Activity activity, final String comment) {
+    private Booking(@NonNull final LocalTime starttime, final LocalTime endtime, @NonNull final Activity activity,
+	    final String comment) {
 	this.starttime = starttime;
 	this.endtime = endtime;
 	this.activity = activity;
@@ -108,6 +109,7 @@ public class Booking {
      * @throws IllegalStateException
      *             If the booking has not an end time
      */
+    @SuppressWarnings("null")
     @NonNull
     public LocalTime getEndtime() {
 	Preconditions.checkState(hasEndtime());
@@ -126,6 +128,7 @@ public class Booking {
      * @return Comment of the booking if available, an empty string if no
      *         comment given
      */
+    @SuppressWarnings("null")
     @NonNull
     public String getComment() {
 	return comment != null ? comment : StringUtils.EMPTY;
@@ -137,6 +140,7 @@ public class Booking {
      * @throws IllegalStateException
      *             If no end time is given
      */
+    @SuppressWarnings("null")
     public TimeSpan calculateTimeSpan() {
 	Preconditions.checkState(hasEndtime());
 	return TimeSpan.newTimeSpan(starttime, endtime);

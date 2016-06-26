@@ -24,7 +24,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
  * The implementation of the DayBookings service
  */
 class DayBookingsImpl implements DayBookings {
-    private final LocalDate day;
+    private final @NonNull LocalDate day;
     private final SortedSet<Booking> bookings = Sets.newTreeSet((A, B) -> A.getStarttime().compareTo(B.getStarttime()));
 
     /**
@@ -33,18 +33,18 @@ class DayBookingsImpl implements DayBookings {
      * @param day
      *            The day for which bookings are stored.
      */
-    DayBookingsImpl(final LocalDate day) {
+    DayBookingsImpl(@NonNull final LocalDate day) {
 	this.day = day;
     }
 
+    @SuppressWarnings("null")
     @Override
     @NonNull
-    public Collection<Booking> getBookings() {
+    public Collection<@NonNull Booking> getBookings() {
 	return Collections.unmodifiableCollection(bookings);
     }
 
     @Override
-    @NonNull
     public Booking getLastBooking() {
 	return Iterables.getLast(bookings, null);
     }
@@ -77,7 +77,7 @@ class DayBookingsImpl implements DayBookings {
 
     @Override
     @NonNull
-    public Booking endBooking(final Booking booking, final LocalTime endtime) {
+    public Booking endBooking(@NonNull final Booking booking, @NonNull final LocalTime endtime) {
 	Preconditions.checkState(bookings.remove(booking));
 	Preconditions.checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
 	Booking endedBooking = Booking.endBooking(booking, endtime);
@@ -112,14 +112,14 @@ class DayBookingsImpl implements DayBookings {
     @Override
     public @NonNull Booking splitBooking(@NonNull final Booking booking, @NonNull final LocalTime splittime) {
 	// TODO Auto-generated method stub
-	return null;
+	return booking;
     }
 
     @Override
     public @NonNull Booking changeBookingTimes(@NonNull final Booking booking, @NonNull final LocalTime starttime,
 	    @NonNull final LocalTime endtime) {
 	// TODO Auto-generated method stub
-	return null;
+	return booking;
     }
 
     @Override
@@ -138,13 +138,13 @@ class DayBookingsImpl implements DayBookings {
     @Override
     public @NonNull Booking changeComment(@NonNull final Booking booking, @NonNull final String comment) {
 	// TODO Auto-generated method stub
-	return null;
+	return booking;
     }
 
     @Override
     public @NonNull Booking deleteComment(@NonNull final Booking booking) {
 	// TODO Auto-generated method stub
-	return null;
+	return booking;
     }
 
 }
