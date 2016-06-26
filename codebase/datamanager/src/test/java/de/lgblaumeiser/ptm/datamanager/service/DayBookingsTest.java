@@ -181,4 +181,23 @@ public class DayBookingsTest {
 	assertEquals(1, testee.getBookings().size());
 	assertEquals(TIME2, testee.getLastBooking().getStarttime());
     }
+
+    @Test
+    public void testChangeActivity() {
+	Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+	testee.changeActivity(testBooking, ACTIVITY2);
+	assertEquals(1, testee.getBookings().size());
+	assertEquals(ACTIVITY2, testee.getLastBooking().getActivity());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testChangeActivityWithUnknownBooking() {
+	testee.changeActivity(BOOKING1, ACTIVITY2);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testChangeActivityWithSameActivity() {
+	Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+	testee.changeActivity(testBooking, ACTIVITY1);
+    }
 }

@@ -108,6 +108,8 @@ public interface DayBookings {
      * @param activity
      *            The new activity of the booking
      * @return The changed Booking object
+     * @throws IllegalStateException
+     *             If booking is unknown or the activity is already set
      */
     @NonNull
     Booking changeActivity(@NonNull Booking booking, @NonNull Activity activity);

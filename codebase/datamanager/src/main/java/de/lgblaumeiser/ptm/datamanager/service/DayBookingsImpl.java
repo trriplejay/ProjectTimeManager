@@ -85,11 +85,6 @@ class DayBookingsImpl implements DayBookings {
 	return endedBooking;
     }
 
-    private void checkTime(final LocalTime starttime) {
-	// TODO Auto-generated method stub
-
-    }
-
     @Override
     public void removeBooking(@NonNull final Booking booking) {
 	Preconditions.checkState(bookings.contains(booking));
@@ -129,8 +124,15 @@ class DayBookingsImpl implements DayBookings {
 
     @Override
     public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
-	// TODO Auto-generated method stub
-	return null;
+	Preconditions.checkState(bookings.contains(booking));
+	Preconditions.checkState(!activity.equals(booking.getActivity()));
+	bookings.remove(booking);
+	Booking newBooking = Booking.newBooking(booking.getStarttime(), activity, booking.getComment());
+	if (booking.hasEndtime()) {
+	    newBooking = Booking.endBooking(newBooking, booking.getEndtime());
+	}
+	bookings.add(newBooking);
+	return newBooking;
     }
 
     @Override
