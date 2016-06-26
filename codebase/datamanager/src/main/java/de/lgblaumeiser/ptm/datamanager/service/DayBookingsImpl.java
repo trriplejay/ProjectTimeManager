@@ -9,8 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -33,57 +35,59 @@ class DayBookingsImpl implements DayBookings {
 	this.day = day;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.lgblaumeiser.ptm.datamanager.service.DayBookings#getBookings()
-     */
     @Override
+    @NonNull
     public List<Booking> getBookings() {
 	return Collections.unmodifiableList(bookings);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.lgblaumeiser.ptm.datamanager.service.DayBookings#getDay()
-     */
     @Override
+    @NonNull
+    public Booking getLastBooking() {
+	return Iterables.getLast(bookings, null);
+    }
+
+    @Override
+    @NonNull
     public LocalDate getDay() {
 	return day;
     }
 
     @Override
-    public Booking addBooking(final Activity activity) {
+    @NonNull
+    public Booking addBooking(@NonNull final Activity activity, final String comment) {
 	Preconditions.checkState(CollectionUtils.isNotEmpty(bookings));
-	// Booking lastBooking = Iterables.getLast(bookings);
-	// Preconditions.checkState(lastBooking.hasEndtime());
-	// return addBooking(activity, lastBooking.getEndtime());
-	return null;
+	Booking lastBooking = getLastBooking();
+	return addBooking(activity, lastBooking.getEndtime(), comment);
     }
 
     @Override
-    public Booking addBooking(final Activity activity, final LocalTime starttime) {
-	// checkTime(starttime);
-	// Booking lastBooking = Iterables.getLast(bookings);
-	// if (!lastBooking.hasEndtime()) {
-	// endBooking(lastBooking, starttime);
-	// }
-	Booking newBooking = Booking.newBooking(starttime, activity);
+    @NonNull
+    public Booking addBooking(@NonNull final Activity activity, @NonNull final LocalTime starttime,
+	    final String comment) {
+	Booking lastBooking = getLastBooking();
+	if (lastBooking != null) {
+	    endBooking(lastBooking, starttime);
+	}
+	Booking newBooking = Booking.newBooking(starttime, activity, comment);
 	bookings.add(newBooking);
 	return newBooking;
     }
 
     @Override
+    @NonNull
     public Booking endBooking(final Booking booking, final LocalTime endtime) {
 	Preconditions.checkState(bookings.remove(booking));
+	Preconditions.checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
 	Booking endedBooking = Booking.endBooking(booking, endtime);
 	bookings.add(endedBooking);
 	return endedBooking;
     }
 
     @Override
-    public Booking refactorBooking(final Booking booking, final LocalTime starttime, final LocalTime endtime) {
+    @NonNull
+    public Booking refactorBooking(@NonNull final Booking booking, @NonNull final LocalTime starttime,
+	    @NonNull final LocalTime endtime, final String comment) {
 	// TODO Auto-generated method stub
 	return null;
     }
