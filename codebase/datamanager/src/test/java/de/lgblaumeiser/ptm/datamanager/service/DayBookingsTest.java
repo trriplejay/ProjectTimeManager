@@ -57,7 +57,7 @@ public class DayBookingsTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAddBooking0Empty() {
-	testee.addBooking(ACTIVITY1, null);
+	testee.addBooking(ACTIVITY1);
     }
 
     @Test
