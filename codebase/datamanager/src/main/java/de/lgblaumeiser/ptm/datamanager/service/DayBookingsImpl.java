@@ -5,15 +5,17 @@ package de.lgblaumeiser.ptm.datamanager.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -23,7 +25,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
  */
 class DayBookingsImpl implements DayBookings {
     private final LocalDate day;
-    private final List<Booking> bookings = Lists.newArrayList();
+    private final SortedSet<Booking> bookings = Sets.newTreeSet((A, B) -> A.getStarttime().compareTo(B.getStarttime()));
 
     /**
      * Create a DayBooking service implementation
@@ -37,8 +39,8 @@ class DayBookingsImpl implements DayBookings {
 
     @Override
     @NonNull
-    public List<Booking> getBookings() {
-	return Collections.unmodifiableList(bookings);
+    public Collection<Booking> getBookings() {
+	return Collections.unmodifiableCollection(bookings);
     }
 
     @Override
@@ -90,8 +92,26 @@ class DayBookingsImpl implements DayBookings {
 
     @Override
     public void removeBooking(@NonNull final Booking booking) {
-	// TODO Auto-generated method stub
+	Preconditions.checkState(bookings.contains(booking));
+	final Booking previousBooking = getPreviousBooking(booking);
+	bookings.remove(booking);
+	if (previousBooking != null) {
+	    bookings.remove(previousBooking);
+	    Booking newBooking = Booking.newBooking(previousBooking.getStarttime(), previousBooking.getActivity(),
+		    previousBooking.getComment());
+	    if (booking.hasEndtime()) {
+		newBooking = Booking.endBooking(newBooking, booking.getEndtime());
+	    }
+	    bookings.add(newBooking);
+	}
+    }
 
+    private Booking getPreviousBooking(@NonNull final Booking booking) {
+	Set<Booking> previousElements = bookings.headSet(booking);
+	if (previousElements.isEmpty()) {
+	    return null;
+	}
+	return Iterables.getLast(previousElements);
     }
 
     @Override
@@ -101,14 +121,14 @@ class DayBookingsImpl implements DayBookings {
     }
 
     @Override
-    public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
+    public @NonNull Booking changeBookingTimes(@NonNull final Booking booking, @NonNull final LocalTime starttime,
+	    @NonNull final LocalTime endtime) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
     @Override
-    public @NonNull Booking changeBookingTimes(@NonNull final Booking booking, @NonNull final LocalTime starttime,
-	    @NonNull final LocalTime endtime) {
+    public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
 	// TODO Auto-generated method stub
 	return null;
     }

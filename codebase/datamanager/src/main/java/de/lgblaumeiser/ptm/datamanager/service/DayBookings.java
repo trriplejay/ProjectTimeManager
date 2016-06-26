@@ -5,7 +5,7 @@ package de.lgblaumeiser.ptm.datamanager.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -19,7 +19,7 @@ public interface DayBookings {
     /**
      * @return All stored bookings of the day
      */
-    List<Booking> getBookings();
+    Collection<Booking> getBookings();
 
     /**
      * @return The last booking stored in the object, null if no bookings is

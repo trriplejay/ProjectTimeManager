@@ -14,6 +14,8 @@ import java.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Iterables;
+
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
@@ -94,7 +96,7 @@ public class DayBookingsTest {
 	assertEquals(2, testee.getBookings().size());
 	assertEquals(testBooking, testee.getLastBooking());
 	assertFalse(testee.getLastBooking().hasEndtime());
-	assertTrue(testee.getBookings().get(0).hasEndtime());
+	assertTrue(Iterables.getFirst(testee.getBookings(), null).hasEndtime());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -102,6 +104,12 @@ public class DayBookingsTest {
 	Booking firstOne = testee.addBooking(ACTIVITY1, TIME1);
 	testee.endBooking(firstOne, TIME2);
 	testee.addBooking(ACTIVITY2, TIME3);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAddBooking1WithSameStarttime() {
+	testee.addBooking(ACTIVITY1, TIME1);
+	testee.addBooking(ACTIVITY2, TIME1);
     }
 
     @Test
@@ -125,5 +133,52 @@ public class DayBookingsTest {
     public void testEndBookingWrongBookingTime() {
 	Booking testBooking = testee.addBooking(ACTIVITY1, TIME2);
 	testee.endBooking(testBooking, TIME1);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEndBookingWithAnUnknownBooking() {
+	testee.endBooking(BOOKING1, TIME3);
+    }
+
+    @Test
+    public void testRemoveBooking() {
+	Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+	testee.removeBooking(testBooking);
+	assertTrue(testee.getBookings().isEmpty());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testRemoveBookingUnknownBooking() {
+	testee.removeBooking(BOOKING1);
+    }
+
+    @Test
+    public void testRemoveBookingWithPreviousBooking() {
+	testee.addBooking(ACTIVITY1, TIME1);
+	Booking startBooking = testee.addBooking(ACTIVITY2, TIME2);
+	Booking testBooking = testee.endBooking(startBooking, TIME3);
+	testee.removeBooking(testBooking);
+	assertEquals(1, testee.getBookings().size());
+	assertEquals(TIME3, testee.getLastBooking().getEndtime());
+	assertEquals(TIME1, testee.getLastBooking().getStarttime());
+    }
+
+    @Test
+    public void testRemoveBookingWithPreviousBookingButUnendedRemoveCandidate() {
+	testee.addBooking(ACTIVITY1, TIME1);
+	Booking testBooking = testee.addBooking(ACTIVITY2, TIME2);
+	testee.removeBooking(testBooking);
+	assertEquals(1, testee.getBookings().size());
+	assertEquals(TIME1, testee.getLastBooking().getStarttime());
+	assertFalse(testee.getLastBooking().hasEndtime());
+    }
+
+    @Test
+    public void testRemoveBookingFirst() {
+	testee.addBooking(ACTIVITY1, TIME1);
+	testee.addBooking(ACTIVITY2, TIME2);
+	testee.removeBooking(Iterables.getFirst(testee.getBookings(), null));
+	assertEquals(1, testee.getBookings().size());
+	assertEquals(TIME2, testee.getLastBooking().getStarttime());
     }
 }
