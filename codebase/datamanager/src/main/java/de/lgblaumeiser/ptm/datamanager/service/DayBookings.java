@@ -39,15 +39,13 @@ public interface DayBookings {
      *
      * @param activity
      *            The activity of the booking
-     * @param comment
-     *            Optional comment for the booking
      * @return The created Booking object
      * @throws IllegalStateException
      *             If this is the first booking or the last booking has no
      *             defined ending
      */
     @NonNull
-    Booking addBooking(@NonNull Activity activity, String comment);
+    Booking addBooking(@NonNull Activity activity);
 
     /**
      * Add a booking at the corresponding starttime. If the last bogoking has no
@@ -57,15 +55,13 @@ public interface DayBookings {
      *            The activity of the booking
      * @param starttime
      *            The starttime of the booking
-     * @param comment
-     *            Optional comment for the booking
      * @return The created Booking object
      * @throws IllegalStateException
      *             If the starttime is already within a booked time or the
      *             previous booking has already an endtime
      */
     @NonNull
-    Booking addBooking(@NonNull Activity activity, @NonNull LocalTime starttime, String comment);
+    Booking addBooking(@NonNull Activity activity, @NonNull LocalTime starttime);
 
     /**
      * Ends the given booking with the given endtime.
@@ -80,10 +76,45 @@ public interface DayBookings {
      *             added
      */
     @NonNull
-    Booking endBooking(Booking booking, LocalTime endtime);
+    Booking endBooking(@NonNull Booking booking, @NonNull LocalTime endtime);
 
     /**
-     * Change start and endtime of the given Booking
+     * Removes the given booking, the endtime of the previous booking will be
+     * set to the endtime of the deleted booking. If the booking is the first,
+     * it will simply be deleted.
+     *
+     * @param booking
+     *            The booking to delete
+     */
+    void removeBooking(@NonNull Booking booking);
+
+    /**
+     * Splits the booking at the splittime into two
+     *
+     * @param booking
+     *            The booking to split
+     * @param splittime
+     *            The time, where to split the booking
+     * @return The first of the create Booking objects
+     */
+    @NonNull
+    Booking splitBooking(@NonNull Booking booking, @NonNull LocalTime splittime);
+
+    /**
+     * Changes the activity of the booking
+     *
+     * @param booking
+     *            The booking to change the activity
+     * @param activity
+     *            The new activity of the booking
+     * @return The changed Booking object
+     */
+    @NonNull
+    Booking changeActivity(@NonNull Booking booking, @NonNull Activity activity);
+
+    /**
+     * Change start and endtime of the given Booking. Bookings prior or after
+     * this booking will be adapted. according their end resp. starttime
      *
      * @param booking
      *            The booking to change
@@ -98,8 +129,29 @@ public interface DayBookings {
      *             If the booking times overlap or are not in the right order
      */
     @NonNull
-    Booking refactorBooking(@NonNull Booking booking, @NonNull LocalTime starttime, @NonNull LocalTime endtime,
-	    @NonNull String comment);
+    Booking changeBookingTimes(@NonNull Booking booking, @NonNull LocalTime starttime, @NonNull LocalTime endtime);
+
+    /**
+     * Change the comment of the booking
+     *
+     * @param booking
+     *            The booking to change
+     * @param comment
+     *            The new comment of the booking
+     * @return The change booking object
+     */
+    @NonNull
+    Booking changeComment(@NonNull Booking booking, @NonNull String comment);
+
+    /**
+     * Delete the comment of the booking
+     *
+     * @param booking
+     *            The booking to change
+     * @return The change booking object
+     */
+    @NonNull
+    Booking deleteComment(@NonNull Booking booking);
 
     /**
      * Create booking for day

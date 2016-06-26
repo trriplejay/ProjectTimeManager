@@ -62,9 +62,9 @@ public class DayBookingsTest {
 
     @Test
     public void testAddBooking0Positive() {
-	Booking firstOne = testee.addBooking(ACTIVITY1, TIME1, null);
+	Booking firstOne = testee.addBooking(ACTIVITY1, TIME1);
 	testee.endBooking(firstOne, TIME2);
-	Booking testBooking = testee.addBooking(ACTIVITY2, null);
+	Booking testBooking = testee.addBooking(ACTIVITY2);
 	assertFalse(testee.getBookings().isEmpty());
 	assertEquals(2, testee.getBookings().size());
 	assertEquals(testBooking, testee.getLastBooking());
@@ -74,13 +74,13 @@ public class DayBookingsTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAddBooking0NoEndtime() {
-	testee.addBooking(ACTIVITY1, TIME1, null);
-	testee.addBooking(ACTIVITY2, null);
+	testee.addBooking(ACTIVITY1, TIME1);
+	testee.addBooking(ACTIVITY2);
     }
 
     @Test
     public void testAddBooking1Empty() {
-	Booking booking = testee.addBooking(ACTIVITY1, TIME1, null);
+	Booking booking = testee.addBooking(ACTIVITY1, TIME1);
 	assertFalse(testee.getBookings().isEmpty());
 	assertEquals(1, testee.getBookings().size());
 	assertEquals(booking, testee.getLastBooking());
@@ -89,8 +89,8 @@ public class DayBookingsTest {
 
     @Test
     public void testAddBooking1With2Bookings() {
-	testee.addBooking(ACTIVITY1, TIME1, null);
-	Booking testBooking = testee.addBooking(ACTIVITY2, TIME2, null);
+	testee.addBooking(ACTIVITY1, TIME1);
+	Booking testBooking = testee.addBooking(ACTIVITY2, TIME2);
 	assertEquals(2, testee.getBookings().size());
 	assertEquals(testBooking, testee.getLastBooking());
 	assertFalse(testee.getLastBooking().hasEndtime());
@@ -99,14 +99,14 @@ public class DayBookingsTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAddBooking1WithEndedLastBooking() {
-	Booking firstOne = testee.addBooking(ACTIVITY1, TIME1, null);
+	Booking firstOne = testee.addBooking(ACTIVITY1, TIME1);
 	testee.endBooking(firstOne, TIME2);
-	testee.addBooking(ACTIVITY2, TIME3, null);
+	testee.addBooking(ACTIVITY2, TIME3);
     }
 
     @Test
     public void testEndBooking() {
-	Booking booking = testee.addBooking(ACTIVITY1, TIME1, null);
+	Booking booking = testee.addBooking(ACTIVITY1, TIME1);
 	Booking result = testee.endBooking(booking, TIME2);
 	assertFalse(testee.getBookings().isEmpty());
 	assertEquals(1, testee.getBookings().size());
@@ -116,14 +116,14 @@ public class DayBookingsTest {
 
     @Test(expected = IllegalStateException.class)
     public void testEndBookingSecondEnd() {
-	Booking booking = testee.addBooking(ACTIVITY1, TIME1, null);
+	Booking booking = testee.addBooking(ACTIVITY1, TIME1);
 	Booking endedBooking = testee.endBooking(booking, TIME2);
 	testee.endBooking(endedBooking, TIME3);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testEndBookingWrongBookingTime() {
-	Booking testBooking = testee.addBooking(ACTIVITY1, TIME2, null);
+	Booking testBooking = testee.addBooking(ACTIVITY1, TIME2);
 	testee.endBooking(testBooking, TIME1);
     }
 }

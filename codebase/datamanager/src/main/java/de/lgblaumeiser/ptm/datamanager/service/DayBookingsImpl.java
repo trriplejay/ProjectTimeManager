@@ -55,21 +55,20 @@ class DayBookingsImpl implements DayBookings {
 
     @Override
     @NonNull
-    public Booking addBooking(@NonNull final Activity activity, final String comment) {
+    public Booking addBooking(@NonNull final Activity activity) {
 	Preconditions.checkState(CollectionUtils.isNotEmpty(bookings));
 	Booking lastBooking = getLastBooking();
-	return addBooking(activity, lastBooking.getEndtime(), comment);
+	return addBooking(activity, lastBooking.getEndtime());
     }
 
     @Override
     @NonNull
-    public Booking addBooking(@NonNull final Activity activity, @NonNull final LocalTime starttime,
-	    final String comment) {
+    public Booking addBooking(@NonNull final Activity activity, @NonNull final LocalTime starttime) {
 	Booking lastBooking = getLastBooking();
 	if (lastBooking != null) {
 	    endBooking(lastBooking, starttime);
 	}
-	Booking newBooking = Booking.newBooking(starttime, activity, comment);
+	Booking newBooking = Booking.newBooking(starttime, activity);
 	bookings.add(newBooking);
 	return newBooking;
     }
@@ -84,17 +83,46 @@ class DayBookingsImpl implements DayBookings {
 	return endedBooking;
     }
 
+    private void checkTime(final LocalTime starttime) {
+	// TODO Auto-generated method stub
+
+    }
+
     @Override
-    @NonNull
-    public Booking refactorBooking(@NonNull final Booking booking, @NonNull final LocalTime starttime,
-	    @NonNull final LocalTime endtime, final String comment) {
+    public void removeBooking(@NonNull final Booking booking) {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public @NonNull Booking splitBooking(@NonNull final Booking booking, @NonNull final LocalTime splittime) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
-    private void checkTime(final LocalTime starttime) {
+    @Override
+    public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
 	// TODO Auto-generated method stub
+	return null;
+    }
 
+    @Override
+    public @NonNull Booking changeBookingTimes(@NonNull final Booking booking, @NonNull final LocalTime starttime,
+	    @NonNull final LocalTime endtime) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public @NonNull Booking changeComment(@NonNull final Booking booking, @NonNull final String comment) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public @NonNull Booking deleteComment(@NonNull final Booking booking) {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }
