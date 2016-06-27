@@ -37,7 +37,7 @@ public class DayBookingsTest {
 	private static final @NonNull Activity ACTIVITY2 = Activity.newProjectActivity("a1", "c");
 	private static final @NonNull Booking BOOKING1 = Booking.newBooking(TIME1, ACTIVITY1);
 	private static final @NonNull String COMMENT1 = "My Comment";
-	
+
 	private DayBookings testee;
 
 	@Before
@@ -138,8 +138,12 @@ public class DayBookingsTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testEndBookingWrongBookingTime() {
+		try {
 		Booking testBooking = testee.addBooking(ACTIVITY1, TIME2);
 		testee.endBooking(testBooking, TIME1);
+		} finally {
+			assertFalse(testee.getBookings().isEmpty());
+		}
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -204,37 +208,49 @@ public class DayBookingsTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testChangeActivityWithSameActivity() {
-		Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
-		testee.changeActivity(testBooking, ACTIVITY1);
+		try {
+			Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+			testee.changeActivity(testBooking, ACTIVITY1);
+		} finally {
+			assertFalse(testee.getBookings().isEmpty());
+		}
 	}
-	
+
 	@Test
 	public void testChangeComment() {
 		Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
 		testee.changeComment(testBooking, COMMENT1);
 		assertEquals(COMMENT1, testee.getLastBooking().getComment());
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void testChangeCommentWithUnknownBooking() {
 		testee.changeComment(BOOKING1, COMMENT1);
 	}
-	
+
 	@SuppressWarnings("null")
 	@Test(expected = IllegalStateException.class)
 	public void testChangeCommentWithEmptyComment() {
-		Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
-		testee.changeComment(testBooking, StringUtils.EMPTY);
+		try {
+			Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+			testee.changeComment(testBooking, StringUtils.EMPTY);
+		} finally {
+			assertFalse(testee.getBookings().isEmpty());
+		}
 	}
-	
+
 	@SuppressWarnings("null")
 	@Test(expected = IllegalStateException.class)
 	public void testChangeCommentTwiceTheSame() {
-		Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
-		testee.changeComment(testBooking, COMMENT1);		
-		testee.changeComment(testee.getLastBooking(), COMMENT1);
+		try {
+			Booking testBooking = testee.addBooking(ACTIVITY1, TIME1);
+			testee.changeComment(testBooking, COMMENT1);
+			testee.changeComment(testee.getLastBooking(), COMMENT1);
+		} finally {
+			assertFalse(testee.getBookings().isEmpty());
+		}
 	}
-	
+
 	@SuppressWarnings("null")
 	@Test
 	public void testDeleteComment() {
@@ -249,11 +265,88 @@ public class DayBookingsTest {
 	public void testDeleteCommentWithUnknownBooking() {
 		testee.deleteComment(BOOKING1);
 	}
-	
+
 	@SuppressWarnings("null")
 	@Test(expected = IllegalStateException.class)
 	public void testDeleteCommentAlthoughNoComment() {
+		try {
+			testee.addBooking(ACTIVITY1, TIME1);
+			testee.deleteComment(testee.getLastBooking());
+		} finally {
+			assertFalse(testee.getBookings().isEmpty());
+		}
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	public void testSplitBooking() {
 		testee.addBooking(ACTIVITY1, TIME1);
-		testee.deleteComment(testee.getLastBooking());		
+		testee.endBooking(testee.getLastBooking(), TIME3);
+		testee.splitBooking(testee.getLastBooking(), TIME2);
+		assertEquals(2, testee.getBookings().size());
+		assertEquals(TIME2, testee.getLastBooking().getStarttime());
+		assertEquals(TIME3, testee.getLastBooking().getEndtime());
+		Booking firstOne = Iterables.getFirst(testee.getBookings(), BOOKING1);
+		assertEquals(TIME1, firstOne.getStarttime());
+		assertEquals(TIME2, firstOne.getEndtime());
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	public void testSplitBookingNoEndtime() {
+		testee.addBooking(ACTIVITY1, TIME1);
+		testee.splitBooking(testee.getLastBooking(), TIME2);
+		assertEquals(2, testee.getBookings().size());
+		assertEquals(TIME2, testee.getLastBooking().getStarttime());
+		assertFalse(testee.getLastBooking().hasEndtime());
+		Booking firstOne = Iterables.getFirst(testee.getBookings(), BOOKING1);
+		assertEquals(TIME1, firstOne.getStarttime());
+		assertEquals(TIME2, firstOne.getEndtime());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testSplitBookingUnknownBooking() {
+		testee.splitBooking(BOOKING1, TIME2);
+	}
+
+	@SuppressWarnings("null")
+	@Test(expected = IllegalStateException.class)
+	public void testSplitBookingWithEndtimeSplittimeToEarly() {
+		try {
+			testee.addBooking(ACTIVITY1, TIME2);
+			testee.endBooking(testee.getLastBooking(), TIME3);
+			testee.splitBooking(testee.getLastBooking(), TIME1);
+		} finally {
+			assertEquals(1, testee.getBookings().size());
+			assertEquals(TIME2, testee.getLastBooking().getStarttime());
+			assertEquals(TIME3, testee.getLastBooking().getEndtime());
+		}
+	}
+
+	@SuppressWarnings("null")
+	@Test(expected = IllegalStateException.class)
+	public void testSplitBookingWithEndtimeSplittimeToLate() {
+		try {
+			testee.addBooking(ACTIVITY1, TIME1);
+			testee.endBooking(testee.getLastBooking(), TIME2);
+			testee.splitBooking(testee.getLastBooking(), TIME3);
+		} finally {
+			assertEquals(1, testee.getBookings().size());
+			assertEquals(TIME1, testee.getLastBooking().getStarttime());
+			assertEquals(TIME2, testee.getLastBooking().getEndtime());
+		}
+	}
+	
+	@SuppressWarnings("null")
+	@Test(expected = IllegalStateException.class)
+	public void testSplitBookingWithoutEndtimeSplittimeToEarly() {
+		try {
+			testee.addBooking(ACTIVITY1, TIME2);
+			testee.splitBooking(testee.getLastBooking(), TIME1);
+		} finally {
+			assertEquals(1, testee.getBookings().size());
+			assertEquals(TIME2, testee.getLastBooking().getStarttime());
+			assertFalse(testee.getLastBooking().hasEndtime());
+		}
 	}
 }

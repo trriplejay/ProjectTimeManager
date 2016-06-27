@@ -79,9 +79,10 @@ class DayBookingsImpl implements DayBookings {
 	@Override
 	@NonNull
 	public Booking endBooking(@NonNull final Booking booking, @NonNull final LocalTime endtime) {
-		Preconditions.checkState(bookings.remove(booking));
+		Preconditions.checkState(bookings.contains(booking));
 		Preconditions.checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
 		Booking endedBooking = Booking.endBooking(booking, endtime);
+		bookings.remove(booking);
 		bookings.add(endedBooking);
 		return endedBooking;
 	}
@@ -92,12 +93,12 @@ class DayBookingsImpl implements DayBookings {
 		final Booking previousBooking = getPreviousBooking(booking);
 		bookings.remove(booking);
 		if (previousBooking != null) {
-			bookings.remove(previousBooking);
 			Booking newBooking = Booking.newBooking(previousBooking.getStarttime(), previousBooking.getActivity(),
 					previousBooking.getComment());
 			if (booking.hasEndtime()) {
 				newBooking = Booking.endBooking(newBooking, booking.getEndtime());
 			}
+			bookings.remove(previousBooking);
 			bookings.add(newBooking);
 		}
 	}
@@ -112,8 +113,17 @@ class DayBookingsImpl implements DayBookings {
 
 	@Override
 	public @NonNull Booking splitBooking(@NonNull final Booking booking, @NonNull final LocalTime splittime) {
-		// TODO Auto-generated method stub
-		return booking;
+		Preconditions.checkState(bookings.contains(booking));
+		Booking first = Booking.newBooking(booking.getStarttime(), booking.getActivity(), booking.getComment());
+		first = Booking.endBooking(first, splittime);
+		Booking second = Booking.newBooking(splittime, booking.getActivity(), booking.getComment());
+		if (booking.hasEndtime()) {
+			second = Booking.endBooking(second, booking.getEndtime());
+		}
+		bookings.remove(booking);
+		bookings.add(first);
+		bookings.add(second);
+		return first;
 	}
 
 	@Override
@@ -127,11 +137,11 @@ class DayBookingsImpl implements DayBookings {
 	public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
 		Preconditions.checkState(bookings.contains(booking));
 		Preconditions.checkState(!activity.equals(booking.getActivity()));
-		bookings.remove(booking);
 		Booking newBooking = Booking.newBooking(booking.getStarttime(), activity, booking.getComment());
 		if (booking.hasEndtime()) {
 			newBooking = Booking.endBooking(newBooking, booking.getEndtime());
 		}
+		bookings.remove(booking);
 		bookings.add(newBooking);
 		return newBooking;
 	}
@@ -141,11 +151,11 @@ class DayBookingsImpl implements DayBookings {
 		Preconditions.checkState(bookings.contains(booking));
 		Preconditions.checkState(StringUtils.isNotBlank(comment));
 		Preconditions.checkState(!comment.equals(booking.getComment()));
-		bookings.remove(booking);
 		Booking newBooking = Booking.newBooking(booking.getStarttime(), booking.getActivity(), comment);
 		if (booking.hasEndtime()) {
 			newBooking = Booking.endBooking(newBooking, booking.getEndtime());
 		}
+		bookings.remove(booking);
 		bookings.add(newBooking);
 		return newBooking;
 	}
@@ -154,11 +164,11 @@ class DayBookingsImpl implements DayBookings {
 	public @NonNull Booking deleteComment(@NonNull final Booking booking) {
 		Preconditions.checkState(bookings.contains(booking));
 		Preconditions.checkState(StringUtils.isNotBlank(booking.getComment()));
-		bookings.remove(booking);
 		Booking newBooking = Booking.newBooking(booking.getStarttime(), booking.getActivity());
 		if (booking.hasEndtime()) {
 			newBooking = Booking.endBooking(newBooking, booking.getEndtime());
 		}
+		bookings.remove(booking);
 		bookings.add(newBooking);
 		return newBooking;
 	}
