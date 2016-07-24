@@ -35,7 +35,7 @@ public class BookingTest {
      */
     @Test
     public final void testNewBookingLocalTimeActivity() {
-	Booking testee = Booking.newBooking(TIME1, ACT1);
+	Booking testee = Booking.newBooking().setStarttime(TIME1).setActivity(ACT1).build();
 	assertEquals(ACT1, testee.getActivity());
 	assertEquals(TIME1, testee.getStarttime());
 	assertFalse(testee.hasEndtime());
@@ -47,7 +47,7 @@ public class BookingTest {
      */
     @Test
     public final void testNewBookingLocalTimeActivityString() {
-	Booking testee = Booking.newBooking(TIME1, ACT1, COMMENT1);
+	Booking testee = Booking.newBooking().setStarttime(TIME1).setActivity(ACT1).setComment(COMMENT1).build();
 	assertEquals(ACT1, testee.getActivity());
 	assertEquals(TIME1, testee.getStarttime());
 	assertFalse(testee.hasEndtime());
@@ -59,8 +59,8 @@ public class BookingTest {
      */
     @Test
     public final void testEndBooking() {
-	Booking startBooking = Booking.newBooking(TIME1, ACT1, COMMENT1);
-	Booking testee = Booking.endBooking(startBooking, TIME2);
+	Booking startBooking = Booking.newBooking().setStarttime(TIME1).setActivity(ACT1).setComment(COMMENT1).build();
+	Booking testee = startBooking.changeBooking().setEndtime(TIME2).build();
 	assertEquals(ACT1, testee.getActivity());
 	assertEquals(TIME1, testee.getStarttime());
 	assertTrue(testee.hasEndtime());
@@ -70,8 +70,17 @@ public class BookingTest {
 
     @Test(expected = IllegalStateException.class)
     public final void testEndBookingNegative() {
-	Booking startBooking = Booking.newBooking(TIME2, ACT1, COMMENT1);
-	Booking.endBooking(startBooking, TIME1);
+	Booking.newBooking().setStarttime(TIME2).setEndtime(TIME1).setActivity(ACT1).setComment(COMMENT1).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public final void testNoStarttime() {
+	Booking.newBooking().setActivity(ACT1).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public final void testNoActivity() {
+	Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).build();
     }
 
     /**
@@ -79,9 +88,9 @@ public class BookingTest {
      */
     @Test
     public final void testCalculateTimeSpan() {
-	Booking startBooking = Booking.newBooking(TIME1, ACT1, COMMENT1);
-	Booking endBooking = Booking.endBooking(startBooking, TIME2);
-	TimeSpan testee = endBooking.calculateTimeSpan();
+	Booking booking = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
+		.setComment(COMMENT1).build();
+	TimeSpan testee = booking.calculateTimeSpan();
 	assertEquals(TIME1, testee.getStarttime());
 	assertEquals(TIME2, testee.getEndtime());
     }

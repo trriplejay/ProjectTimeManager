@@ -3,6 +3,8 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -10,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 
 /**
  * This class represents a booking on a day. It is represented by a starting
@@ -24,65 +25,87 @@ public class Booking {
     private final LocalTime endtime;
     @NonNull
     private final Activity activity;
+    @NonNull
     private final String comment;
 
-    /**
-     * Creates a new booking based on a start time and an activity. A booking
-     * with an end time can only be created by an booking and an end time.
-     *
-     * @param starttime
-     *            The start time of the booking
-     * @param activity
-     *            The end time of the booking
-     * @return A Booking object representing the booking
-     */
-    @NonNull
-    public static Booking newBooking(@NonNull final LocalTime starttime, @NonNull final Activity activity) {
-	return new Booking(starttime, null, activity, null);
+    public static class BookingBuilder {
+	private LocalTime starttime;
+	private LocalTime endtime = null;
+	private Activity activity;
+	@SuppressWarnings("null")
+	@NonNull
+	private String comment = StringUtils.EMPTY;
+
+	private BookingBuilder(final Booking booking) {
+	    starttime = booking.getStarttime();
+	    if (booking.hasEndtime()) {
+		endtime = booking.getEndtime();
+	    }
+	    activity = booking.getActivity();
+	    comment = booking.getComment();
+	}
+
+	private BookingBuilder() {
+	    // Nothing to do
+	}
+
+	@NonNull
+	public BookingBuilder setStarttime(@NonNull final LocalTime starttime) {
+	    this.starttime = starttime;
+	    return this;
+	}
+
+	@NonNull
+	public BookingBuilder setEndtime(final LocalTime endtime) {
+	    this.endtime = endtime;
+	    return this;
+	}
+
+	@NonNull
+	public BookingBuilder setComment(@NonNull final String comment) {
+	    this.comment = comment;
+	    return this;
+	}
+
+	@NonNull
+	public BookingBuilder setActivity(@NonNull final Activity activity) {
+	    this.activity = activity;
+	    return this;
+	}
+
+	@SuppressWarnings("null")
+	@NonNull
+	public Booking build() {
+	    checkData();
+	    return new Booking(starttime, endtime, activity, comment);
+	}
+
+	private void checkData() {
+	    checkState(starttime != null);
+	    checkState(activity != null);
+
+	    if (endtime != null) {
+		checkState(endtime.isAfter(starttime));
+	    }
+	}
     }
 
     /**
-     * Creates a new booking based on a start time, an activity and a comment. A
-     * booking with an end time can only be created by an booking and an end
-     * time.
+     * Creates a new booking builder with no data set.
      *
-     * @param starttime
-     *            The start time of the booking
-     * @param activity
-     *            The end time of the booking
-     * @param comment
-     *            A comment for the booking
-     * @return A Booking object representing the booking
+     * @return A new booking builder
      */
     @NonNull
-    public static Booking newBooking(@NonNull final LocalTime starttime, @NonNull final Activity activity,
-	    @NonNull final String comment) {
-	return new Booking(starttime, null, activity, comment);
+    public static BookingBuilder newBooking() {
+	return new BookingBuilder();
     }
 
-    /**
-     * Creates a booking with an end time based on a previous booking. The
-     * original booking remains unchanged. If the given booking already has an
-     * end time, this will be overwritten. If the end time is earlier than the
-     * start time, an IllegalStateException will be thrown. Bookings over a day
-     * border are not allowed.
-     *
-     * @param booking
-     *            The booking with the start time given
-     * @param endtime
-     *            The end time for the new booking
-     * @return A new booking object with the original data but the end time set
-     * @throws IllegalStateException
-     *             If the end time is earlier than the start time
-     */
-    @NonNull
-    public static Booking endBooking(@NonNull final Booking booking, @NonNull final LocalTime endtime) {
-	Preconditions.checkState(endtime.isAfter(booking.starttime));
-	return new Booking(booking.starttime, endtime, booking.activity, booking.comment);
+    public BookingBuilder changeBooking() {
+	return new BookingBuilder(this);
     }
 
     private Booking(@NonNull final LocalTime starttime, final LocalTime endtime, @NonNull final Activity activity,
-	    final String comment) {
+	    @NonNull final String comment) {
 	this.starttime = starttime;
 	this.endtime = endtime;
 	this.activity = activity;
@@ -105,14 +128,9 @@ public class Booking {
     }
 
     /**
-     * @return End time of the booking
-     * @throws IllegalStateException
-     *             If the booking has not an end time
+     * @return End time of the booking or null if not set
      */
-    @SuppressWarnings("null")
-    @NonNull
     public LocalTime getEndtime() {
-	Preconditions.checkState(hasEndtime());
 	return endtime;
     }
 
@@ -128,10 +146,9 @@ public class Booking {
      * @return Comment of the booking if available, an empty string if no
      *         comment given
      */
-    @SuppressWarnings("null")
     @NonNull
     public String getComment() {
-	return comment != null ? comment : StringUtils.EMPTY;
+	return comment;
     }
 
     /**
@@ -142,7 +159,7 @@ public class Booking {
      */
     @SuppressWarnings("null")
     public TimeSpan calculateTimeSpan() {
-	Preconditions.checkState(hasEndtime());
+	checkState(hasEndtime());
 	return TimeSpan.newTimeSpan(starttime, endtime);
     }
 

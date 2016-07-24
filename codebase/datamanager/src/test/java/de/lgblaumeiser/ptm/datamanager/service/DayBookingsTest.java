@@ -44,7 +44,8 @@ public class DayBookingsTest {
     private static final @NonNull LocalTime TIME4 = LocalTime.of(15, 35);
     private static final @NonNull Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
     private static final @NonNull Activity ACTIVITY2 = Activity.newProjectActivity("a1", "c");
-    private static final @NonNull Booking BOOKING1 = Booking.newBooking(TIME1, ACTIVITY1);
+    private static final @NonNull Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setActivity(ACTIVITY1)
+	    .build();
     private static final @NonNull String COMMENT1 = "My Comment";
 
     private DayBookings testee;

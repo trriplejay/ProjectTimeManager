@@ -57,11 +57,13 @@ class DayBookingsImpl implements DayBookings {
 	return day;
     }
 
+    @SuppressWarnings("null")
     @Override
     @NonNull
     public Booking addBooking(@NonNull final Activity activity) {
 	Preconditions.checkState(CollectionUtils.isNotEmpty(bookings));
 	Booking lastBooking = getLastBooking();
+	Preconditions.checkState(lastBooking.hasEndtime());
 	return addBooking(activity, lastBooking.getEndtime());
     }
 
@@ -72,7 +74,7 @@ class DayBookingsImpl implements DayBookings {
 	if (lastBooking != null) {
 	    endBooking(lastBooking, starttime);
 	}
-	Booking newBooking = Booking.newBooking(starttime, activity);
+	Booking newBooking = Booking.newBooking().setStarttime(starttime).setActivity(activity).build();
 	bookings.add(newBooking);
 	return newBooking;
     }
@@ -82,7 +84,7 @@ class DayBookingsImpl implements DayBookings {
     public Booking endBooking(@NonNull final Booking booking, @NonNull final LocalTime endtime) {
 	Preconditions.checkState(bookings.contains(booking));
 	Preconditions.checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
-	Booking endedBooking = Booking.endBooking(booking, endtime);
+	Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
 	bookings.remove(booking);
 	bookings.add(endedBooking);
 	return endedBooking;
@@ -94,11 +96,7 @@ class DayBookingsImpl implements DayBookings {
 	final Booking previousBooking = getPreviousBooking(booking);
 	bookings.remove(booking);
 	if (previousBooking != null) {
-	    Booking newBooking = Booking.newBooking(previousBooking.getStarttime(), previousBooking.getActivity(),
-		    previousBooking.getComment());
-	    if (booking.hasEndtime()) {
-		newBooking = Booking.endBooking(newBooking, booking.getEndtime());
-	    }
+	    Booking newBooking = previousBooking.changeBooking().setEndtime(booking.getEndtime()).build();
 	    bookings.remove(previousBooking);
 	    bookings.add(newBooking);
 	}
@@ -125,12 +123,8 @@ class DayBookingsImpl implements DayBookings {
     @Override
     public @NonNull Booking splitBooking(@NonNull final Booking booking, @NonNull final LocalTime splittime) {
 	Preconditions.checkState(bookings.contains(booking));
-	Booking first = Booking.newBooking(booking.getStarttime(), booking.getActivity(), booking.getComment());
-	first = Booking.endBooking(first, splittime);
-	Booking second = Booking.newBooking(splittime, booking.getActivity(), booking.getComment());
-	if (booking.hasEndtime()) {
-	    second = Booking.endBooking(second, booking.getEndtime());
-	}
+	Booking first = booking.changeBooking().setEndtime(splittime).build();
+	Booking second = booking.changeBooking().setStarttime(splittime).setEndtime(booking.getEndtime()).build();
 	bookings.remove(booking);
 	bookings.add(first);
 	bookings.add(second);
@@ -141,23 +135,14 @@ class DayBookingsImpl implements DayBookings {
     public @NonNull Booking changeBookingTimes(@NonNull final Booking booking, @NonNull final LocalTime starttime,
 	    @NonNull final LocalTime endtime) {
 	Preconditions.checkState(bookings.contains(booking));
-	Booking newBooking = Booking.newBooking(starttime, booking.getActivity(), booking.getComment());
-	newBooking = Booking.endBooking(newBooking, endtime);
+	Booking newBooking = booking.changeBooking().setStarttime(starttime).setEndtime(endtime).build();
 	Booking previousBooking = getPreviousBooking(booking);
-	Booking newPrevious = null;
-	if (previousBooking != null) {
-	    newPrevious = Booking.newBooking(previousBooking.getStarttime(), previousBooking.getActivity());
-	    newPrevious = Booking.endBooking(newPrevious, starttime);
-	}
+	Booking newPrevious = previousBooking != null ? previousBooking.changeBooking().setEndtime(starttime).build()
+		: null;
 	Booking successiveBooking = getSuccessiveBooking(booking);
-	Booking newSuccessive = null;
-	if (successiveBooking != null) {
-	    newSuccessive = Booking.newBooking(endtime, successiveBooking.getActivity(),
-		    successiveBooking.getComment());
-	    if (successiveBooking.hasEndtime()) {
-		newSuccessive = Booking.endBooking(newSuccessive, successiveBooking.getEndtime());
-	    }
-	}
+	Booking newSuccessive = successiveBooking != null ? successiveBooking.changeBooking().setStarttime(endtime)
+		.setEndtime(successiveBooking.getEndtime()).build() : null;
+
 	bookings.remove(booking);
 	bookings.add(newBooking);
 	if (newPrevious != null) {
@@ -175,10 +160,7 @@ class DayBookingsImpl implements DayBookings {
     public @NonNull Booking changeActivity(@NonNull final Booking booking, @NonNull final Activity activity) {
 	Preconditions.checkState(bookings.contains(booking));
 	Preconditions.checkState(!activity.equals(booking.getActivity()));
-	Booking newBooking = Booking.newBooking(booking.getStarttime(), activity, booking.getComment());
-	if (booking.hasEndtime()) {
-	    newBooking = Booking.endBooking(newBooking, booking.getEndtime());
-	}
+	Booking newBooking = booking.changeBooking().setActivity(activity).build();
 	bookings.remove(booking);
 	bookings.add(newBooking);
 	return newBooking;
@@ -189,10 +171,7 @@ class DayBookingsImpl implements DayBookings {
 	Preconditions.checkState(bookings.contains(booking));
 	Preconditions.checkState(StringUtils.isNotBlank(comment));
 	Preconditions.checkState(!comment.equals(booking.getComment()));
-	Booking newBooking = Booking.newBooking(booking.getStarttime(), booking.getActivity(), comment);
-	if (booking.hasEndtime()) {
-	    newBooking = Booking.endBooking(newBooking, booking.getEndtime());
-	}
+	Booking newBooking = booking.changeBooking().setComment(comment).build();
 	bookings.remove(booking);
 	bookings.add(newBooking);
 	return newBooking;
@@ -202,10 +181,8 @@ class DayBookingsImpl implements DayBookings {
     public @NonNull Booking deleteComment(@NonNull final Booking booking) {
 	Preconditions.checkState(bookings.contains(booking));
 	Preconditions.checkState(StringUtils.isNotBlank(booking.getComment()));
-	Booking newBooking = Booking.newBooking(booking.getStarttime(), booking.getActivity());
-	if (booking.hasEndtime()) {
-	    newBooking = Booking.endBooking(newBooking, booking.getEndtime());
-	}
+	@SuppressWarnings("null")
+	Booking newBooking = booking.changeBooking().setComment(StringUtils.EMPTY).build();
 	bookings.remove(booking);
 	bookings.add(newBooking);
 	return newBooking;
