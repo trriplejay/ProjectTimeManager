@@ -50,7 +50,8 @@ public class ActivityTest {
      */
     @Test
     public final void testNewLineActivityPositive() {
-	Activity newActivity = Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_1, LINE_BOOKING_1);
+	Activity newActivity = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
 	assertEquals(LINE_ACTIVITY_1_1, newActivity.getActivityId());
 	assertEquals(LINE_CATEGORY_1, newActivity.getCategoryId());
 	assertEquals(LINE_BOOKING_1, newActivity.getBookingNumber());
@@ -62,7 +63,8 @@ public class ActivityTest {
      */
     @Test
     public final void testNewLineCategoryPositive() {
-	Activity newActivity = Activity.newLineActivity(LINE_CATEGORY_2, LINE_BOOKING_2);
+	Activity newActivity = Activity.newActivity().setCategoryId(LINE_CATEGORY_2).setBookingNumber(LINE_BOOKING_2)
+		.setLineActivity().build();
 	assertEquals(LINE_CATEGORY_2, newActivity.getActivityId());
 	assertEquals(LINE_CATEGORY_2, newActivity.getCategoryId());
 	assertEquals(LINE_BOOKING_2, newActivity.getBookingNumber());
@@ -74,7 +76,8 @@ public class ActivityTest {
      */
     @Test
     public final void testNewProjectActivityPositive() {
-	Activity newActivity = Activity.newProjectActivity(PROJECT_ACTIVITY_1_1, PROJECT_CATEGORY_1, PROJECT_BOOKING_1);
+	Activity newActivity = Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_1)
+		.setCategoryId(PROJECT_CATEGORY_1).setBookingNumber(PROJECT_BOOKING_1).setProjectActivity().build();
 	assertEquals(PROJECT_ACTIVITY_1_1, newActivity.getActivityId());
 	assertEquals(PROJECT_CATEGORY_1, newActivity.getCategoryId());
 	assertEquals(PROJECT_BOOKING_1, newActivity.getBookingNumber());
@@ -86,7 +89,8 @@ public class ActivityTest {
      */
     @Test
     public final void testNewProjectPositive() {
-	Activity newActivity = Activity.newProjectActivity(PROJECT_CATEGORY_2, PROJECT_BOOKING_2);
+	Activity newActivity = Activity.newActivity().setCategoryId(PROJECT_CATEGORY_2)
+		.setBookingNumber(PROJECT_BOOKING_2).setProjectActivity().build();
 	assertEquals(PROJECT_CATEGORY_2, newActivity.getActivityId());
 	assertEquals(PROJECT_CATEGORY_2, newActivity.getCategoryId());
 	assertEquals(PROJECT_BOOKING_2, newActivity.getBookingNumber());
@@ -98,8 +102,10 @@ public class ActivityTest {
      */
     @Test
     public final void testNewLinePositiveTwoActivities() {
-	Activity newActivity1 = Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_1, LINE_BOOKING_1);
-	Activity newActivity2 = Activity.newLineActivity(LINE_ACTIVITY_1_2, LINE_CATEGORY_1, LINE_BOOKING_1);
+	Activity newActivity1 = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
+	Activity newActivity2 = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_2).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
 	assertEquals(LINE_ACTIVITY_1_1, newActivity1.getActivityId());
 	assertEquals(LINE_ACTIVITY_1_2, newActivity2.getActivityId());
 	assertEquals(LINE_CATEGORY_1, newActivity1.getCategoryId());
@@ -115,76 +121,90 @@ public class ActivityTest {
      */
     @Test
     public final void testNewProjectPositiveTwoActivities() {
-	Activity newActivity1 = Activity.newLineActivity(PROJECT_ACTIVITY_1_1, PROJECT_CATEGORY_1, PROJECT_BOOKING_1);
-	Activity newActivity2 = Activity.newLineActivity(PROJECT_ACTIVITY_1_2, PROJECT_CATEGORY_1, PROJECT_BOOKING_1);
+	Activity newActivity1 = Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_1)
+		.setCategoryId(PROJECT_CATEGORY_1).setBookingNumber(PROJECT_BOOKING_1).setProjectActivity().build();
+	Activity newActivity2 = Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_2)
+		.setCategoryId(PROJECT_CATEGORY_1).setBookingNumber(PROJECT_BOOKING_1).setProjectActivity().build();
 	assertEquals(PROJECT_ACTIVITY_1_1, newActivity1.getActivityId());
 	assertEquals(PROJECT_ACTIVITY_1_2, newActivity2.getActivityId());
 	assertEquals(PROJECT_CATEGORY_1, newActivity1.getCategoryId());
 	assertEquals(PROJECT_CATEGORY_1, newActivity2.getCategoryId());
 	assertEquals(PROJECT_BOOKING_1, newActivity1.getBookingNumber());
 	assertEquals(PROJECT_BOOKING_1, newActivity2.getBookingNumber());
-	assertFalse(newActivity1.isProjectActivity());
-	assertFalse(newActivity2.isProjectActivity());
+	assertTrue(newActivity1.isProjectActivity());
+	assertTrue(newActivity2.isProjectActivity());
     }
 
     /**
      * Negative test method for a line activity with a known booking number but
      * other category
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewLineWithDoubleBookingNumber() {
-	Activity.newLineActivity(LINE_CATEGORY_1, LINE_BOOKING_1);
-	Activity.newLineActivity(LINE_CATEGORY_2, LINE_BOOKING_1);
+	Activity.newActivity().setCategoryId(LINE_CATEGORY_1).setBookingNumber(LINE_BOOKING_1).setLineActivity()
+		.build();
+	Activity.newActivity().setCategoryId(LINE_CATEGORY_2).setBookingNumber(LINE_BOOKING_1).setLineActivity()
+		.build();
     }
 
     /**
      * Negative test method for a project activity with a known booking number
      * but other category
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewProjectWithDoubleBookingNumber() {
-	Activity.newProjectActivity(PROJECT_CATEGORY_1, PROJECT_BOOKING_1);
-	Activity.newProjectActivity(PROJECT_CATEGORY_2, PROJECT_BOOKING_1);
+	Activity.newActivity().setCategoryId(PROJECT_CATEGORY_1).setBookingNumber(PROJECT_BOOKING_1)
+		.setProjectActivity().build();
+	Activity.newActivity().setCategoryId(PROJECT_CATEGORY_2).setBookingNumber(PROJECT_BOOKING_1)
+		.setProjectActivity().build();
     }
 
     /**
      * Negative test method for a line activity with an activity although type
      * does not take activities
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewLineWithInconsistentActivityIdDefinition() {
-	Activity.newLineActivity(LINE_CATEGORY_2, LINE_BOOKING_2);
-	Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_2, LINE_BOOKING_2);
+	Activity.newActivity().setCategoryId(LINE_CATEGORY_2).setBookingNumber(LINE_BOOKING_2).setLineActivity()
+		.build();
+	Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_2)
+		.setBookingNumber(LINE_BOOKING_2).setLineActivity().build();
     }
 
     /**
      * Negative test method for a project activity with an activity although
      * type does not take activities
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewProjectWithInconsistentActivityIdDefinition() {
-	Activity.newProjectActivity(PROJECT_CATEGORY_2, PROJECT_BOOKING_2);
-	Activity.newProjectActivity(PROJECT_ACTIVITY_1_1, PROJECT_CATEGORY_2, PROJECT_BOOKING_2);
+	Activity.newActivity().setCategoryId(PROJECT_CATEGORY_2).setBookingNumber(PROJECT_BOOKING_2)
+		.setProjectActivity().build();
+	Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_1).setCategoryId(PROJECT_CATEGORY_2)
+		.setBookingNumber(PROJECT_BOOKING_2).setProjectActivity().build();
     }
 
     /**
      * Negative test method for a line activity without an activity although
      * type needs activities
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewLineWithInconsistentActivityIdDefinition2() {
-	Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_2, LINE_BOOKING_2);
-	Activity.newLineActivity(LINE_CATEGORY_2, LINE_BOOKING_2);
+	Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_2)
+		.setBookingNumber(LINE_BOOKING_2).setLineActivity().build();
+	Activity.newActivity().setCategoryId(LINE_CATEGORY_2).setBookingNumber(LINE_BOOKING_2).setLineActivity()
+		.build();
     }
 
     /**
      * Negative test method for a project activity without an activity although
      * type needs activities
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewProjectWithInconsistentActivityIdDefinition2() {
-	Activity.newProjectActivity(PROJECT_ACTIVITY_1_1, PROJECT_CATEGORY_2, PROJECT_BOOKING_2);
-	Activity.newProjectActivity(PROJECT_CATEGORY_2, PROJECT_BOOKING_2);
+	Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_1).setCategoryId(PROJECT_CATEGORY_2)
+		.setBookingNumber(PROJECT_BOOKING_2).setProjectActivity().build();
+	Activity.newActivity().setCategoryId(PROJECT_CATEGORY_2).setBookingNumber(PROJECT_BOOKING_2)
+		.setProjectActivity().build();
     }
 
     /**
@@ -192,11 +212,14 @@ public class ActivityTest {
      */
     @Test
     public final void testEquals() {
-	Activity newActivity1 = Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_1, LINE_BOOKING_1);
-	Activity newActivity2 = Activity.newLineActivity(LINE_ACTIVITY_1_2, LINE_CATEGORY_1, LINE_BOOKING_1);
-	Activity newActivity3 = Activity.newProjectActivity(PROJECT_ACTIVITY_1_1, PROJECT_CATEGORY_1,
-		PROJECT_BOOKING_1);
-	Activity newActivity4 = Activity.newLineActivity(LINE_ACTIVITY_1_1, LINE_CATEGORY_1, LINE_BOOKING_1);
+	Activity newActivity1 = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
+	Activity newActivity2 = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_2).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
+	Activity newActivity3 = Activity.newActivity().setActivityId(PROJECT_ACTIVITY_1_1)
+		.setCategoryId(PROJECT_CATEGORY_1).setBookingNumber(PROJECT_BOOKING_1).setProjectActivity().build();
+	Activity newActivity4 = Activity.newActivity().setActivityId(LINE_ACTIVITY_1_1).setCategoryId(LINE_CATEGORY_1)
+		.setBookingNumber(LINE_BOOKING_1).setLineActivity().build();
 
 	assertTrue(newActivity1.equals(newActivity4));
 	assertTrue(newActivity1.hashCode() == newActivity4.hashCode());

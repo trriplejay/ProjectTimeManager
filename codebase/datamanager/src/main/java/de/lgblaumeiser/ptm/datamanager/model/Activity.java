@@ -3,13 +3,15 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 /**
@@ -48,94 +50,66 @@ public class Activity {
 
     private static Map<String, BookingNumberInfo> bookingNumberToInfoMap = Maps.newHashMap();
 
-    /**
-     * Create new line activity with a category that uses sub activities
-     *
-     * @param activityId
-     *            Name of the activity
-     * @param categoryId
-     *            Name of the category
-     * @param bookingNumber
-     *            Booking Number of the category
-     * @return A new activity that represents the given data. The data is
-     *         checked and an illegal argument exception is thrown
-     * @throws IllegalArgumentException
-     *             If the data is not valid
-     */
-    @NonNull
-    public static Activity newLineActivity(@NonNull final String activityId, @NonNull final String categoryId,
-	    @NonNull final String bookingNumber) {
-	checkCategoryOfBooking(activityId, categoryId, bookingNumber, false);
-	return new Activity(activityId, categoryId, bookingNumber, false);
-    }
+    public static class ActivityBuilder {
+	private String categoryId;
+	private String activityId;
+	private String bookingNumber;
+	private boolean projectActivity = false;
 
-    /**
-     * Create new line activity with a category that does not use sub activities
-     *
-     * @param categoryId
-     *            Name of the category
-     * @param bookingNumber
-     *            Booking Number of the category
-     * @return A new activity that represents the given data. The data is
-     *         checked and an illegal argument exception is thrown
-     * @throws IllegalArgumentException
-     *             If the data is not valid
-     */
-    @NonNull
-    public static Activity newLineActivity(@NonNull final String categoryId, @NonNull final String bookingNumber) {
-	checkCategoryOfBooking(null, categoryId, bookingNumber, false);
-	return new Activity(categoryId, bookingNumber, false);
-    }
-
-    /**
-     * Create new project activity with a category that uses sub activities
-     *
-     * @param activityId
-     *            Name of the activity
-     * @param categoryId
-     *            Name of the category
-     * @param bookingNumber
-     *            Booking Number of the category
-     * @return A new activity that represents the given data. The data is
-     *         checked and an illegal argument exception is thrown
-     * @throws IllegalArgumentException
-     *             If the data is not valid
-     */
-    @NonNull
-    public static Activity newProjectActivity(@NonNull final String activityId, @NonNull final String categoryId,
-	    @NonNull final String bookingNumber) {
-	checkCategoryOfBooking(activityId, categoryId, bookingNumber, true);
-	return new Activity(activityId, categoryId, bookingNumber, true);
-    }
-
-    /**
-     * Create new project activity with a category that does not use sub
-     * activities
-     *
-     * @param categoryId
-     *            Name of the category
-     * @param bookingNumber
-     *            Booking Number of the category
-     * @return A new activity that represents the given data. The data is
-     *         checked and an illegal argument exception is thrown
-     * @throws IllegalArgumentException
-     *             If the data is not valid
-     */
-    @NonNull
-    public static Activity newProjectActivity(@NonNull final String categoryId, @NonNull final String bookingNumber) {
-	checkCategoryOfBooking(null, categoryId, bookingNumber, true);
-	return new Activity(categoryId, bookingNumber, true);
-    }
-
-    private static void checkCategoryOfBooking(final String activityId, final String categoryId,
-	    final String bookingNumber, final boolean projectActivity) {
-	BookingNumberInfo foundCategory = bookingNumberToInfoMap.get(bookingNumber);
-	if (foundCategory != null) {
-	    Preconditions.checkArgument(categoryId.equals(foundCategory.categoryId));
-	    Preconditions.checkArgument(projectActivity == foundCategory.projectActivity);
-	    Preconditions
-		    .checkArgument(activityId != null ? foundCategory.withActivities : !foundCategory.withActivities);
+	@NonNull
+	public ActivityBuilder setCategoryId(@NonNull final String categoryId) {
+	    this.categoryId = categoryId;
+	    return this;
 	}
+
+	@NonNull
+	public ActivityBuilder setActivityId(@NonNull final String activityId) {
+	    this.activityId = activityId;
+	    return this;
+	}
+
+	@NonNull
+	public ActivityBuilder setBookingNumber(final String bookingNumber) {
+	    this.bookingNumber = bookingNumber;
+	    return this;
+	}
+
+	@NonNull
+	public ActivityBuilder setProjectActivity() {
+	    this.projectActivity = true;
+	    return this;
+	}
+
+	@NonNull
+	public ActivityBuilder setLineActivity() {
+	    this.projectActivity = false;
+	    return this;
+	}
+
+	@SuppressWarnings("null")
+	@NonNull
+	public Activity build() {
+	    checkCategoryOfBooking();
+	    if (StringUtils.isBlank(activityId)) {
+		activityId = categoryId;
+	    }
+	    return new Activity(activityId, categoryId, bookingNumber, projectActivity);
+	}
+
+	private void checkCategoryOfBooking() {
+	    checkState(StringUtils.isNotBlank(categoryId));
+	    checkState(StringUtils.isNotBlank(bookingNumber));
+	    BookingNumberInfo foundCategory = bookingNumberToInfoMap.get(bookingNumber);
+	    if (foundCategory != null) {
+		checkState(categoryId.equals(foundCategory.categoryId));
+		checkState(projectActivity == foundCategory.projectActivity);
+		checkState(activityId != null ? foundCategory.withActivities : !foundCategory.withActivities);
+	    }
+	}
+    }
+
+    public static ActivityBuilder newActivity() {
+	return new ActivityBuilder();
     }
 
     private Activity(@NonNull final String activityId, @NonNull final String categoryId,
@@ -146,19 +120,8 @@ public class Activity {
 	this.projectActivity = projectActivity;
 	BookingNumberInfo bookingInfo = bookingNumberToInfoMap.get(bookingNumber);
 	if (bookingInfo == null) {
-	    bookingNumberToInfoMap.put(bookingNumber, new BookingNumberInfo(categoryId, projectActivity, true));
-	}
-    }
-
-    private Activity(@NonNull final String categoryId, @NonNull final String bookingNumber,
-	    final boolean projectActivity) {
-	this.activityId = categoryId;
-	this.categoryId = categoryId;
-	this.bookingNumber = bookingNumber;
-	this.projectActivity = projectActivity;
-	BookingNumberInfo bookingInfo = bookingNumberToInfoMap.get(bookingNumber);
-	if (bookingInfo == null) {
-	    bookingNumberToInfoMap.put(bookingNumber, new BookingNumberInfo(categoryId, projectActivity, false));
+	    bookingNumberToInfoMap.put(bookingNumber,
+		    new BookingNumberInfo(categoryId, projectActivity, activityId != categoryId));
 	}
     }
 

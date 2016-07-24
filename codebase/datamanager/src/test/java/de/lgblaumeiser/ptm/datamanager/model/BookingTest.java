@@ -25,7 +25,8 @@ public class BookingTest {
     private static final LocalTime TIME2 = LocalTime.of(13, 57);
 
     @NonNull
-    private static final Activity ACT1 = Activity.newLineActivity("Cat1", "0815");
+    private static final Activity ACT1 = Activity.newActivity().setCategoryId("Cat1").setBookingNumber("0815")
+	    .setLineActivity().build();
 
     @NonNull
     private static final String COMMENT1 = "Test Comment\nTest Line 2";
