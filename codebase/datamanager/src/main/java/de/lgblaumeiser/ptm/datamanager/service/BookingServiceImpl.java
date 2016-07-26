@@ -23,6 +23,7 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  */
 class BookingServiceImpl implements BookingService {
     @Override
+    @NonNull
     public DayBookings createNewDayBookings(@NonNull final LocalDate day) {
 	return DayBookings.newDay(day);
     }

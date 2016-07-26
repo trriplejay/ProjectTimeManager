@@ -23,6 +23,7 @@ public interface BookingService {
      *            The day for which bookings should be stored
      * @return A DayBookings object
      */
+    @NonNull
     DayBookings createNewDayBookings(@NonNull LocalDate day);
 
     /**
@@ -166,10 +167,10 @@ public interface BookingService {
     Booking deleteComment(@NonNull DayBookings dayBookings, @NonNull Booking booking);
 
     /**
-     * Create booking for day
+     * Create default booking for day
      */
     @NonNull
-    static BookingService createBookingService() {
+    static BookingService getDefaultBookingService() {
 	return new BookingServiceImpl();
     }
 }

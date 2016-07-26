@@ -22,15 +22,9 @@ public class ActivityTest {
     @NonNull
     private final static String LINE_BOOKING_1 = "L1";
     @NonNull
-    private final static String LINE_BOOKING_2 = "L2";
-    @NonNull
     private final static String PROJECT_ACTIVITY_1_1 = "ProjectActivityId11";
     @NonNull
-    private final static String PROJECT_ACTIVITY_1_2 = "ProjectActivityId12";
-    @NonNull
     private final static String PROJECT_BOOKING_1 = "P1";
-    @NonNull
-    private final static String PROJECT_BOOKING_2 = "P2";
 
     /**
      * Positive test method for newLineActivity with activity id
