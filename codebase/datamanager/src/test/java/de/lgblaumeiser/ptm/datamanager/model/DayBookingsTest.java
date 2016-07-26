@@ -26,8 +26,7 @@ public class DayBookingsTest {
     private static final LocalTime TIME3 = LocalTime.of(14, 35);
 
     @NonNull
-    private static final Activity ACTIVITY1 = Activity.newActivity().setCategoryId("Cat1").setBookingNumber("0815")
-	    .setLineActivity().build();
+    private static final Activity ACTIVITY1 = Activity.newLineActivity("Act1", "0815");
 
     @NonNull
     private static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2)

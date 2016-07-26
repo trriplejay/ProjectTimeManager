@@ -36,10 +36,8 @@ public class BookingServiceTest {
     private static final @NonNull LocalTime TIME3A = LocalTime.of(14, 00);
     @SuppressWarnings("null")
     private static final @NonNull LocalTime TIME4 = LocalTime.of(15, 35);
-    private static final @NonNull Activity ACTIVITY1 = Activity.newActivity().setCategoryId("a").setBookingNumber("b")
-	    .setLineActivity().build();
-    private static final @NonNull Activity ACTIVITY2 = Activity.newActivity().setCategoryId("a1").setBookingNumber("c")
-	    .setProjectActivity().build();
+    private static final @NonNull Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
+    private static final @NonNull Activity ACTIVITY2 = Activity.newLineActivity("a1", "c");
     private static final @NonNull Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setActivity(ACTIVITY1)
 	    .build();
     private static final @NonNull String COMMENT1 = "My Comment";

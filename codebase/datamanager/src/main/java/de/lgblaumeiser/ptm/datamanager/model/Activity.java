@@ -5,14 +5,12 @@ package de.lgblaumeiser.ptm.datamanager.model;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Maps;
 
 /**
  * Data structure for representation of an activity. An activity represents a
@@ -28,117 +26,38 @@ import com.google.common.collect.Maps;
  */
 public class Activity {
     @NonNull
-    private final String activityId;
-    @NonNull
-    private final String categoryId;
+    private final String activityName;
     @NonNull
     private final String bookingNumber;
     private final boolean projectActivity;
 
-    private static final class BookingNumberInfo {
-	String categoryId;
-	boolean projectActivity;
-	boolean withActivities;
-
-	private BookingNumberInfo(final String categoryId, final boolean projectActivity,
-		final boolean withActivities) {
-	    this.categoryId = categoryId;
-	    this.projectActivity = projectActivity;
-	    this.withActivities = withActivities;
-	}
+    @NonNull
+    public static Activity newLineActivity(@NonNull final String activityName, @NonNull final String bookingNumber) {
+	checkState(StringUtils.isNotBlank(activityName));
+	checkState(StringUtils.isNotBlank(bookingNumber));
+	return new Activity(activityName, bookingNumber, false);
     }
 
-    private static Map<String, BookingNumberInfo> bookingNumberToInfoMap = Maps.newHashMap();
-
-    public static class ActivityBuilder {
-	private String categoryId;
-	private String activityId;
-	private String bookingNumber;
-	private boolean projectActivity = false;
-
-	@NonNull
-	public ActivityBuilder setCategoryId(@NonNull final String categoryId) {
-	    this.categoryId = categoryId;
-	    return this;
-	}
-
-	@NonNull
-	public ActivityBuilder setActivityId(@NonNull final String activityId) {
-	    this.activityId = activityId;
-	    return this;
-	}
-
-	@NonNull
-	public ActivityBuilder setBookingNumber(final String bookingNumber) {
-	    this.bookingNumber = bookingNumber;
-	    return this;
-	}
-
-	@NonNull
-	public ActivityBuilder setProjectActivity() {
-	    this.projectActivity = true;
-	    return this;
-	}
-
-	@NonNull
-	public ActivityBuilder setLineActivity() {
-	    this.projectActivity = false;
-	    return this;
-	}
-
-	@SuppressWarnings("null")
-	@NonNull
-	public Activity build() {
-	    checkCategoryOfBooking();
-	    if (StringUtils.isBlank(activityId)) {
-		activityId = categoryId;
-	    }
-	    return new Activity(activityId, categoryId, bookingNumber, projectActivity);
-	}
-
-	private void checkCategoryOfBooking() {
-	    checkState(StringUtils.isNotBlank(categoryId));
-	    checkState(StringUtils.isNotBlank(bookingNumber));
-	    BookingNumberInfo foundCategory = bookingNumberToInfoMap.get(bookingNumber);
-	    if (foundCategory != null) {
-		checkState(categoryId.equals(foundCategory.categoryId));
-		checkState(projectActivity == foundCategory.projectActivity);
-		checkState(activityId != null ? foundCategory.withActivities : !foundCategory.withActivities);
-	    }
-	}
+    @NonNull
+    public static Activity newProjectActivity(@NonNull final String activityName, @NonNull final String bookingNumber) {
+	checkState(StringUtils.isNotBlank(activityName));
+	checkState(StringUtils.isNotBlank(bookingNumber));
+	return new Activity(activityName, bookingNumber, true);
     }
 
-    public static ActivityBuilder newActivity() {
-	return new ActivityBuilder();
-    }
-
-    private Activity(@NonNull final String activityId, @NonNull final String categoryId,
-	    @NonNull final String bookingNumber, final boolean projectActivity) {
-	this.activityId = activityId;
-	this.categoryId = categoryId;
+    private Activity(@NonNull final String activityName, @NonNull final String bookingNumber,
+	    final boolean projectActivity) {
+	this.activityName = activityName;
 	this.bookingNumber = bookingNumber;
 	this.projectActivity = projectActivity;
-	BookingNumberInfo bookingInfo = bookingNumberToInfoMap.get(bookingNumber);
-	if (bookingInfo == null) {
-	    bookingNumberToInfoMap.put(bookingNumber,
-		    new BookingNumberInfo(categoryId, projectActivity, activityId != categoryId));
-	}
     }
 
     /**
-     * @return Name (resp. id) of the activity.
+     * @return Name of the activity.
      */
     @NonNull
-    public String getActivityId() {
-	return activityId;
-    }
-
-    /**
-     * @return Name (resp. id) of activity category
-     */
-    @NonNull
-    public String getCategoryId() {
-	return categoryId;
+    public String getActivityName() {
+	return activityName;
     }
 
     /**
@@ -158,8 +77,7 @@ public class Activity {
 
     @Override
     public String toString() {
-	return MoreObjects.toStringHelper(this).omitNullValues().add("Category", categoryId)
-		.add("Booking Number", bookingNumber).add("Activity", activityId)
+	return MoreObjects.toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName)
 		.add("Is Project Activity", isProjectActivity()).toString();
     }
 
@@ -167,7 +85,7 @@ public class Activity {
     public boolean equals(final Object obj) {
 	if (obj instanceof Activity) {
 	    Activity act = (Activity) obj;
-	    return Objects.equals(activityId, act.getActivityId()) && Objects.equals(categoryId, act.getCategoryId())
+	    return Objects.equals(activityName, act.getActivityName())
 		    && Objects.equals(bookingNumber, act.getBookingNumber())
 		    && projectActivity == act.isProjectActivity();
 	}
@@ -176,14 +94,6 @@ public class Activity {
 
     @Override
     public int hashCode() {
-	return Objects.hash(activityId, categoryId, bookingNumber);
-    }
-
-    /**
-     * Current possibility of resetting the business rules. This is not a final
-     * solution
-     */
-    static void reset() {
-	bookingNumberToInfoMap.clear();
+	return Objects.hash(activityName, bookingNumber);
     }
 }
