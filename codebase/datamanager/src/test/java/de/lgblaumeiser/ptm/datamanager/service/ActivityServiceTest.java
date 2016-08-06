@@ -21,7 +21,7 @@ public class ActivityServiceTest {
     @NonNull
     private static final String BOOKINGNUMBER2 = "e";
 
-    ActivityService testee = ActivityService.getDefaultActivityService();
+    ActivityService testee = new ActivityServiceImpl();
 
     @Test
     public void testAddActivity() {

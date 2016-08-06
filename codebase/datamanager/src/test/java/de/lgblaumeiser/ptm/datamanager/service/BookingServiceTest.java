@@ -44,7 +44,7 @@ public class BookingServiceTest {
 
     @NonNull
     private final DayBookings testBookings = DayBookings.newDay(DATE1);
-    private final BookingService testee = BookingService.getDefaultBookingService();
+    private final BookingService testee = new BookingServiceImpl();
 
     @Test(expected = IllegalStateException.class)
     public void testAddBooking0Empty() {
