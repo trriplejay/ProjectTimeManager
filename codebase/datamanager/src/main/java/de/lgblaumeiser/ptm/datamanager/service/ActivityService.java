@@ -46,11 +46,4 @@ public interface ActivityService {
      *            Activity to remove
      */
     void removeActivity(@NonNull Activity activity);
-
-    /**
-     * @return Return a default service implmentation
-     */
-    static ActivityService getDefaultActivityService() {
-	return new ActivityServiceImpl();
-    }
 }

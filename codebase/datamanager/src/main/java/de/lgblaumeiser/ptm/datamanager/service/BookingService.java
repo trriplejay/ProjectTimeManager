@@ -165,12 +165,4 @@ public interface BookingService {
      */
     @NonNull
     Booking deleteComment(@NonNull DayBookings dayBookings, @NonNull Booking booking);
-
-    /**
-     * Create default booking for day
-     */
-    @NonNull
-    static BookingService getDefaultBookingService() {
-	return new BookingServiceImpl();
-    }
 }
