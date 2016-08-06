@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>de.lgblaumeiser.ptm</groupId>
+    <groupId>de.lgblaumeiser</groupId>
     <artifactId>ptm</artifactId>
     <version>1.0</version>
     <relativePath>../..</relativePath>
