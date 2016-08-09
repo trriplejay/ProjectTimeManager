@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -170,4 +171,19 @@ public class DayBookings {
 	validate();
 	bookings.sort((left, right) -> left.getStarttime().compareTo(right.getStarttime()));
     }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(day, bookings);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+	if (obj instanceof DayBookings) {
+	    DayBookings other = (DayBookings) obj;
+	    return Objects.equals(day, other.day) && Objects.equals(bookings, other.bookings);
+	}
+	return super.equals(false);
+    }
+
 }

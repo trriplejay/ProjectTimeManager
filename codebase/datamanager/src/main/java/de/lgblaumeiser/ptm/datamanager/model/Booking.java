@@ -165,7 +165,7 @@ public class Booking {
 
     @Override
     public int hashCode() {
-	return java.util.Objects.hash(starttime, endtime, activity, comment);
+	return Objects.hash(starttime, endtime, activity, comment);
     }
 
     @Override
