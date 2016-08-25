@@ -5,10 +5,10 @@ package de.lgblaumeiser.store.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 import com.google.gson.Gson;
 
@@ -20,6 +20,7 @@ import de.lgblaumeiser.store.ObjectStore;
 public class JsonStore<T> implements ObjectStore<T> {
     private JsonDatabase backend;
     private final Gson gsonUtil = new Gson();
+    private Properties storageProperties;
 
     public void setBackend(final JsonDatabase backend) {
 	this.backend = backend;
@@ -31,26 +32,21 @@ public class JsonStore<T> implements ObjectStore<T> {
 	backend.store(json);
     }
 
-    @Override
-    @Nullable
-    public T retrieveById(@NonNull final String id, @NonNull final Class<T> resultClass) {
-	String json = backend.retrieveById(id);
-	if (StringUtils.isBlank(json)) {
-	    return null;
-	}
-	return gsonUtil.<T>fromJson(json, resultClass);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     @NonNull
-    public Collection<T> retrieveByIndexKey(@NonNull final String key, @NonNull final Class<T> resultClass) {
+    public Collection<T> retrieveByIndexKey(@NonNull final String key) {
 	String json = backend.retrieveByIndexKey(key);
 	Collection<T> back = new ArrayList<T>();
 	if (StringUtils.isNotBlank(json)) {
 	    back.addAll(gsonUtil.fromJson(json, Collection.class));
 	}
 	return back;
+    }
+
+    @Override
+    public void configure(@NonNull final Properties properties) {
+	storageProperties = properties;
     }
 
 }

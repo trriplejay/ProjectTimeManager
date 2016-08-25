@@ -4,14 +4,28 @@
 package de.lgblaumeiser.store;
 
 import java.util.Collection;
+import java.util.Properties;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A general interface for storing objects
  */
 public interface ObjectStore<T> {
+    static final String CLASS_KEY = "class";
+    static final String INDEX_KEY = "index";
+
+    /**
+     * Set the properties for the persistence mechanism. The keys depend on the
+     * storage technology used in the background. One key is defined as "index"
+     * and contains the name of the field in the stored object that is used as
+     * index key. Another key is defined by the class of T named "class";
+     *
+     * @param properties
+     *            The properties of the persistence mechanism
+     */
+    void configure(@NonNull Properties properties);
+
     /**
      * Store an object in the store
      *
@@ -21,26 +35,12 @@ public interface ObjectStore<T> {
     void store(@NonNull T object);
 
     /**
-     * Retrieve an object by its id
-     *
-     * @param id
-     *            The id as string
-     * @param resultClass
-     *            Class of the return type
-     * @return The object stored with the id or null if the id is unknown
-     */
-    @Nullable
-    T retrieveById(@NonNull String id, @NonNull Class<T> resultClass);
-
-    /**
      * Retrieve objects by a key for which an index exists
      *
      * @param key
      *            The key as string
-     * @param resultClass
-     *            Class of the return type
      * @return The objects found, might be empty
      */
     @NonNull
-    Collection<T> retrieveByIndexKey(@NonNull String key, @NonNull Class<T> resultClass);
+    Collection<T> retrieveByIndexKey(@NonNull String key);
 }
