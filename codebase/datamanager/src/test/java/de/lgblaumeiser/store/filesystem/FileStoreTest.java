@@ -2,9 +2,10 @@ package de.lgblaumeiser.store.filesystem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -13,8 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class FileStoreTest {
+    @NonNull
     private static final String TESTINDEX = "TestIndex";
+    @NonNull
     private static final String TESTCONTENT = "TestContent";
+    @SuppressWarnings("null")
+    @NonNull
     private static final File STORAGEPLACE = FileUtils.getTempDirectory();
 
     private FileStore<TestStoreObject> testee;
@@ -25,6 +30,18 @@ public class FileStoreTest {
 	public void storeToFile(@NonNull final File target, @NonNull final String content) {
 	    storageFile = target;
 	    storageContent = content;
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public @NonNull String retrieveFromFile(@NonNull final File source) throws IOException {
+	    if (!source.equals(storageFile)) {
+		throw new IOException();
+	    }
+	    if (storageContent == null) {
+		throw new IOException();
+	    }
+	    return storageContent;
 	}
     };
     private File storageFile;
@@ -57,7 +74,12 @@ public class FileStoreTest {
 
     @Test
     public void testRetrieveByIndexKey() {
-	fail("Not yet implemented");
+	testee.store(testData);
+	Collection<TestStoreObject> foundObj = testee.retrieveByIndexKey(TESTINDEX);
+	assertEquals(1, foundObj.size());
+	TestStoreObject result = foundObj.iterator().next();
+	assertEquals(TESTINDEX, result.getIndex());
+	assertEquals(TESTCONTENT, result.getData());
     }
 
 }

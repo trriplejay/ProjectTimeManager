@@ -57,7 +57,7 @@ public class DatabaseService implements JsonDatabase {
      * String)
      */
     @Override
-    public @Nullable String retrieveByIndexKey(@NonNull final String key) {
+    public @Nullable String retrieveByIndexKey(@NonNull final Object key) {
 	// TODO Auto-generated method stub
 	return null;
     }

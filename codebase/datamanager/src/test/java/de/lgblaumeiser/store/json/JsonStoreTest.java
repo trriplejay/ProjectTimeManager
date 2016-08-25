@@ -65,7 +65,7 @@ public class JsonStoreTest {
 	    }
 
 	    @Override
-	    public @Nullable String retrieveByIndexKey(@NonNull final String key) {
+	    public @Nullable String retrieveByIndexKey(@NonNull final Object key) {
 		return jsonObject;
 	    }
 

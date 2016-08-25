@@ -39,5 +39,5 @@ public interface JsonDatabase {
      *         is found.
      */
     @Nullable
-    String retrieveByIndexKey(@NonNull String key);
+    String retrieveByIndexKey(@NonNull Object key);
 }

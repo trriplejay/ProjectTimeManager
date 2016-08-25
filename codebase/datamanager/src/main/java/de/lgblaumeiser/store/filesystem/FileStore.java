@@ -4,6 +4,7 @@
 package de.lgblaumeiser.store.filesystem;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
@@ -30,21 +31,41 @@ public class FileStore<T> extends AbstractObjectStore<T> {
     @Override
     public void store(@NonNull final T object) {
 	Object index = getIndexObject(object);
-	File store = getStore();
-	File targetFile = new File(store, index.toString() + FILE_ENDING);
-	String json = gsonUtil.toJson(object);
+	File targetFile = getFileInformation(index);
+	String content = createFileContent(object);
 
 	try {
-	    filesystemAccess.storeToFile(targetFile, json);
+	    filesystemAccess.storeToFile(targetFile, content);
 	} catch (IOException e) {
 	    throw new IllegalStateException(e);
 	}
     }
 
+    @SuppressWarnings({ "unchecked", "null" })
     @Override
-    public @NonNull Collection<T> retrieveByIndexKey(@NonNull final String key) {
-	// TODO Auto-generated method stub
-	return null;
+    public @NonNull Collection<T> retrieveByIndexKey(@NonNull final Object key) {
+	File sourceFile = getFileInformation(key);
+	String content;
+	try {
+	    content = filesystemAccess.retrieveFromFile(sourceFile);
+	} catch (IOException e) {
+	    throw new IllegalStateException(e);
+	}
+	T foundObj = extractFileContent(content);
+	return newArrayList(foundObj);
+    }
+
+    private T extractFileContent(final String content) {
+	return gsonUtil.fromJson(content, getDataClass());
+    }
+
+    private String createFileContent(final T object) {
+	return gsonUtil.toJson(object);
+    }
+
+    private File getFileInformation(final Object index) {
+	File store = getStore();
+	return new File(store, index.toString() + FILE_ENDING);
     }
 
     private File getStore() {

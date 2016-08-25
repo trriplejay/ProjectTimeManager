@@ -45,7 +45,7 @@ public abstract class AbstractObjectStore<T> implements ObjectStore<T> {
 
     @SuppressWarnings("null")
     @NonNull
-    protected Class<T> getClassOfIndexKey() {
+    protected Class<T> getDataClass() {
 	checkState(storageClass != null);
 	return storageClass;
     }

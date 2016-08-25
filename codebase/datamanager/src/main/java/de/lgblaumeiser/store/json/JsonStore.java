@@ -35,7 +35,7 @@ public class JsonStore<T> implements ObjectStore<T> {
     @SuppressWarnings("unchecked")
     @Override
     @NonNull
-    public Collection<T> retrieveByIndexKey(@NonNull final String key) {
+    public Collection<T> retrieveByIndexKey(@NonNull final Object key) {
 	String json = backend.retrieveByIndexKey(key);
 	Collection<T> back = new ArrayList<T>();
 	if (StringUtils.isNotBlank(json)) {

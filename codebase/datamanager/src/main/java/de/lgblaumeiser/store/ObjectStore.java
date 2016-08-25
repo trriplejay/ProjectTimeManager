@@ -38,9 +38,9 @@ public interface ObjectStore<T> {
      * Retrieve objects by a key for which an index exists
      *
      * @param key
-     *            The key as string
+     *            The key for which the data is searched
      * @return The objects found, might be empty
      */
     @NonNull
-    Collection<T> retrieveByIndexKey(@NonNull String key);
+    Collection<T> retrieveByIndexKey(@NonNull Object key);
 }

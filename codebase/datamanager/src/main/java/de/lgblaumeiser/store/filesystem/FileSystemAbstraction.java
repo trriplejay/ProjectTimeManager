@@ -17,6 +17,9 @@ public interface FileSystemAbstraction {
 
     void storeToFile(@NonNull File target, @NonNull String content) throws IOException;
 
+    @NonNull
+    String retrieveFromFile(@NonNull File source) throws IOException;
+
     // try {
     // FileUtils.write(tmpFile, json, Charset.defaultCharset());
     // if (targetFile.exists()) {
