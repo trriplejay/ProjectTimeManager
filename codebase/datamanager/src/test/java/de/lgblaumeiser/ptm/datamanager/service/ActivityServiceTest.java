@@ -39,8 +39,8 @@ public class ActivityServiceTest {
     public void testAddActivity() {
 	testee.addLineActivity(ACTIVITYNAME1, BOOKINGNUMBER1);
 	testee.addProjectActivity(ACTIVITYNAME2, BOOKINGNUMBER2);
-	assertEquals(2, testee.getActivities().size());
-	Iterator<Activity> actIter = testee.getActivities().iterator();
+	assertEquals(2, testee.getActivityModel().getActivities().size());
+	Iterator<Activity> actIter = testee.getActivityModel().getActivities().iterator();
 	Activity act1 = actIter.next();
 	Activity act2 = actIter.next();
 	if (ACTIVITYNAME1.equals(act1.getActivityName())) {
@@ -62,10 +62,10 @@ public class ActivityServiceTest {
     public void testRemoveActivity() {
 	testee.addLineActivity(ACTIVITYNAME1, BOOKINGNUMBER1);
 	testee.addProjectActivity(ACTIVITYNAME2, BOOKINGNUMBER2);
-	Activity toRemove = testee.getActivities().iterator().next();
+	Activity toRemove = testee.getActivityModel().getActivities().iterator().next();
 	testee.removeActivity(toRemove);
-	assertEquals(1, testee.getActivities().size());
-	Activity remaining = testee.getActivities().iterator().next();
+	assertEquals(1, testee.getActivityModel().getActivities().size());
+	Activity remaining = testee.getActivityModel().getActivities().iterator().next();
 	if (toRemove.getActivityName().equals(ACTIVITYNAME1)) {
 	    assertEquals(ACTIVITYNAME2, remaining.getActivityName());
 	} else {

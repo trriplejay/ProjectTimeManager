@@ -10,4 +10,6 @@ import java.util.Collection;
  */
 public interface CommandHandler {
     void handleCommand(Collection<String> parameters);
+
+    void setLogger(CommandLogger logger);
 }

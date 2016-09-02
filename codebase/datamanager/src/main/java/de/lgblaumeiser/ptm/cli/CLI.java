@@ -3,6 +3,7 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
+import java.util.Map;
 import java.util.Scanner;
 
 import de.lgblaumeiser.ptm.cli.engine.CommandHandler;
@@ -40,8 +41,8 @@ public class CLI {
 	System.out.println("=======================================");
 	System.out.println("\tX\tExit program");
 	System.out.println("\tH\tShow this help");
-	for (CommandHandler current : interpreter.listHandler()) {
-	    System.out.println("\t" + current.toString());
+	for (Map.Entry<String, CommandHandler> current : interpreter.listHandler().entrySet()) {
+	    System.out.println("\t" + current.getKey() + "\t" + current.getValue().toString());
 	}
 	System.out.println("=======================================\n");
     }

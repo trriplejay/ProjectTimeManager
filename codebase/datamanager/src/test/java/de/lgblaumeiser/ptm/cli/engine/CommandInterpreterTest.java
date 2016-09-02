@@ -31,6 +31,11 @@ public class CommandInterpreterTest {
 	    assertTrue(parameters.isEmpty());
 	    called = true;
 	}
+
+	@Override
+	public void setLogger(final CommandLogger logger) {
+	    // Intentionally empty
+	}
     };
 
     private static final CommandHandler TESTHANDLER2 = new CommandHandler() {
@@ -39,6 +44,11 @@ public class CommandInterpreterTest {
 	    assertEquals(2, parameters.size());
 	    parameters.stream().allMatch(s -> s.equals(PARAM1) || s.equals(PARAM2));
 	    called = true;
+	}
+
+	@Override
+	public void setLogger(final CommandLogger logger) {
+	    // Intentionally empty
 	}
     };
 

@@ -3,11 +3,10 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import java.util.Collection;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 
 /**
  * Service to manage activities
@@ -17,7 +16,7 @@ public interface ActivityService {
      * @return All known activities
      */
     @NonNull
-    Collection<Activity> getActivities();
+    ActivityModel getActivityModel();
 
     /**
      * Add a new activity

@@ -6,7 +6,7 @@ package de.lgblaumeiser.ptm.cli.engine;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.StringUtils.isAlpha;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -27,8 +27,8 @@ public class CommandInterpreter {
 	commandToHandlerMap.put(commandId, handler);
     }
 
-    public Collection<CommandHandler> listHandler() {
-	return unmodifiableCollection(commandToHandlerMap.values());
+    public Map<String, CommandHandler> listHandler() {
+	return unmodifiableMap(commandToHandlerMap);
     }
 
     public void handle(final String command) {

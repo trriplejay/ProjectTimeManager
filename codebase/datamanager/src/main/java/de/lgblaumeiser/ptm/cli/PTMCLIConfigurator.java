@@ -9,6 +9,9 @@ import java.io.File;
 import java.util.Properties;
 
 import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
+import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
+import de.lgblaumeiser.ptm.cli.engine.handler.AddActivity;
+import de.lgblaumeiser.ptm.cli.engine.handler.ListActivity;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.ActivityService;
@@ -23,6 +26,9 @@ import de.lgblaumeiser.store.filesystem.FileSystemAbstractionImpl;
  * The configuration object that creates the application structure
  */
 public class PTMCLIConfigurator {
+    private static final String ADD_ACTIVITY_COMMAND = "AA";
+    private static final String LIST_ACTIVITY_COMMAND = "LA";
+
     public CLI configure() {
 	ObjectStore<DayBookings> bookingStore = createBookingFileStore();
 	ObjectStore<ActivityModel> activityStore = createActivityFileStore();
@@ -88,7 +94,16 @@ public class PTMCLIConfigurator {
 	    final ObjectStore<ActivityModel> activityStore, final BookingService bookingService,
 	    final ActivityService activityService) {
 	CommandInterpreter interpreter = new CommandInterpreter();
-	// add handler
+	CommandLogger logger = new StdoutLogger();
+	AddActivity addActivity = new AddActivity();
+	addActivity.setService(activityService);
+	addActivity.setStore(activityStore);
+	addActivity.setLogger(logger);
+	interpreter.addCommandHandler(ADD_ACTIVITY_COMMAND, addActivity);
+	ListActivity listActivity = new ListActivity();
+	listActivity.setService(activityService);
+	listActivity.setLogger(logger);
+	interpreter.addCommandHandler(LIST_ACTIVITY_COMMAND, listActivity);
 	return interpreter;
     }
 

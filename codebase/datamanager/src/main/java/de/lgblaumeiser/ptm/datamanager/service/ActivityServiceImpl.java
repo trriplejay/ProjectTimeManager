@@ -3,8 +3,6 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import java.util.Collection;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -14,11 +12,12 @@ import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
  * Implementation of Activity Service
  */
 public class ActivityServiceImpl implements ActivityService {
-    private ActivityModel activityStore;
+    private ActivityModel activityModel;
 
+    @SuppressWarnings("null")
     @Override
-    public @NonNull Collection<Activity> getActivities() {
-	return activityStore.getActivities();
+    public @NonNull ActivityModel getActivityModel() {
+	return activityModel;
     }
 
     @Override
@@ -32,21 +31,21 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private void addActivity(@NonNull final Activity newActivity) {
-	activityStore.addActivity(newActivity);
+	activityModel.addActivity(newActivity);
 	try {
-	    activityStore.validate();
+	    activityModel.validate();
 	} catch (IllegalStateException e) {
-	    activityStore.removeActivity(newActivity);
+	    activityModel.removeActivity(newActivity);
 	    throw e;
 	}
     }
 
     @Override
     public void removeActivity(@NonNull final Activity activity) {
-	activityStore.removeActivity(activity);
+	activityModel.removeActivity(activity);
     }
 
     public void setActivityStore(final ActivityModel activityStore) {
-	this.activityStore = activityStore;
+	this.activityModel = activityStore;
     }
 }
