@@ -43,7 +43,7 @@ public class FileStore<T> extends AbstractObjectStore<T> {
     @Override
     public T retrieveByIndexKey(@NonNull final Object key) {
 	File sourceFile = getFileInformation(key);
-	if (!sourceFile.exists()) {
+	if (!filesystemAccess.dataAvailable(sourceFile)) {
 	    return null;
 	}
 	String content;

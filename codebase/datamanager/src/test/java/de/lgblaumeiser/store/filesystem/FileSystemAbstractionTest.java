@@ -2,6 +2,7 @@ package de.lgblaumeiser.store.filesystem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class FileSystemAbstractionTest {
 	File targetFile = new File(tempFolder, FILENAME);
 	try {
 	    testee.storeToFile(targetFile, FILECONTENT);
+	    assertTrue(testee.dataAvailable(targetFile));
 	    String content = testee.retrieveFromFile(targetFile);
 	    assertEquals(FILECONTENT, content);
 	} finally {

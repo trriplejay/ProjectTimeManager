@@ -17,4 +17,6 @@ public interface FileSystemAbstraction {
 
     @NonNull
     String retrieveFromFile(@NonNull File source) throws IOException;
+
+    boolean dataAvailable(File source);
 }

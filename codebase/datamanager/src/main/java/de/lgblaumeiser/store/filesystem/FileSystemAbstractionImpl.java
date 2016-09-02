@@ -44,4 +44,9 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 	return FileUtils.readFileToString(source, defaultCharset());
     }
 
+    @Override
+    public boolean dataAvailable(final File source) {
+	return source.exists();
+    }
+
 }

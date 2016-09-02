@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 
 public class ActivityServiceTest {
     @NonNull
@@ -21,7 +23,14 @@ public class ActivityServiceTest {
     @NonNull
     private static final String BOOKINGNUMBER2 = "e";
 
-    ActivityService testee = new ActivityServiceImpl();
+    ActivityService testee;
+
+    @Before
+    public void setup() {
+	ActivityServiceImpl testeeImpl = new ActivityServiceImpl();
+	testeeImpl.setActivityStore(new ActivityModel());
+	testee = testeeImpl;
+    }
 
     @Test
     public void testAddActivity() {

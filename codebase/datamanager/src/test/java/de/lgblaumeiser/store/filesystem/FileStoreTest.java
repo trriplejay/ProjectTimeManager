@@ -42,6 +42,11 @@ public class FileStoreTest {
 	    }
 	    return storageContent;
 	}
+
+	@Override
+	public boolean dataAvailable(final File source) {
+	    return true;
+	}
     };
     private File storageFile;
     private String storageContent;
@@ -53,6 +58,7 @@ public class FileStoreTest {
 	testProps.setProperty(FileStore.INDEX_KEY, "index");
 	testProps.setProperty(FileStore.CLASS_KEY, TestStoreObject.class.getName());
 	testProps.setProperty(FileStore.STORAGE_PATH_KEY, STORAGEPLACE.getAbsolutePath());
+	testProps.setProperty(FileStore.FILE_ENDING_KEY, "abc");
 	testee.configure(testProps);
 	testee.setFilesystemAccess(stubAccess);
     }
