@@ -1,3 +1,6 @@
+/*
+ * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.store.json.mongo;
 
 import java.time.LocalDate;
