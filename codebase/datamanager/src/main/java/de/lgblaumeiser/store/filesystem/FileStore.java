@@ -4,12 +4,10 @@
 package de.lgblaumeiser.store.filesystem;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -22,7 +20,7 @@ import de.lgblaumeiser.store.AbstractObjectStore;
  */
 public class FileStore<T> extends AbstractObjectStore<T> {
     public static final String STORAGE_PATH_KEY = "store";
-    private static final String FILE_ENDING = ".ptmjs";
+    public static final String FILE_ENDING_KEY = "ending";
 
     private final Gson gsonUtil = new Gson();
     private FileSystemAbstraction filesystemAccess;
@@ -41,10 +39,13 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 	}
     }
 
-    @SuppressWarnings({ "unchecked", "null" })
+    @SuppressWarnings("null")
     @Override
-    public @NonNull Collection<T> retrieveByIndexKey(@NonNull final Object key) {
+    public T retrieveByIndexKey(@NonNull final Object key) {
 	File sourceFile = getFileInformation(key);
+	if (!sourceFile.exists()) {
+	    return null;
+	}
 	String content;
 	try {
 	    content = filesystemAccess.retrieveFromFile(sourceFile);
@@ -52,7 +53,7 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 	    throw new IllegalStateException(e);
 	}
 	T foundObj = extractFileContent(content);
-	return newArrayList(foundObj);
+	return foundObj;
     }
 
     private T extractFileContent(final String content) {
@@ -65,7 +66,13 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 
     private File getFileInformation(final Object index) {
 	File store = getStore();
-	return new File(store, index.toString() + FILE_ENDING);
+	return new File(store, index.toString() + getEnding());
+    }
+
+    private String getEnding() {
+	String ending = getPropertyWithKey(FILE_ENDING_KEY);
+	checkState(isNotBlank(ending));
+	return "." + ending;
     }
 
     private File getStore() {
@@ -76,10 +83,10 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 
     @Override
     protected boolean allPropertiesSet() {
-	return isNotBlank(getPropertyWithKey(STORAGE_PATH_KEY));
+	return isNotBlank(getPropertyWithKey(STORAGE_PATH_KEY)) && isNotBlank(getPropertyWithKey(FILE_ENDING_KEY));
     }
 
-    void setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
+    public void setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
 	this.filesystemAccess = filesystemAccess;
     }
 }

@@ -21,7 +21,7 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 /**
  * The implementation of the DayBookings service
  */
-class BookingServiceImpl implements BookingService {
+public class BookingServiceImpl implements BookingService {
     @Override
     @NonNull
     public DayBookings createNewDayBookings(@NonNull final LocalDate day) {

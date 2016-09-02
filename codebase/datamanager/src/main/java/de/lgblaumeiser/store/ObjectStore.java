@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.store;
 
-import java.util.Collection;
 import java.util.Properties;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -39,8 +38,7 @@ public interface ObjectStore<T> {
      *
      * @param key
      *            The key for which the data is searched
-     * @return The objects found, might be empty
+     * @return The objects found, might be null
      */
-    @NonNull
-    Collection<T> retrieveByIndexKey(@NonNull Object key);
+    T retrieveByIndexKey(@NonNull Object key);
 }

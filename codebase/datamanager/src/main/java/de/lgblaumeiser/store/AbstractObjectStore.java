@@ -30,7 +30,6 @@ public abstract class AbstractObjectStore<T> implements ObjectStore<T> {
 	} catch (ClassNotFoundException e) {
 	    throw new IllegalStateException(e);
 	}
-	checkState(isNotBlank(properties.getProperty(INDEX_KEY)));
 	checkState(allPropertiesSet());
     }
 

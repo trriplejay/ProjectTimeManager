@@ -14,7 +14,7 @@ import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
  * Implementation of Activity Service
  */
 public class ActivityServiceImpl implements ActivityService {
-    private final ActivityModel activityStore = ActivityModel.createActivityModel();
+    private ActivityModel activityStore;
 
     @Override
     public @NonNull Collection<Activity> getActivities() {
@@ -44,5 +44,9 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public void removeActivity(@NonNull final Activity activity) {
 	activityStore.removeActivity(activity);
+    }
+
+    public void setActivityStore(final ActivityModel activityStore) {
+	this.activityStore = activityStore;
     }
 }

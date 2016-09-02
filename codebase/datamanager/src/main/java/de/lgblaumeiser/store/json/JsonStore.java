@@ -3,8 +3,6 @@
  */
 package de.lgblaumeiser.store.json;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,12 +10,12 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.gson.Gson;
 
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.store.AbstractObjectStore;
 
 /**
  * Class to experiment with Mongo DB as backend db
  */
-public class JsonStore<T> implements ObjectStore<T> {
+public class JsonStore<T> extends AbstractObjectStore<T> {
     private JsonDatabase backend;
     private final Gson gsonUtil = new Gson();
     private Properties storageProperties;
@@ -32,21 +30,25 @@ public class JsonStore<T> implements ObjectStore<T> {
 	backend.store(json);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("null")
     @Override
     @NonNull
-    public Collection<T> retrieveByIndexKey(@NonNull final Object key) {
+    public T retrieveByIndexKey(@NonNull final Object key) {
 	String json = backend.retrieveByIndexKey(key);
-	Collection<T> back = new ArrayList<T>();
 	if (StringUtils.isNotBlank(json)) {
-	    back.addAll(gsonUtil.fromJson(json, Collection.class));
+	    return gsonUtil.fromJson(json, getDataClass());
 	}
-	return back;
+	return null;
     }
 
     @Override
     public void configure(@NonNull final Properties properties) {
 	storageProperties = properties;
+    }
+
+    @Override
+    protected boolean allPropertiesSet() {
+	return true;
     }
 
 }

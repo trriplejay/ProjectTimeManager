@@ -16,15 +16,10 @@ import org.eclipse.jdt.annotation.NonNull;
  * Class to store all activities in a data structure
  */
 public class ActivityModel {
+    @NonNull
+    public static final String ACTIVITY_MODEL_ID = "activities";
+
     Set<@NonNull Activity> activities = newHashSet();
-
-    public static ActivityModel createActivityModel() {
-	return new ActivityModel();
-    }
-
-    private ActivityModel() {
-	// Prevent creation from outside
-    }
 
     public void addActivity(@NonNull final Activity activity) {
 	activities.add(activity);
@@ -50,5 +45,10 @@ public class ActivityModel {
 		}
 	    }
 	}
+    }
+
+    @NonNull
+    public String getModelId() {
+	return ACTIVITY_MODEL_ID;
     }
 }

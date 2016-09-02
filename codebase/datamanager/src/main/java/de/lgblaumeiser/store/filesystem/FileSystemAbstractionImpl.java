@@ -18,7 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Implementation of the real filesystem access
  */
-class FileSystemAbstractionImpl implements FileSystemAbstraction {
+public class FileSystemAbstractionImpl implements FileSystemAbstraction {
     private static final String TEMP_FILE_ENDING = ".tmpstore";
 
     @Override

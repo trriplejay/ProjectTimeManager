@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -75,11 +74,9 @@ public class FileStoreTest {
     @Test
     public void testRetrieveByIndexKey() {
 	testee.store(testData);
-	Collection<TestStoreObject> foundObj = testee.retrieveByIndexKey(TESTINDEX);
-	assertEquals(1, foundObj.size());
-	TestStoreObject result = foundObj.iterator().next();
-	assertEquals(TESTINDEX, result.getIndex());
-	assertEquals(TESTCONTENT, result.getData());
+	TestStoreObject foundObj = testee.retrieveByIndexKey(TESTINDEX);
+	assertEquals(TESTINDEX, foundObj.getIndex());
+	assertEquals(TESTCONTENT, foundObj.getData());
     }
 
 }

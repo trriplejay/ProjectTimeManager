@@ -7,7 +7,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 public class ActivityModelTest {
-    private final ActivityModel testee = ActivityModel.createActivityModel();
+    private final ActivityModel testee = new ActivityModel();
 
     @NonNull
     private static final String ACTIVITYNAME1 = "a";
