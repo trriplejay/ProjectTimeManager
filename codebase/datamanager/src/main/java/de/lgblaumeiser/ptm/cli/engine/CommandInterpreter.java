@@ -22,7 +22,7 @@ public class CommandInterpreter {
 
     public void addCommandHandler(final String command, final CommandHandler handler) {
 	checkState(isNotBlank(command));
-	String commandId = command.substring(0, 1).toUpperCase();
+	String commandId = command.toUpperCase();
 	checkState(!commandToHandlerMap.containsKey(commandId));
 	commandToHandlerMap.put(commandId, handler);
     }
@@ -55,11 +55,10 @@ public class CommandInterpreter {
 
     private String getCommandToken(final StringTokenizer tokens) {
 	checkState(tokens.hasMoreTokens());
-	String rawCommandToken = tokens.nextToken();
-	checkState(isNotBlank(rawCommandToken));
-	String commandChar = rawCommandToken.substring(0, 1).toUpperCase();
-	checkState(isAlpha(commandChar));
-	return commandChar;
+	String commandToken = tokens.nextToken().toUpperCase();
+	checkState(isNotBlank(commandToken));
+	checkState(isAlpha(commandToken));
+	return commandToken;
     }
 
     private StringTokenizer createTokens(final String command) {

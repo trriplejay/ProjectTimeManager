@@ -8,9 +8,6 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.lgblaumeiser.ptm.cli.engine.CommandHandler;
-import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
-
 public class CommandInterpreterTest {
     private CommandInterpreter testee;
 
@@ -63,14 +60,7 @@ public class CommandInterpreterTest {
 	assertTrue(called);
     }
 
-    @Test
-    public void testHandlePositiveNoParamAdditionalSignals() {
-	called = false;
-	testee.handle(COMMAND1 + "hjh");
-	assertTrue(called);
-    }
-
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalStateException.class)
     public void testHandleNegativeNoSpaces() {
 	testee.handle(COMMAND2 + PARAM1 + PARAM2);
     }
