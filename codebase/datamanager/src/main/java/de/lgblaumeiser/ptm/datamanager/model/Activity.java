@@ -8,7 +8,6 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
 
@@ -25,45 +24,58 @@ import com.google.common.base.MoreObjects;
  * on a booking number
  */
 public class Activity {
-    @NonNull
     private final String activityName;
-    @NonNull
     private final String bookingNumber;
     private final boolean projectActivity;
 
-    @NonNull
-    public static Activity newLineActivity(@NonNull final String activityName, @NonNull final String bookingNumber) {
+    /**
+     * Create new line activity
+     *
+     * @param activityName
+     *            Name of the new activity
+     * @param bookingNumber
+     *            booking number of the new activity
+     * @return The freshly created activity. Non null since inability of
+     *         creating the activity results in runtime exception
+     */
+    public static Activity newLineActivity(final String activityName, final String bookingNumber) {
 	checkState(StringUtils.isNotBlank(activityName));
 	checkState(StringUtils.isNotBlank(bookingNumber));
 	return new Activity(activityName, bookingNumber, false);
     }
 
-    @NonNull
-    public static Activity newProjectActivity(@NonNull final String activityName, @NonNull final String bookingNumber) {
+    /**
+     * Create new project activity
+     *
+     * @param activityName
+     *            Name of the new activity
+     * @param bookingNumber
+     *            booking number of the new activity
+     * @return The freshly created activity. Non null since inability of
+     *         creating the activity results in runtime exception
+     */
+    public static Activity newProjectActivity(final String activityName, final String bookingNumber) {
 	checkState(StringUtils.isNotBlank(activityName));
 	checkState(StringUtils.isNotBlank(bookingNumber));
 	return new Activity(activityName, bookingNumber, true);
     }
 
-    private Activity(@NonNull final String activityName, @NonNull final String bookingNumber,
-	    final boolean projectActivity) {
+    private Activity(final String activityName, final String bookingNumber, final boolean projectActivity) {
 	this.activityName = activityName;
 	this.bookingNumber = bookingNumber;
 	this.projectActivity = projectActivity;
     }
 
     /**
-     * @return Name of the activity.
+     * @return Name of the activity. Non null
      */
-    @NonNull
     public String getActivityName() {
 	return activityName;
     }
 
     /**
-     * @return Booking number of the activities category
+     * @return Booking number of the activities category. Non null
      */
-    @NonNull
     public String getBookingNumber() {
 	return bookingNumber;
     }

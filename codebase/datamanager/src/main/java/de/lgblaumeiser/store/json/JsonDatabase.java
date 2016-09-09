@@ -3,9 +3,6 @@
  */
 package de.lgblaumeiser.store.json;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * Interface that describes a database interface storing JSON objects resp.
  * retrieving objects to JSON
@@ -27,8 +24,7 @@ public interface JsonDatabase {
      * @return The json representation of the object stored with the id or null
      *         if the id is unknown
      */
-    @Nullable
-    String retrieveById(@NonNull String id);
+    String retrieveById(String id);
 
     /**
      * Retrieve an json array of json objects by a key for which an index exists
@@ -38,6 +34,5 @@ public interface JsonDatabase {
      * @return The json array of the objects found, might be null if no object
      *         is found.
      */
-    @Nullable
-    String retrieveByIndexKey(@NonNull Object key);
+    String retrieveByIndexKey(Object key);
 }

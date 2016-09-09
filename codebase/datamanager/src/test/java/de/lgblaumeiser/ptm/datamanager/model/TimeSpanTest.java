@@ -9,24 +9,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalTime;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 /**
  * Test class for the class TimeSpan
  */
 public class TimeSpanTest {
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME1 = LocalTime.of(12, 34);
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME2 = LocalTime.of(13, 57);
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME3 = LocalTime.of(14, 57);
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME4 = LocalTime.of(15, 47);
 
     /**

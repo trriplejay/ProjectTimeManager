@@ -6,8 +6,6 @@ package de.lgblaumeiser.ptm.datamanager.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
@@ -21,23 +19,22 @@ public interface BookingService {
      *
      * @param day
      *            The day for which bookings should be stored
-     * @return A DayBookings object
+     * @return A DayBookings object, never null
      */
-    @NonNull
-    DayBookings createNewDayBookings(@NonNull LocalDate day);
+
+    DayBookings createNewDayBookings(LocalDate day);
 
     /**
      * Add a booking which starts at the time the last booking ended
      *
      * @param activity
      *            The activity of the booking
-     * @return The created Booking object
+     * @return The created Booking object, never null
      * @throws IllegalStateException
      *             If this is the first booking or the last booking has no
      *             defined ending
      */
-    @NonNull
-    Booking addBooking(@NonNull DayBookings dayBookings, @NonNull Activity activity);
+    Booking addBooking(DayBookings dayBookings, Activity activity);
 
     /**
      * Add a booking at the corresponding starttime. If the last bogoking has no
@@ -49,13 +46,12 @@ public interface BookingService {
      *            The activity of the booking
      * @param starttime
      *            The starttime of the booking
-     * @return The created Booking object
+     * @return The created Booking object, never null
      * @throws IllegalStateException
      *             If the starttime is already within a booked time or the
      *             previous booking has already an endtime
      */
-    @NonNull
-    Booking addBooking(@NonNull DayBookings dayBookings, @NonNull Activity activity, @NonNull LocalTime starttime);
+    Booking addBooking(DayBookings dayBookings, Activity activity, LocalTime starttime);
 
     /**
      * Ends the given booking with the given endtime.
@@ -66,13 +62,12 @@ public interface BookingService {
      *            The booking for which an endtime is added
      * @param endtime
      *            The endtime of the booking
-     * @return The created Booking object
+     * @return The created Booking object, never null
      * @throws IllegalStateException
      *             If the last booking has an end or if an booking overlap is
      *             added
      */
-    @NonNull
-    Booking endBooking(@NonNull DayBookings dayBookings, @NonNull Booking booking, @NonNull LocalTime endtime);
+    Booking endBooking(DayBookings dayBookings, Booking booking, LocalTime endtime);
 
     /**
      * Removes the given booking, the endtime of the previous booking will be
@@ -84,7 +79,7 @@ public interface BookingService {
      * @param booking
      *            The booking to delete
      */
-    void removeBooking(@NonNull DayBookings dayBookings, @NonNull Booking booking);
+    void removeBooking(DayBookings dayBookings, Booking booking);
 
     /**
      * Splits the booking at the splittime into two
@@ -95,10 +90,9 @@ public interface BookingService {
      *            The booking to split
      * @param splittime
      *            The time, where to split the booking
-     * @return The first of the create Booking objects
+     * @return The first of the create Booking objects, never null
      */
-    @NonNull
-    Booking splitBooking(@NonNull DayBookings dayBookings, @NonNull Booking booking, @NonNull LocalTime splittime);
+    Booking splitBooking(DayBookings dayBookings, Booking booking, LocalTime splittime);
 
     /**
      * Changes the activity of the booking
@@ -109,12 +103,11 @@ public interface BookingService {
      *            The booking to change the activity
      * @param activity
      *            The new activity of the booking
-     * @return The changed Booking object
+     * @return The changed Booking object, never null
      * @throws IllegalStateException
      *             If booking is unknown or the activity is already set
      */
-    @NonNull
-    Booking changeActivity(@NonNull DayBookings dayBookings, @NonNull Booking booking, @NonNull Activity activity);
+    Booking changeActivity(DayBookings dayBookings, Booking booking, Activity activity);
 
     /**
      * Change start and endtime of the given Booking. Bookings prior or after
@@ -132,13 +125,11 @@ public interface BookingService {
      *            The new endtime of the booking
      * @param comment
      *            Optional comment for the booking
-     * @return The changed Booking object
+     * @return The changed Booking object, never null
      * @throws IllegalStateException
      *             If the booking times overlap or are not in the right order
      */
-    @NonNull
-    Booking changeBookingTimes(@NonNull DayBookings dayBookings, @NonNull Booking booking, @NonNull LocalTime starttime,
-	    @NonNull LocalTime endtime);
+    Booking changeBookingTimes(DayBookings dayBookings, Booking booking, LocalTime starttime, LocalTime endtime);
 
     /**
      * Change the comment of the booking
@@ -149,10 +140,9 @@ public interface BookingService {
      *            The booking to change
      * @param comment
      *            The new comment of the booking
-     * @return The change booking object
+     * @return The change booking object, never null
      */
-    @NonNull
-    Booking changeComment(@NonNull DayBookings dayBookings, @NonNull Booking booking, @NonNull String comment);
+    Booking changeComment(DayBookings dayBookings, Booking booking, String comment);
 
     /**
      * Delete the comment of the booking
@@ -161,8 +151,7 @@ public interface BookingService {
      *            The day for which the booking should be created
      * @param booking
      *            The booking to change
-     * @return The change booking object
+     * @return The change booking object, never null
      */
-    @NonNull
-    Booking deleteComment(@NonNull DayBookings dayBookings, @NonNull Booking booking);
+    Booking deleteComment(DayBookings dayBookings, Booking booking);
 }

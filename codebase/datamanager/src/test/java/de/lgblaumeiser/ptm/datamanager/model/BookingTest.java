@@ -10,24 +10,17 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalTime;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 /**
  * Test of the Booking class
  */
 public class BookingTest {
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME1 = LocalTime.of(12, 34);
-    @SuppressWarnings("null")
-    @NonNull
     private static final LocalTime TIME2 = LocalTime.of(13, 57);
 
-    @NonNull
     private static final Activity ACT1 = Activity.newLineActivity("Act1", "0815");
 
-    @NonNull
     private static final String COMMENT1 = "Test Comment\nTest Line 2";
 
     /**

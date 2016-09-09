@@ -3,10 +3,11 @@
  */
 package de.lgblaumeiser.store.json;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.gson.Gson;
 
@@ -25,15 +26,15 @@ public class JsonStore<T> extends AbstractObjectStore<T> {
     }
 
     @Override
-    public void store(@NonNull final T object) {
+    public void store(final T object) {
+	checkNotNull(object);
 	String json = gsonUtil.toJson(object);
 	backend.store(json);
     }
 
-    @SuppressWarnings("null")
     @Override
-    @NonNull
-    public T retrieveByIndexKey(@NonNull final Object key) {
+    public T retrieveByIndexKey(final Object key) {
+	checkNotNull(key);
 	String json = backend.retrieveByIndexKey(key);
 	if (StringUtils.isNotBlank(json)) {
 	    return gsonUtil.fromJson(json, getDataClass());
@@ -42,13 +43,14 @@ public class JsonStore<T> extends AbstractObjectStore<T> {
     }
 
     @Override
-    public void configure(@NonNull final Properties properties) {
+    public void configure(final Properties properties) {
+	checkNotNull(properties);
 	storageProperties = properties;
     }
 
     @Override
     protected boolean allPropertiesSet() {
-	return true;
+	return !storageProperties.isEmpty();
     }
 
 }

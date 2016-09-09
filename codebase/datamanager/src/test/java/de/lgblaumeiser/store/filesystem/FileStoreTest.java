@@ -11,17 +11,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 
 public class FileStoreTest {
-    @NonNull
     private static final String TESTINDEX = "TestIndex";
-    @NonNull
     private static final String TESTCONTENT = "TestContent";
-    @SuppressWarnings("null")
-    @NonNull
     private static final File STORAGEPLACE = FileUtils.getTempDirectory();
 
     private FileStore<TestStoreObject> testee;
@@ -29,14 +24,13 @@ public class FileStoreTest {
 
     private final FileSystemAbstraction stubAccess = new FileSystemAbstraction() {
 	@Override
-	public void storeToFile(@NonNull final File target, @NonNull final String content) {
+	public void storeToFile(final File target, final String content) {
 	    storageFile = target;
 	    storageContent = content;
 	}
 
-	@SuppressWarnings("null")
 	@Override
-	public @NonNull String retrieveFromFile(@NonNull final File source) throws IOException {
+	public String retrieveFromFile(final File source) throws IOException {
 	    if (!source.equals(storageFile)) {
 		throw new IOException();
 	    }
@@ -54,7 +48,6 @@ public class FileStoreTest {
     private File storageFile;
     private String storageContent;
 
-    @SuppressWarnings("null")
     @Before
     public void setUp() {
 	testee = new FileStore<>();
@@ -66,7 +59,6 @@ public class FileStoreTest {
 	testee.setFilesystemAccess(stubAccess);
     }
 
-    @NonNull
     private static final TestStoreObject testData = new TestStoreObject(TESTINDEX, TESTCONTENT);
 
     @Test

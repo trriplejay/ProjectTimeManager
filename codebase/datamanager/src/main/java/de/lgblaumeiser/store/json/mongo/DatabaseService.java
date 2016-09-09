@@ -3,9 +3,9 @@
  */
 package de.lgblaumeiser.store.json.mongo;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.bson.Document;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 import de.lgblaumeiser.store.json.JsonDatabase;
 
@@ -24,11 +24,13 @@ public class DatabaseService implements JsonDatabase {
      * @param mongoDB
      */
     public void setMongoDB(final MongoDriver mongoDB) {
+	checkNotNull(mongoDB);
 	this.mongoDB = mongoDB;
     }
 
     @Override
     public void store(final String jsonObject) {
+	checkNotNull(jsonObject);
 	Document doc = Document.parse(jsonObject);
 	if (mongoDB.contains(doc.get("day"))) {
 	    mongoDB.update(doc);
@@ -44,7 +46,8 @@ public class DatabaseService implements JsonDatabase {
      * de.lgblaumeiser.store.json.JsonDatabase#retrieveById(java.lang.String)
      */
     @Override
-    public @Nullable String retrieveById(@NonNull final String id) {
+    public String retrieveById(final String id) {
+	checkNotNull(id);
 	// TODO Auto-generated method stub
 	return null;
     }
@@ -57,7 +60,8 @@ public class DatabaseService implements JsonDatabase {
      * String)
      */
     @Override
-    public @Nullable String retrieveByIndexKey(@NonNull final Object key) {
+    public String retrieveByIndexKey(final Object key) {
+	checkNotNull(key);
 	// TODO Auto-generated method stub
 	return null;
     }

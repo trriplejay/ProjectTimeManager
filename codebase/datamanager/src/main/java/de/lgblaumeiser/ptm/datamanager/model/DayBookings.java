@@ -3,6 +3,7 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Iterables.getOnlyElement;
@@ -15,28 +16,22 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * Model class to store all bookings of a day
  */
 public class DayBookings {
-    @NonNull
     private final LocalDate day;
-    @SuppressWarnings("null")
-    @NonNull
-    private final List<@NonNull Booking> bookings = newArrayList();
+    private final List<Booking> bookings = newArrayList();
 
     /**
      * Create a new day bookings object
      *
      * @param day
      *            The day for which the object should be created
-     * @return A new instance
+     * @return A new instance, never null
      */
-    @NonNull
-    public static DayBookings newDay(@NonNull final LocalDate day) {
+    public static DayBookings newDay(final LocalDate day) {
+	checkNotNull(day);
 	return new DayBookings(day);
     }
 
@@ -46,31 +41,27 @@ public class DayBookings {
      * @param day
      *            The day for which bookings are stored.
      */
-    private DayBookings(@NonNull final LocalDate day) {
+    private DayBookings(final LocalDate day) {
 	this.day = day;
     }
 
     /**
-     * @return Return all bookings stored
+     * @return Return all bookings stored in an unmodifiable list, never null
      */
-    @SuppressWarnings("null")
-    @NonNull
-    public List<@NonNull Booking> getBookings() {
+    public List<Booking> getBookings() {
 	return unmodifiableList(bookings);
     }
 
     /**
      * @return The booking entered last or null if no booking is stored
      */
-    @Nullable
     public Booking getLastBooking() {
 	return getLast(bookings, null);
     }
 
     /**
-     * @return Return the for which bookings are stored.
+     * @return Return the for which bookings are stored, never null
      */
-    @NonNull
     public LocalDate getDay() {
 	return day;
     }
@@ -80,12 +71,12 @@ public class DayBookings {
      *
      * @param booking
      *            The booking to add
-     * @return The object itself to add fluently
+     * @return The object itself to add fluently, never null
      * @throws IllegalStateException
      *             If the last booking is still open ended
      */
-    @NonNull
-    public DayBookings addBooking(@NonNull final Booking booking) {
+    public DayBookings addBooking(final Booking booking) {
+	checkNotNull(booking);
 	Booking last = getLastBooking();
 	checkState(last == null || last.hasEndtime());
 	bookings.add(booking);
@@ -97,9 +88,10 @@ public class DayBookings {
      *
      * @param booking
      *            The booking to remove
-     * @return The object itself to change fluently
+     * @return The object itself to change fluently, never null
      */
-    public DayBookings removeBooking(@NonNull final Booking booking) {
+    public DayBookings removeBooking(final Booking booking) {
+	checkNotNull(booking);
 	bookings.remove(booking);
 	return this;
     }
@@ -112,11 +104,13 @@ public class DayBookings {
      *            The booking to remove
      * @param newBooking
      *            The booking to add
-     * @return The object itself to change fluently
+     * @return The object itself to change fluently, never null
      * @throws IllegalStateException
      *             If the oldBooking could not be removed
      */
-    public DayBookings replaceBooking(@NonNull final Booking oldBooking, @NonNull final Booking newBooking) {
+    public DayBookings replaceBooking(final Booking oldBooking, final Booking newBooking) {
+	checkNotNull(oldBooking);
+	checkNotNull(newBooking);
 	int index = bookings.indexOf(oldBooking);
 	checkState(index >= 0);
 	if (!newBooking.hasEndtime()) {

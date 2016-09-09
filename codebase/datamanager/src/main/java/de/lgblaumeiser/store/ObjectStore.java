@@ -5,8 +5,6 @@ package de.lgblaumeiser.store;
 
 import java.util.Properties;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 /**
  * A general interface for storing objects
  */
@@ -23,7 +21,7 @@ public interface ObjectStore<T> {
      * @param properties
      *            The properties of the persistence mechanism
      */
-    void configure(@NonNull Properties properties);
+    void configure(Properties properties);
 
     /**
      * Store an object in the store
@@ -31,7 +29,7 @@ public interface ObjectStore<T> {
      * @param object
      *            The Object to store
      */
-    void store(@NonNull T object);
+    void store(T object);
 
     /**
      * Retrieve objects by a key for which an index exists
@@ -40,5 +38,5 @@ public interface ObjectStore<T> {
      *            The key for which the data is searched
      * @return The objects found, might be null
      */
-    T retrieveByIndexKey(@NonNull Object key);
+    T retrieveByIndexKey(Object key);
 }

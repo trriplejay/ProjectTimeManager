@@ -3,14 +3,13 @@
  */
 package de.lgblaumeiser.store;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A base implementation which includes the management of Properties
@@ -21,7 +20,8 @@ public abstract class AbstractObjectStore<T> implements ObjectStore<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void configure(@NonNull final Properties properties) {
+    public void configure(final Properties properties) {
+	checkNotNull(properties);
 	storageProperties = new Properties(properties);
 	String classKey = properties.getProperty(CLASS_KEY);
 	checkState(isNotBlank(classKey));
@@ -35,15 +35,12 @@ public abstract class AbstractObjectStore<T> implements ObjectStore<T> {
 
     protected abstract boolean allPropertiesSet();
 
-    @NonNull
     private String getIndexGetter() {
 	checkState(storageProperties != null);
 	String index = storageProperties.getProperty(INDEX_KEY);
 	return "get" + index.substring(0, 1).toUpperCase() + index.substring(1);
     }
 
-    @SuppressWarnings("null")
-    @NonNull
     protected Class<T> getDataClass() {
 	checkState(storageClass != null);
 	return storageClass;
@@ -54,9 +51,8 @@ public abstract class AbstractObjectStore<T> implements ObjectStore<T> {
 	return storageProperties.getProperty(key);
     }
 
-    @SuppressWarnings("null")
-    @NonNull
-    protected Object getIndexObject(@NonNull final T object) {
+    protected Object getIndexObject(final T object) {
+	checkNotNull(object);
 	String searchedMethod = getIndexGetter();
 	for (Method m : object.getClass().getDeclaredMethods()) {
 	    if (searchedMethod.equals(m.getName())) {

@@ -3,8 +3,6 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 
@@ -13,9 +11,8 @@ import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
  */
 public interface ActivityService {
     /**
-     * @return All known activities
+     * @return All known activities, never null
      */
-    @NonNull
     ActivityModel getActivityModel();
 
     /**
@@ -26,7 +23,7 @@ public interface ActivityService {
      * @param id
      *            Booking number of the activity
      */
-    void addLineActivity(@NonNull String name, @NonNull String id);
+    void addLineActivity(String name, String id);
 
     /**
      * Add a new activity
@@ -36,7 +33,7 @@ public interface ActivityService {
      * @param id
      *            Booking number of the activity
      */
-    void addProjectActivity(@NonNull String name, @NonNull String id);
+    void addProjectActivity(String name, String id);
 
     /**
      * Remove an activity
@@ -44,5 +41,5 @@ public interface ActivityService {
      * @param activity
      *            Activity to remove
      */
-    void removeActivity(@NonNull Activity activity);
+    void removeActivity(Activity activity);
 }

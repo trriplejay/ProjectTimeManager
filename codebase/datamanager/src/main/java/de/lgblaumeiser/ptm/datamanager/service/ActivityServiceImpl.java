@@ -3,7 +3,7 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import org.eclipse.jdt.annotation.NonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
@@ -14,23 +14,26 @@ import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 public class ActivityServiceImpl implements ActivityService {
     private ActivityModel activityModel;
 
-    @SuppressWarnings("null")
     @Override
-    public @NonNull ActivityModel getActivityModel() {
+    public ActivityModel getActivityModel() {
 	return activityModel;
     }
 
     @Override
-    public void addLineActivity(@NonNull final String name, @NonNull final String id) {
+    public void addLineActivity(final String name, final String id) {
+	checkNotNull(name);
+	checkNotNull(id);
 	addActivity(Activity.newLineActivity(name, id));
     }
 
     @Override
-    public void addProjectActivity(@NonNull final String name, @NonNull final String id) {
+    public void addProjectActivity(final String name, final String id) {
+	checkNotNull(name);
+	checkNotNull(id);
 	addActivity(Activity.newProjectActivity(name, id));
     }
 
-    private void addActivity(@NonNull final Activity newActivity) {
+    private void addActivity(final Activity newActivity) {
 	activityModel.addActivity(newActivity);
 	try {
 	    activityModel.validate();
@@ -41,7 +44,8 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void removeActivity(@NonNull final Activity activity) {
+    public void removeActivity(final Activity activity) {
+	checkNotNull(activity);
 	activityModel.removeActivity(activity);
     }
 

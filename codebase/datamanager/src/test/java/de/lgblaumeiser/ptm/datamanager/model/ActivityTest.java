@@ -8,22 +8,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 /**
  * Tests for the activity class
  */
 public class ActivityTest {
-    @NonNull
     private final static String LINE_ACTIVITY_1_1 = "LineActivityId11";
-    @NonNull
     private final static String LINE_ACTIVITY_1_2 = "LineActivityId12";
-    @NonNull
     private final static String LINE_BOOKING_1 = "L1";
-    @NonNull
     private final static String PROJECT_ACTIVITY_1_1 = "ProjectActivityId11";
-    @NonNull
     private final static String PROJECT_BOOKING_1 = "P1";
 
     /**
@@ -48,25 +42,21 @@ public class ActivityTest {
 	assertTrue(newActivity.isProjectActivity());
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public final void testLineWithBlankName() {
 	Activity.newLineActivity(StringUtils.EMPTY, LINE_BOOKING_1);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public final void testProjectWithBlankName() {
 	Activity.newProjectActivity(StringUtils.EMPTY, PROJECT_BOOKING_1);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public final void testLineWithBlankNumber() {
 	Activity.newLineActivity(LINE_ACTIVITY_1_1, StringUtils.EMPTY);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public final void testProjectWithBlankNumber() {
 	Activity.newProjectActivity(PROJECT_ACTIVITY_1_1, StringUtils.EMPTY);

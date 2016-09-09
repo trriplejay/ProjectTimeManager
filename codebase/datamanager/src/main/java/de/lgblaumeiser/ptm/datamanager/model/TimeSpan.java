@@ -3,13 +3,13 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.time.LocalTime;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time
@@ -17,9 +17,7 @@ import com.google.common.base.Preconditions;
  * transient type that is only used for calculation. It is not persisted.
  */
 public final class TimeSpan {
-    @NonNull
     private final LocalTime starttime;
-    @NonNull
     private final LocalTime endtime;
 
     /**
@@ -29,33 +27,33 @@ public final class TimeSpan {
      *            Start time of the time span
      * @param endtime
      *            End time of the time span
-     * @return The time span representation for the given data
+     * @return The time span representation for the given data never null
      * @throws IllegalArgumentException
      *             If the start time is after the end time. Time spans can only
      *             be defined within a day.
      */
-    static TimeSpan newTimeSpan(@NonNull final LocalTime starttime, @NonNull final LocalTime endtime) {
-	Preconditions.checkArgument(endtime.isAfter(starttime));
+    static TimeSpan newTimeSpan(final LocalTime starttime, final LocalTime endtime) {
+	checkNotNull(starttime);
+	checkNotNull(endtime);
+	checkState(endtime.isAfter(starttime));
 	return new TimeSpan(starttime, endtime);
     }
 
-    private TimeSpan(@NonNull final LocalTime starttime, @NonNull final LocalTime endtime) {
+    private TimeSpan(final LocalTime starttime, final LocalTime endtime) {
 	this.starttime = starttime;
 	this.endtime = endtime;
     }
 
     /**
-     * @return Start time of the time span
+     * @return Start time of the time span, never null
      */
-    @NonNull
     public LocalTime getStarttime() {
 	return starttime;
     }
 
     /**
-     * @return End time of the time span
+     * @return End time of the time span, never null
      */
-    @NonNull
     public LocalTime getEndtime() {
 	return endtime;
     }

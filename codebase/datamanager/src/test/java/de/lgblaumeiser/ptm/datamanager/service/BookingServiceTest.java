@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -22,27 +21,18 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * Tests for the DayBookings service
  */
 public class BookingServiceTest {
-    @SuppressWarnings("null")
-    private static final @NonNull LocalDate DATE1 = LocalDate.of(2016, 06, 24);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME1 = LocalTime.of(10, 12);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME1A = LocalTime.of(10, 30);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME2 = LocalTime.of(12, 15);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME3 = LocalTime.of(13, 45);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME3A = LocalTime.of(14, 00);
-    @SuppressWarnings("null")
-    private static final @NonNull LocalTime TIME4 = LocalTime.of(15, 35);
-    private static final @NonNull Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
-    private static final @NonNull Activity ACTIVITY2 = Activity.newLineActivity("a1", "c");
-    private static final @NonNull Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setActivity(ACTIVITY1)
-	    .build();
-    private static final @NonNull String COMMENT1 = "My Comment";
+    private static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
+    private static final LocalTime TIME1 = LocalTime.of(10, 12);
+    private static final LocalTime TIME1A = LocalTime.of(10, 30);
+    private static final LocalTime TIME2 = LocalTime.of(12, 15);
+    private static final LocalTime TIME3 = LocalTime.of(13, 45);
+    private static final LocalTime TIME3A = LocalTime.of(14, 00);
+    private static final LocalTime TIME4 = LocalTime.of(15, 35);
+    private static final Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
+    private static final Activity ACTIVITY2 = Activity.newLineActivity("a1", "c");
+    private static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setActivity(ACTIVITY1).build();
+    private static final String COMMENT1 = "My Comment";
 
-    @NonNull
     private final DayBookings testBookings = DayBookings.newDay(DATE1);
     private final BookingService testee = new BookingServiceImpl();
 
@@ -51,7 +41,6 @@ public class BookingServiceTest {
 	testee.addBooking(testBookings, ACTIVITY1);
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testAddBooking0Positive() {
 	Booking firstOne = testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -70,7 +59,6 @@ public class BookingServiceTest {
 	testee.addBooking(testBookings, ACTIVITY2);
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testAddBooking1Empty() {
 	Booking booking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -80,7 +68,6 @@ public class BookingServiceTest {
 	assertFalse(testBookings.getLastBooking().hasEndtime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testAddBooking1With2Bookings() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -104,7 +91,6 @@ public class BookingServiceTest {
 	testee.addBooking(testBookings, ACTIVITY2, TIME1);
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testEndBooking() {
 	Booking booking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -149,7 +135,6 @@ public class BookingServiceTest {
 	testee.removeBooking(testBookings, BOOKING1);
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testRemoveBookingWithPreviousBooking() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -161,7 +146,6 @@ public class BookingServiceTest {
 	assertEquals(TIME1, testBookings.getLastBooking().getStarttime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testRemoveBookingWithPreviousBookingButUnendedRemoveCandidate() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -172,7 +156,6 @@ public class BookingServiceTest {
 	assertFalse(testBookings.getLastBooking().hasEndtime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testRemoveBookingFirst() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -182,7 +165,6 @@ public class BookingServiceTest {
 	assertEquals(TIME2, testBookings.getLastBooking().getStarttime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeActivity() {
 	Booking testBooking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -206,7 +188,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeComment() {
 	Booking testBooking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -219,7 +200,6 @@ public class BookingServiceTest {
 	testee.changeComment(testBookings, BOOKING1, COMMENT1);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testChangeCommentWithEmptyComment() {
 	try {
@@ -230,7 +210,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testChangeCommentTwiceTheSame() {
 	try {
@@ -242,7 +221,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testDeleteComment() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -257,7 +235,6 @@ public class BookingServiceTest {
 	testee.deleteComment(testBookings, BOOKING1);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testDeleteCommentAlthoughNoComment() {
 	try {
@@ -268,7 +245,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testSplitBooking() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -282,7 +258,6 @@ public class BookingServiceTest {
 	assertEquals(TIME2, firstOne.getEndtime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testSplitBookingNoEndtime() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -300,7 +275,6 @@ public class BookingServiceTest {
 	testee.splitBooking(testBookings, BOOKING1, TIME2);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testSplitBookingWithEndtimeSplittimeToEarly() {
 	try {
@@ -314,7 +288,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testSplitBookingWithEndtimeSplittimeToLate() {
 	try {
@@ -328,7 +301,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testSplitBookingWithoutEndtimeSplittimeToEarly() {
 	try {
@@ -341,7 +313,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeBookingTimes() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -358,7 +329,6 @@ public class BookingServiceTest {
 	assertEquals(TIME3A, testBookings.getBookings().get(2).getStarttime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeBookingTimesSuccessiveNoEndtime() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -374,7 +344,6 @@ public class BookingServiceTest {
 	assertEquals(TIME3A, testBookings.getBookings().get(2).getStarttime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeBookingTimesNoPrevious() {
 	testee.addBooking(testBookings, ACTIVITY2, TIME2);
@@ -387,7 +356,6 @@ public class BookingServiceTest {
 	assertEquals(TIME3A, testBookings.getBookings().get(1).getStarttime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeBookingTimesNoSuccessive() {
 	testee.addBooking(testBookings, ACTIVITY2, TIME2);
@@ -401,7 +369,6 @@ public class BookingServiceTest {
 	assertEquals(TIME3A, testBookings.getBookings().get(0).getEndtime());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testChangeBookingTimesIntervalSmaller() {
 	testee.addBooking(testBookings, ACTIVITY1, TIME1);
@@ -424,7 +391,6 @@ public class BookingServiceTest {
 	testee.changeBookingTimes(testBookings, BOOKING1, TIME2, TIME3);
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testChangeBookingTimesWrongTimeSpan() {
 	try {
@@ -438,7 +404,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testChangeBookingTimesToEarlyStarttime() {
 	try {
@@ -455,7 +420,6 @@ public class BookingServiceTest {
 	}
     }
 
-    @SuppressWarnings("null")
     @Test(expected = IllegalStateException.class)
     public void testChangeBookingTimesToLateEndtime() {
 	try {

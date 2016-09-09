@@ -9,8 +9,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import de.lgblaumeiser.ptm.cli.engine.CommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
@@ -42,11 +40,7 @@ public class AddActivity implements CommandHandler {
     public void handleCommand(final Collection<String> parameters) {
 	checkState(parameters.size() > 1);
 	Iterator<String> iter = parameters.iterator();
-	@SuppressWarnings("null")
-	@NonNull
 	String name = iter.next();
-	@SuppressWarnings("null")
-	@NonNull
 	String id = iter.next();
 	checkState(isNotBlank(name));
 	checkState(isNotBlank(id));

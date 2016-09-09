@@ -3,13 +3,12 @@
  */
 package de.lgblaumeiser.store.filesystem;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.gson.Gson;
 
@@ -25,9 +24,9 @@ public class FileStore<T> extends AbstractObjectStore<T> {
     private final Gson gsonUtil = new Gson();
     private FileSystemAbstraction filesystemAccess;
 
-    @SuppressWarnings("null")
     @Override
-    public void store(@NonNull final T object) {
+    public void store(final T object) {
+	checkNotNull(object);
 	Object index = getIndexObject(object);
 	File targetFile = getFileInformation(index);
 	String content = createFileContent(object);
@@ -39,9 +38,9 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 	}
     }
 
-    @SuppressWarnings("null")
     @Override
-    public T retrieveByIndexKey(@NonNull final Object key) {
+    public T retrieveByIndexKey(final Object key) {
+	checkNotNull(key);
 	File sourceFile = getFileInformation(key);
 	if (!filesystemAccess.dataAvailable(sourceFile)) {
 	    return null;

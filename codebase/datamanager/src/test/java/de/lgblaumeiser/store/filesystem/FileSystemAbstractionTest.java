@@ -11,12 +11,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 public class FileSystemAbstractionTest {
     private final static String FILENAME = "dummy.test";
-    @NonNull
     private final static String FILECONTENT = "Test Content";
 
     private final FileSystemAbstraction testee = new FileSystemAbstractionImpl();

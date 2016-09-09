@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +16,9 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 
 public class ActivityServiceTest {
-    @NonNull
     private static final String ACTIVITYNAME1 = "a";
-    @NonNull
     private static final String ACTIVITYNAME2 = "b";
-    @NonNull
     private static final String BOOKINGNUMBER1 = "d";
-    @NonNull
     private static final String BOOKINGNUMBER2 = "e";
 
     ActivityService testee;
@@ -57,7 +52,6 @@ public class ActivityServiceTest {
 	assertEquals(BOOKINGNUMBER2, act2.getBookingNumber());
     }
 
-    @SuppressWarnings("null")
     @Test
     public void testRemoveActivity() {
 	testee.addLineActivity(ACTIVITYNAME1, BOOKINGNUMBER1);

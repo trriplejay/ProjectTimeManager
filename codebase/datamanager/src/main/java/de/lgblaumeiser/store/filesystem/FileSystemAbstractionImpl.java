@@ -3,6 +3,7 @@
  */
 package de.lgblaumeiser.store.filesystem;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.listFiles;
@@ -13,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Implementation of the real filesystem access
@@ -22,7 +22,9 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
     private static final String TEMP_FILE_ENDING = ".tmpstore";
 
     @Override
-    public void storeToFile(@NonNull final File target, @NonNull final String content) throws IOException {
+    public void storeToFile(final File target, final String content) throws IOException {
+	checkNotNull(target);
+	checkNotNull(content);
 	File tmpFile = new File(target.getParentFile(), target.getName() + TEMP_FILE_ENDING);
 	try {
 	    write(tmpFile, content, defaultCharset());
@@ -38,15 +40,16 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 	}
     }
 
-    @SuppressWarnings("null")
     @Override
-    public @NonNull String retrieveFromFile(@NonNull final File source) throws IOException {
+    public String retrieveFromFile(final File source) throws IOException {
+	checkNotNull(source);
 	return FileUtils.readFileToString(source, defaultCharset());
     }
 
     @Override
     public boolean dataAvailable(final File source) {
-	return source.exists();
+	checkNotNull(source);
+	return source.exists() && source.isFile();
     }
 
 }

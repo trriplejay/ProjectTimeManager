@@ -4,7 +4,6 @@
 package de.lgblaumeiser.store.json.mongo;
 
 import org.bson.Document;
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Driver to directly access MongoDB
@@ -29,7 +28,7 @@ class MongoDriver {
 
     }
 
-    boolean contains(@NonNull final Object localDate) {
+    boolean contains(final Object localDate) {
 	// TODO Auto-generated method stub
 	return false;
     }
