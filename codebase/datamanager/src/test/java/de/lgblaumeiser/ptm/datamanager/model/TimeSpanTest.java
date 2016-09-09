@@ -33,7 +33,7 @@ public class TimeSpanTest {
     /**
      * Negative test method for newTimeSpan with earlier end time
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewTimeSpanWrongOrder() {
 	TimeSpan.newTimeSpan(TIME2, TIME1);
     }
@@ -41,7 +41,7 @@ public class TimeSpanTest {
     /**
      * Negative test method for newTimeSpan with same time
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public final void testNewTimeSpanSameTime() {
 	TimeSpan.newTimeSpan(TIME1, TIME1);
     }

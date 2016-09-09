@@ -61,7 +61,6 @@ public class Booking {
 	 * @return The booking build as fluent api, non null
 	 */
 	public BookingBuilder setEndtime(final LocalTime endtime) {
-	    checkNotNull(endtime);
 	    this.endtime = endtime;
 	    return this;
 	}

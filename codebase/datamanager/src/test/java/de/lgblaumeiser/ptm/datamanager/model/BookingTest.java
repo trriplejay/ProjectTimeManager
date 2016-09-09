@@ -66,12 +66,12 @@ public class BookingTest {
 	Booking.newBooking().setStarttime(TIME2).setEndtime(TIME1).setActivity(ACT1).setComment(COMMENT1).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public final void testNoStarttime() {
 	Booking.newBooking().setActivity(ACT1).build();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public final void testNoActivity() {
 	Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).build();
     }
