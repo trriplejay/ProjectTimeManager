@@ -6,13 +6,11 @@ package de.lgblaumeiser.ptm.datamanager.service;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Preconditions;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -45,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
 	checkNotNull(activity);
 	checkNotNull(starttime);
 	Booking lastBooking = dayBookings.getLastBooking();
-	if (lastBooking != null) {
+	if (lastBooking != null && !lastBooking.hasEndtime()) {
 	    endBooking(dayBookings, lastBooking, starttime);
 	}
 	Booking newBooking = Booking.newBooking().setStarttime(starttime).setActivity(activity).build();
@@ -58,8 +56,8 @@ public class BookingServiceImpl implements BookingService {
 	checkNotNull(dayBookings);
 	checkNotNull(booking);
 	checkNotNull(endtime);
-	Preconditions.checkState(dayBookings.getBookings().contains(booking));
-	Preconditions.checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
+	checkState(dayBookings.getBookings().contains(booking));
+	checkState(!booking.hasEndtime() || booking.getEndtime().equals(endtime));
 	Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
 	dayBookings.replaceBooking(booking, endedBooking);
 	return endedBooking;
@@ -150,7 +148,7 @@ public class BookingServiceImpl implements BookingService {
 	checkNotNull(dayBookings);
 	checkNotNull(booking);
 	checkState(dayBookings.getBookings().contains(booking));
-	checkState(StringUtils.isNotBlank(comment));
+	checkState(isNotBlank(comment));
 	checkState(!comment.equals(booking.getComment()));
 	Booking newBooking = booking.changeBooking().setComment(comment).build();
 	dayBookings.replaceBooking(booking, newBooking);
@@ -162,8 +160,8 @@ public class BookingServiceImpl implements BookingService {
 	checkNotNull(dayBookings);
 	checkNotNull(booking);
 	checkState(dayBookings.getBookings().contains(booking));
-	checkState(StringUtils.isNotBlank(booking.getComment()));
-	Booking newBooking = booking.changeBooking().setComment(StringUtils.EMPTY).build();
+	checkState(isNotBlank(booking.getComment()));
+	Booking newBooking = booking.changeBooking().setComment(EMPTY).build();
 	dayBookings.replaceBooking(booking, newBooking);
 	return newBooking;
     }

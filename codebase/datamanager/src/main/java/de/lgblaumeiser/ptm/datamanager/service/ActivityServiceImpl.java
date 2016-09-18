@@ -4,6 +4,10 @@
 package de.lgblaumeiser.ptm.datamanager.service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
@@ -17,6 +21,16 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public ActivityModel getActivityModel() {
 	return activityModel;
+    }
+
+    @Override
+    public Activity getActivityByAbbreviatedName(final String name) {
+	checkNotNull(name);
+	List<Activity> results = activityModel.getActivities().stream()
+		.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
+		.collect(Collectors.toList());
+	checkState(results.size() == 1);
+	return results.get(0);
     }
 
     @Override

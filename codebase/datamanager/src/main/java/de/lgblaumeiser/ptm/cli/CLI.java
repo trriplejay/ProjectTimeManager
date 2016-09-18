@@ -3,6 +3,7 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -28,8 +29,9 @@ public class CLI {
 		} else {
 		    try {
 			interpreter.handle(command);
-		    } catch (IllegalStateException e) {
+		    } catch (IllegalStateException | NullPointerException | DateTimeParseException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 		    }
 		}
 	    }

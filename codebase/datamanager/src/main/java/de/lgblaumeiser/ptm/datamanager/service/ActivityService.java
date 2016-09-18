@@ -16,6 +16,13 @@ public interface ActivityService {
     ActivityModel getActivityModel();
 
     /**
+     * @return Return an activity identified by the name. The name can be
+     *         abbreviated, case does not matter. Abbreviation must be unique to
+     *         identify the activity from start.
+     */
+    Activity getActivityByAbbreviatedName(String name);
+
+    /**
      * Add a new activity
      *
      * @param name

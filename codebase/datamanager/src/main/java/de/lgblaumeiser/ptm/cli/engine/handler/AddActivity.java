@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
@@ -9,33 +9,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.lgblaumeiser.ptm.cli.engine.CommandHandler;
-import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
-import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
-import de.lgblaumeiser.ptm.datamanager.service.ActivityService;
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
 /**
  * Command to add an activity
  */
-public class AddActivity implements CommandHandler {
-    private ActivityService service;
-    private ObjectStore<ActivityModel> store;
-    private CommandLogger logger;
-
-    public void setService(final ActivityService service) {
-	this.service = service;
-    }
-
-    public void setStore(final ObjectStore<ActivityModel> store) {
-	this.store = store;
-    }
-
-    @Override
-    public void setLogger(final CommandLogger logger) {
-	this.logger = logger;
-    }
-
+public class AddActivity extends AbstractCommandHandler {
     @Override
     public void handleCommand(final Collection<String> parameters) {
 	checkState(parameters.size() > 1);
@@ -49,18 +28,18 @@ public class AddActivity implements CommandHandler {
 	    project = !iter.next().toUpperCase().equals("LINE");
 	}
 	if (project) {
-	    logger.log("Add activity " + name + " with id " + id + " as project activity");
-	    service.addProjectActivity(name, id);
+	    getLogger().log("Add activity " + name + " with id " + id + " as project activity");
+	    getServices().getActivityService().addProjectActivity(name, id);
 	} else {
-	    logger.log("Add activity " + name + " with id " + id + " as line activity");
-	    service.addLineActivity(name, id);
+	    getLogger().log("Add activity " + name + " with id " + id + " as line activity");
+	    getServices().getActivityService().addLineActivity(name, id);
 	}
-	store.store(service.getActivityModel());
-	logger.log("Activity added\n");
+	getServices().getActivityStore().store(getServices().getActivityService().getActivityModel());
+	getLogger().log("Activity added\n");
     }
 
     @Override
     public String toString() {
-	return "Adds an activity to the list of available activities";
+	return "Adds an activity to the list of available activities, Params: <1> Activity Name, <2> Activity Id";
     }
 }

@@ -36,7 +36,7 @@ public interface ObjectStore<T> {
      *
      * @param key
      *            The key for which the data is searched
-     * @return The objects found, might be null
+     * @return The object found, might be null if no object is found with key
      */
     T retrieveByIndexKey(Object key);
 }
