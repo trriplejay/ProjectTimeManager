@@ -78,11 +78,15 @@ public class BookingServiceTest {
 	assertTrue(testBookings.getBookings().get(0).hasEndtime());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddBooking1WithEndedLastBooking() {
 	Booking firstOne = testee.addBooking(testBookings, ACTIVITY1, TIME1);
 	testee.endBooking(testBookings, firstOne, TIME2);
-	testee.addBooking(testBookings, ACTIVITY2, TIME3);
+	Booking secondOne = testee.addBooking(testBookings, ACTIVITY2, TIME3);
+	assertEquals(2, testBookings.getBookings().size());
+	assertEquals(secondOne, testBookings.getLastBooking());
+	assertFalse(testBookings.getLastBooking().hasEndtime());
+	assertTrue(testBookings.getBookings().get(0).hasEndtime());
     }
 
     @Test(expected = IllegalStateException.class)
