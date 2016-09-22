@@ -8,6 +8,9 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.File;
 import java.util.Properties;
 
+import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
+import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
+import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
@@ -19,6 +22,7 @@ import de.lgblaumeiser.ptm.cli.engine.handler.EndBooking;
 import de.lgblaumeiser.ptm.cli.engine.handler.ListActivity;
 import de.lgblaumeiser.ptm.cli.engine.handler.ListBookings;
 import de.lgblaumeiser.ptm.cli.engine.handler.OpenDay;
+import de.lgblaumeiser.ptm.cli.engine.handler.RunAnalysis;
 import de.lgblaumeiser.ptm.cli.engine.handler.SaveDay;
 import de.lgblaumeiser.ptm.cli.engine.handler.StartBooking;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
@@ -44,15 +48,26 @@ public class PTMCLIConfigurator {
     private static final String START_BOOKING_COMMAND = "SB";
     private static final String END_BOOKING_COMMAND = "EB";
     private static final String LIST_BOOKING_COMMAND = "LB";
+    private static final String RUN_ANALYIS_COMMAND = "RA";
+    private static final String ANALYSIS_HOURS_ID = "HOURS";
 
     public CLI configure() {
 	ObjectStore<DayBookings> bookingStore = createBookingFileStore();
 	ObjectStore<ActivityModel> activityStore = createActivityFileStore();
 	BookingService bookingService = createBookingService();
 	ActivityService activityService = createActivityService(activityStore);
+	DataAnalysisService analysisService = createAnalysisService(bookingStore);
 	CommandInterpreter interpreter = createCommandInterpreter(bookingStore, activityStore, bookingService,
-		activityService);
+		activityService, analysisService);
 	return createCLI(interpreter);
+    }
+
+    private DataAnalysisService createAnalysisService(final ObjectStore<DayBookings> store) {
+	DataAnalysisServiceImpl service = new DataAnalysisServiceImpl();
+	HourComputer analysis = new HourComputer();
+	analysis.setStore(store);
+	service.addAnalysis(ANALYSIS_HOURS_ID, analysis);
+	return service;
     }
 
     private ObjectStore<DayBookings> createBookingFileStore() {
@@ -108,7 +123,7 @@ public class PTMCLIConfigurator {
 
     private CommandInterpreter createCommandInterpreter(final ObjectStore<DayBookings> bookingStore,
 	    final ObjectStore<ActivityModel> activityStore, final BookingService bookingService,
-	    final ActivityService activityService) {
+	    final ActivityService activityService, final DataAnalysisService analysisService) {
 	CommandInterpreter interpreter = new CommandInterpreter();
 	CommandLogger logger = new StdoutLogger();
 	ServiceManager serviceManager = new ServiceManager();
@@ -116,6 +131,7 @@ public class PTMCLIConfigurator {
 	serviceManager.setActivityStore(activityStore);
 	serviceManager.setBookingService(bookingService);
 	serviceManager.setBookingsStore(bookingStore);
+	serviceManager.setAnalysisService(analysisService);
 	AbstractCommandHandler.setLogger(logger);
 	AbstractCommandHandler.setServices(serviceManager);
 	interpreter.addCommandHandler(ADD_ACTIVITY_COMMAND, new AddActivity());
@@ -127,6 +143,7 @@ public class PTMCLIConfigurator {
 	interpreter.addCommandHandler(START_BOOKING_COMMAND, new StartBooking());
 	interpreter.addCommandHandler(END_BOOKING_COMMAND, new EndBooking());
 	interpreter.addCommandHandler(LIST_BOOKING_COMMAND, new ListBookings());
+	interpreter.addCommandHandler(RUN_ANALYIS_COMMAND, new RunAnalysis());
 	return interpreter;
     }
 

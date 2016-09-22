@@ -7,6 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
@@ -58,6 +59,10 @@ public final class TimeSpan {
 	return endtime;
     }
 
+    public long getLengthInMinutes() {
+        return ChronoUnit.MINUTES.between(starttime, endtime);
+    }
+
     @Override
     public int hashCode() {
 	return Objects.hash(starttime, endtime);
@@ -76,89 +81,4 @@ public final class TimeSpan {
     public String toString() {
 	return MoreObjects.toStringHelper(this).add("Start time", starttime).add("End time", endtime).toString();
     }
-
-    // /**
-    // * <p>
-    // * Vergleicht zwei Zeitspannen bez�glich �berschneidungsfreiheit
-    // * </p>
-    // *
-    // * @param vergleich
-    // * Vergleichszeitspanne
-    // *
-    // * @return Beide Zeitspannen sind �berschneidungsfrei
-    // */
-    // public boolean istUeberschneidungsfrei(TimeSpan vergleich) {
-    // boolean back = true;
-    //
-    // if (startZeit.compareTo(vergleich.getStartZeit()) < 0) {
-    // if (endeZeit.compareTo(vergleich.getStartZeit()) > 0) {
-    // back = false;
-    // }
-    // } else if (startZeit.compareTo(vergleich.getStartZeit()) > 0) {
-    // if (startZeit.compareTo(vergleich.getEndeZeit()) < 0) {
-    // back = false;
-    // }
-    // } else if (startZeit.compareTo(vergleich.getStartZeit()) == 0) {
-    // back = false;
-    // }
-    //
-    // return back;
-    // }
-    //
-    // /**
-    // * <p>
-    // * Berechnet den Abstand zwischen Ende- und Anfangszeitpunkt in Minuten
-    // * </p>
-    // *
-    // * @return Minuten
-    // */
-    // public int berechneMinutenDifferenz() {
-    // int minuten = 0;
-    //
-    // if (endeZeit != null) {
-    // if (startZeit.getStunde() == endeZeit.getStunde()) {
-    // minuten = endeZeit.getMinuten() - startZeit.getMinuten();
-    // } else {
-    // minuten = endeZeit.getMinuten() + 60 - startZeit.getMinuten();
-    // minuten += (endeZeit.getStunde() - startZeit.getStunde() - 1) * 60;
-    // }
-    // } else {
-    // throw new IllegalArgumentException("Keine Endezeit");
-    // }
-    //
-    // return minuten;
-    // }
-    //
-    // /**
-    // * <p>
-    // * Berechnet die �berschneidungszeit zweier Zeitspannen.
-    // * </p>
-    // *
-    // * @param vergleich
-    // * Vergleichszeitspanne
-    // * @return Minuten
-    // */
-    // public int berechneUebereschneidungsMinuten(TimeSpan vergleich) {
-    // int back = 0;
-    //
-    // if (!istUeberschneidungsfrei(vergleich)) {
-    // if (startZeit.compareTo(vergleich.getStartZeit()) < 0) {
-    // if (endeZeit.compareTo(vergleich.getEndeZeit()) < 0) {
-    // back = new TimeSpan(vergleich.getStartZeit(), endeZeit)
-    // .berechneMinutenDifferenz();
-    // } else {
-    // back = vergleich.berechneMinutenDifferenz();
-    // }
-    // } else {
-    // if (endeZeit.compareTo(vergleich.getEndeZeit()) < 0) {
-    // back = berechneMinutenDifferenz();
-    // } else {
-    // back = new TimeSpan(startZeit, vergleich.getEndeZeit())
-    // .berechneMinutenDifferenz();
-    // }
-    // }
-    // }
-    //
-    // return back;
-    // }
 }
