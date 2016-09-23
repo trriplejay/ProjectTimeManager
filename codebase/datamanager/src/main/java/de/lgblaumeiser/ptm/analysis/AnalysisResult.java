@@ -4,26 +4,23 @@
 package de.lgblaumeiser.ptm.analysis;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Collections.unmodifiableMap;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.unmodifiableCollection;
 
-import java.util.Map;
+import java.util.Collection;
 
 /**
  * An interface returning the results of an analyis
  */
 public class AnalysisResult {
-    private final Map<String, Object> results = newHashMap();
+    private final Collection<Collection<Object>> results = newArrayList();
 
-    public void setResult(final String id, final Object result) {
-	checkState(isNotBlank(id));
+    public void setResult(final Collection<Object> result) {
 	checkNotNull(result);
-	results.put(id, result);
+	results.add(result);
     }
 
-    public Map<String, Object> getResults() {
-	return unmodifiableMap(results);
+    public Collection<Collection<Object>> getResults() {
+	return unmodifiableCollection(results);
     }
 }

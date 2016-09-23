@@ -6,7 +6,6 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import com.google.common.collect.Iterables;
 
@@ -24,10 +23,20 @@ public class RunAnalysis extends AbstractCommandHandler {
 	parameters.remove(analysis);
 	AnalysisResult result = getServices().getAnalysisService().analyze(analysis.toUpperCase(), parameters);
 	getLogger().log("Run analysis " + analysis + " on data ...");
-	for (Entry<String, Object> current : result.getResults().entrySet()) {
-	    getLogger().log(current.getKey() + ": " + current.getValue());
+	for (Collection<Object> current : result.getResults()) {
+	    getLogger().log(createString(current));
 	}
 	getLogger().log("... analysis done");
+    }
+
+    private String createString(final Collection<Object> columns) {
+	StringBuilder resultString = new StringBuilder();
+	resultString.append("| ");
+	for (Object current : columns) {
+	    resultString.append(current);
+	    resultString.append("\t | ");
+	}
+	return resultString.toString();
     }
 
     @Override
