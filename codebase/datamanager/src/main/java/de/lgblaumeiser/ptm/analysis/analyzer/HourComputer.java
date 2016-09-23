@@ -105,7 +105,9 @@ public class HourComputer implements Analysis {
 
     private String formatDuration(final Duration duration) {
 	long minutes = duration.toMinutes();
-	return String.format("%02d:%02d", minutes / 60, minutes % 60);
+	char pre = minutes < 0 ? '-' : ' ';
+	minutes = Math.abs(minutes);
+	return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
     }
 
     public void setStore(final ObjectStore<DayBookings> store) {
