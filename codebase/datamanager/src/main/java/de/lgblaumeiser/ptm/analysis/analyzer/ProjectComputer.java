@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.analysis.AnalysisResult;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -37,7 +39,7 @@ public class ProjectComputer implements Analysis {
 	    currentDay = LocalDate.parse(date);
 	}
 	AnalysisResult result = new AnalysisResult();
-	result.setResult(asList("Id", "Total Hours", "Percentage", "Booking"));
+	result.setResult(asList("Id", "Total", "%", "Book"));
 	Duration totalMinutes = Duration.ZERO;
 	int numberOfDays = 0;
 	Map<String, Duration> activityToMinutesMap = newHashMap();
@@ -60,14 +62,19 @@ public class ProjectComputer implements Analysis {
 	    currentDay = currentDay.plusDays(1);
 	} while (!firstDayInMonth(currentDay));
 	double totalNumberOfMinutes = 8.0 * 60.0 * numberOfDays;
+	int targetHours = 8 * numberOfDays;
 	for (Entry<String, Duration> currentNumber : activityToMinutesMap.entrySet()) {
 	    String number = currentNumber.getKey();
 	    Duration totalMinutesId = currentNumber.getValue();
 	    double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
-	    String percentageString = String.format("%.1f", percentage * 100.0);
-	    Duration bookingMinutes = Duration.ofMinutes(Math.round(totalNumberOfMinutes * percentage));
-	    result.setResult(
-		    asList(number, formatDuration(totalMinutesId), percentageString, formatDuration(bookingMinutes)));
+	    String percentageString = String.format("%2.1f", percentage * 100.0);
+	    Duration bookingHours = Duration.ofHours(Math.round(totalNumberOfMinutes * percentage / 60.0));
+	    targetHours -= bookingHours.toHours();
+	    result.setResult(asList(number, formatDuration(totalMinutesId), percentageString,
+		    Long.toString(bookingHours.toHours())));
+	}
+	if (targetHours != 0) {
+	    result.setResult(asList("Left", StringUtils.EMPTY, StringUtils.EMPTY, Integer.toString(targetHours)));
 	}
 
 	return result;
