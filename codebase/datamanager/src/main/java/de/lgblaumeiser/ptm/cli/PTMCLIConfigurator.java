@@ -11,6 +11,7 @@ import java.util.Properties;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
 import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
+import de.lgblaumeiser.ptm.analysis.analyzer.ProjectComputer;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
@@ -50,6 +51,7 @@ public class PTMCLIConfigurator {
     private static final String LIST_BOOKING_COMMAND = "LB";
     private static final String RUN_ANALYIS_COMMAND = "RA";
     private static final String ANALYSIS_HOURS_ID = "HOURS";
+    private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
     public CLI configure() {
 	ObjectStore<DayBookings> bookingStore = createBookingFileStore();
@@ -64,9 +66,12 @@ public class PTMCLIConfigurator {
 
     private DataAnalysisService createAnalysisService(final ObjectStore<DayBookings> store) {
 	DataAnalysisServiceImpl service = new DataAnalysisServiceImpl();
-	HourComputer analysis = new HourComputer();
-	analysis.setStore(store);
-	service.addAnalysis(ANALYSIS_HOURS_ID, analysis);
+	HourComputer hourComputer = new HourComputer();
+	hourComputer.setStore(store);
+	service.addAnalysis(ANALYSIS_HOURS_ID, hourComputer);
+	ProjectComputer projectComputer = new ProjectComputer();
+	projectComputer.setStore(store);
+	service.addAnalysis(ANALYSIS_PROJECTS_ID, projectComputer);
 	return service;
     }
 

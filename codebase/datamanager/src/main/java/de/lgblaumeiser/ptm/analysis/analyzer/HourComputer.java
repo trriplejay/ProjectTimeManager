@@ -34,7 +34,7 @@ public class HourComputer implements Analysis {
 	}
 	AnalysisResult result = new AnalysisResult();
 	result.setResult(asList("Work Day", "Presence", "Worktime", "Overtime"));
-	Duration overtime = Duration.ofSeconds(0);
+	Duration overtime = Duration.ZERO;
 	do {
 	    DayBookings currentBookings = store.retrieveByIndexKey(currentDay);
 	    if (currentBookings != null && hasCompleteBookings(currentBookings)) {
@@ -69,11 +69,13 @@ public class HourComputer implements Analysis {
     }
 
     private Duration calculateOvertime(final Duration worktime, final LocalDate day) {
-	long minutes = worktime.toMinutes();
+	Duration minutes = worktime;
 	if (isWeekDay(day)) {
-	    minutes -= 480; // Overtime is time after 8 hours
+	    minutes = minutes.minus(Duration.ofMinutes(480)); // Overtime is
+							      // time after 8
+							      // hours
 	}
-	return Duration.ofMinutes(minutes);
+	return minutes;
     }
 
     private boolean isWeekDay(final LocalDate day) {
@@ -96,11 +98,11 @@ public class HourComputer implements Analysis {
 
     private Duration calculatePresence(final DayBookings currentBookings) {
 	Collection<Booking> bookings = currentBookings.getBookings();
-	long minutes = 0;
+	Duration minutes = Duration.ZERO;
 	for (Booking current : bookings) {
-	    minutes += current.calculateTimeSpan().getLengthInMinutes();
+	    minutes = minutes.plus(current.calculateTimeSpan().getLengthInMinutes());
 	}
-	return Duration.ofMinutes(minutes);
+	return minutes;
     }
 
     private String formatDuration(final Duration duration) {

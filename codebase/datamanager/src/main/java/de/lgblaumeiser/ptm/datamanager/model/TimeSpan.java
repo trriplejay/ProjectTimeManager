@@ -6,6 +6,7 @@ package de.lgblaumeiser.ptm.datamanager.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -59,8 +60,8 @@ public final class TimeSpan {
 	return endtime;
     }
 
-    public long getLengthInMinutes() {
-        return ChronoUnit.MINUTES.between(starttime, endtime);
+    public Duration getLengthInMinutes() {
+	return Duration.ofMinutes(ChronoUnit.MINUTES.between(starttime, endtime));
     }
 
     @Override
