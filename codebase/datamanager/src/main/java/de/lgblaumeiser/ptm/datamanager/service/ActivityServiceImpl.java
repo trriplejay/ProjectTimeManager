@@ -16,54 +16,48 @@ import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
  * Implementation of Activity Service
  */
 public class ActivityServiceImpl implements ActivityService {
-    private ActivityModel activityModel;
+	private ActivityModel activityModel;
 
-    @Override
-    public ActivityModel getActivityModel() {
-	return activityModel;
-    }
-
-    @Override
-    public Activity getActivityByAbbreviatedName(final String name) {
-	checkNotNull(name);
-	List<Activity> results = activityModel.getActivities().stream()
-		.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
-		.collect(Collectors.toList());
-	checkState(results.size() == 1);
-	return results.get(0);
-    }
-
-    @Override
-    public void addLineActivity(final String name, final String id) {
-	checkNotNull(name);
-	checkNotNull(id);
-	addActivity(Activity.newLineActivity(name, id));
-    }
-
-    @Override
-    public void addProjectActivity(final String name, final String id) {
-	checkNotNull(name);
-	checkNotNull(id);
-	addActivity(Activity.newProjectActivity(name, id));
-    }
-
-    private void addActivity(final Activity newActivity) {
-	activityModel.addActivity(newActivity);
-	try {
-	    activityModel.validate();
-	} catch (IllegalStateException e) {
-	    activityModel.removeActivity(newActivity);
-	    throw e;
+	@Override
+	public ActivityModel getActivityModel() {
+		return activityModel;
 	}
-    }
 
-    @Override
-    public void removeActivity(final Activity activity) {
-	checkNotNull(activity);
-	activityModel.removeActivity(activity);
-    }
+	@Override
+	public Activity getActivityByAbbreviatedName(final String name) {
+		checkNotNull(name);
+		List<Activity> results = activityModel.getActivities().stream()
+				.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
+				.collect(Collectors.toList());
+		checkState(results.size() == 1);
+		return results.get(0);
+	}
 
-    public void setActivityStore(final ActivityModel activityStore) {
-	this.activityModel = activityStore;
-    }
+	@Override
+	public void addLineActivity(final String name, final String id) {
+		checkNotNull(name);
+		checkNotNull(id);
+		addActivity(Activity.newLineActivity(name, id));
+	}
+
+	@Override
+	public void addProjectActivity(final String name, final String id) {
+		checkNotNull(name);
+		checkNotNull(id);
+		addActivity(Activity.newProjectActivity(name, id));
+	}
+
+	private void addActivity(final Activity newActivity) {
+		activityModel.addActivity(newActivity);
+		try {
+			activityModel.validate();
+		} catch (IllegalStateException e) {
+			activityModel.removeActivity(newActivity);
+			throw e;
+		}
+	}
+
+	public void setActivityStore(final ActivityModel activityStore) {
+		this.activityModel = activityStore;
+	}
 }

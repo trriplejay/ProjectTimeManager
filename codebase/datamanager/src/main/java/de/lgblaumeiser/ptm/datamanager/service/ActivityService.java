@@ -19,6 +19,7 @@ public interface ActivityService {
      * @return Return an activity identified by the name. The name can be
      *         abbreviated, case does not matter. Abbreviation must be unique to
      *         identify the activity from start.
+     * @throws IllegalStateException If name is not existing
      */
     Activity getActivityByAbbreviatedName(String name);
 
@@ -41,12 +42,4 @@ public interface ActivityService {
      *            Booking number of the activity
      */
     void addProjectActivity(String name, String id);
-
-    /**
-     * Remove an activity
-     *
-     * @param activity
-     *            Activity to remove
-     */
-    void removeActivity(Activity activity);
 }

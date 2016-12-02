@@ -8,22 +8,22 @@ package de.lgblaumeiser.ptm.cli.engine;
  * handlers
  */
 public abstract class AbstractCommandHandler implements CommandHandler {
-    private static CommandLogger logger;
-    private static ServiceManager services;
+	private static CommandLogger logger;
+	private static ServiceManager services;
 
-    public static void setLogger(final CommandLogger concreteLogger) {
-	logger = concreteLogger;
-    }
+	public static void setLogger(final CommandLogger concreteLogger) {
+		logger = concreteLogger;
+	}
 
-    protected static CommandLogger getLogger() {
-	return logger;
-    }
+	protected static CommandLogger getLogger() {
+		return logger;
+	}
 
-    public static void setServices(final ServiceManager concreteServices) {
-	services = concreteServices;
-    }
+	public static void setServices(final ServiceManager concreteServices) {
+		services = concreteServices;
+	}
 
-    protected static ServiceManager getServices() {
-	return services;
-    }
+	protected static ServiceManager getServices() {
+		return services;
+	}
 }

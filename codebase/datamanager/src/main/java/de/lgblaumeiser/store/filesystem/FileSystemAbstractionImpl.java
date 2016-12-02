@@ -19,37 +19,37 @@ import org.apache.commons.io.FileUtils;
  * Implementation of the real filesystem access
  */
 public class FileSystemAbstractionImpl implements FileSystemAbstraction {
-    private static final String TEMP_FILE_ENDING = ".tmpstore";
+	private static final String TEMP_FILE_ENDING = ".tmpstore";
 
-    @Override
-    public void storeToFile(final File target, final String content) throws IOException {
-	checkNotNull(target);
-	checkNotNull(content);
-	File tmpFile = new File(target.getParentFile(), target.getName() + TEMP_FILE_ENDING);
-	try {
-	    write(tmpFile, content, defaultCharset());
-	    if (target.exists()) {
-		forceDelete(target);
-	    }
-	    moveFile(tmpFile, target);
-	    for (File currentTmpFile : listFiles(target.getParentFile(), new String[] { TEMP_FILE_ENDING }, true)) {
-		forceDelete(currentTmpFile);
-	    }
-	} catch (IOException e) {
-	    throw new IllegalStateException(e);
+	@Override
+	public void storeToFile(final File target, final String content) throws IOException {
+		checkNotNull(target);
+		checkNotNull(content);
+		File tmpFile = new File(target.getParentFile(), target.getName() + TEMP_FILE_ENDING);
+		try {
+			write(tmpFile, content, defaultCharset());
+			if (target.exists()) {
+				forceDelete(target);
+			}
+			moveFile(tmpFile, target);
+			for (File currentTmpFile : listFiles(target.getParentFile(), new String[] { TEMP_FILE_ENDING }, true)) {
+				forceDelete(currentTmpFile);
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
-    }
 
-    @Override
-    public String retrieveFromFile(final File source) throws IOException {
-	checkNotNull(source);
-	return FileUtils.readFileToString(source, defaultCharset());
-    }
+	@Override
+	public String retrieveFromFile(final File source) throws IOException {
+		checkNotNull(source);
+		return FileUtils.readFileToString(source, defaultCharset());
+	}
 
-    @Override
-    public boolean dataAvailable(final File source) {
-	checkNotNull(source);
-	return source.exists() && source.isFile();
-    }
+	@Override
+	public boolean dataAvailable(final File source) {
+		checkNotNull(source);
+		return source.exists() && source.isFile();
+	}
 
 }

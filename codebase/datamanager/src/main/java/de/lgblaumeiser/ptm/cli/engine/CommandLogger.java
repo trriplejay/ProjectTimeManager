@@ -7,5 +7,5 @@ package de.lgblaumeiser.ptm.cli.engine;
  * Interface for Output of commands
  */
 public interface CommandLogger {
-    void log(String message);
+	void log(String message);
 }

@@ -15,18 +15,18 @@ import java.util.Map;
  * Service implementation
  */
 public class DataAnalysisServiceImpl implements DataAnalysisService {
-    private final Map<String, Analysis> analysisStore = newHashMap();
+	private final Map<String, Analysis> analysisStore = newHashMap();
 
-    @Override
-    public AnalysisResult analyze(final String analyzerId, final Collection<String> parameter) {
-	checkState(isNotBlank(analyzerId));
-	checkNotNull(parameter);
-	Analysis analysis = analysisStore.get(analyzerId);
-	checkNotNull(analysis);
-	return analysis.analyze(parameter);
-    }
+	@Override
+	public Collection<Collection<Object>> analyze(final String analyzerId, final Collection<String> parameter) {
+		checkState(isNotBlank(analyzerId));
+		checkNotNull(parameter);
+		Analysis analysis = analysisStore.get(analyzerId);
+		checkNotNull(analysis);
+		return analysis.analyze(parameter);
+	}
 
-    public void addAnalysis(final String id, final Analysis analysis) {
-	analysisStore.put(id, analysis);
-    }
+	public void addAnalysis(final String id, final Analysis analysis) {
+		analysisStore.put(id, analysis);
+	}
 }

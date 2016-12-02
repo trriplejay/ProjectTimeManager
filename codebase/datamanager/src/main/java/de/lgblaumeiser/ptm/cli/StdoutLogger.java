@@ -9,8 +9,8 @@ import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
  * Logs the output to stdio
  */
 public class StdoutLogger implements CommandLogger {
-    @Override
-    public void log(final String message) {
-	System.out.println(message);
-    }
+	@Override
+	public void log(final String message) {
+		System.out.println(message);
+	}
 }

@@ -31,29 +31,6 @@ public class BookingServiceTest {
 	private final DayBookings testBookings = DayBookings.newDay(DATE1);
 	private final BookingService testee = new BookingServiceImpl();
 
-	@Test(expected = IllegalStateException.class)
-	public void testAddBooking0Empty() {
-		testee.addBooking(testBookings, ACTIVITY1);
-	}
-
-	@Test
-	public void testAddBooking0Positive() {
-		Booking firstOne = testee.addBooking(testBookings, ACTIVITY1, TIME1);
-		testee.endBooking(testBookings, firstOne, TIME2);
-		Booking testBooking = testee.addBooking(testBookings, ACTIVITY2);
-		assertFalse(testBookings.getBookings().isEmpty());
-		assertEquals(2, testBookings.getBookings().size());
-		assertEquals(testBooking, testBookings.getLastBooking());
-		assertEquals(TIME2, testBookings.getLastBooking().getStarttime());
-		assertFalse(testBookings.getLastBooking().hasEndtime());
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void testAddBooking0NoEndtime() {
-		testee.addBooking(testBookings, ACTIVITY1, TIME1);
-		testee.addBooking(testBookings, ACTIVITY2);
-	}
-
 	@Test
 	public void testAddBooking1Empty() {
 		Booking booking = testee.addBooking(testBookings, ACTIVITY1, TIME1);

@@ -26,7 +26,7 @@ public class DeleteBooking extends AbstractCommandHandler {
 	Optional<Booking> bookingToDelete = currentBookings.getBookings().stream()
 		.filter((booking) -> booking.getStarttime().equals(starttime)).findAny();
 	if (bookingToDelete.isPresent()) {
-	    getServices().getBookingService().removeBooking(currentBookings, bookingToDelete.get());
+			getServices().getBookingService().removeBooking(currentBookings, bookingToDelete.get());
 	}
 	getLogger().log("... booking deleted");
     }

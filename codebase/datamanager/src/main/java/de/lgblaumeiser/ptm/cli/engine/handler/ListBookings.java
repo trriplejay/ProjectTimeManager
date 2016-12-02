@@ -14,20 +14,20 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * List the bookings of the day
  */
 public class ListBookings extends AbstractCommandHandler {
-    @Override
-    public void handleCommand(final Collection<String> parameters) {
-	DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
-	getLogger()
-		.log("Current Bookings for day " + currentBookings.getDay().format(DateTimeFormatter.ISO_LOCAL_DATE));
-	getLogger().log("======================================");
-	for (Booking booking : currentBookings.getBookings()) {
-	    getLogger().log(booking.toString());
+	@Override
+	public void handleCommand(final Collection<String> parameters) {
+		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
+		getLogger()
+				.log("Current Bookings for day " + currentBookings.getDay().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		getLogger().log("======================================");
+		for (Booking booking : currentBookings.getBookings()) {
+			getLogger().log(booking.toString());
+		}
+		getLogger().log("======================================\n");
 	}
-	getLogger().log("======================================\n");
-    }
 
-    @Override
-    public String toString() {
-	return "List the bookings of the current day";
-    }
+	@Override
+	public String toString() {
+		return "List the bookings of the current day";
+	}
 }

@@ -18,50 +18,50 @@ import java.util.StringTokenizer;
  * The central parsing and distributing component of the command line client
  */
 public class CommandInterpreter {
-    private final Map<String, CommandHandler> commandToHandlerMap = newHashMap();
+	private final Map<String, CommandHandler> commandToHandlerMap = newHashMap();
 
-    public void addCommandHandler(final String command, final CommandHandler handler) {
-	checkState(isNotBlank(command));
-	String commandId = command.toUpperCase();
-	checkState(!commandToHandlerMap.containsKey(commandId));
-	commandToHandlerMap.put(commandId, handler);
-    }
-
-    public Map<String, CommandHandler> listHandler() {
-	return unmodifiableMap(commandToHandlerMap);
-    }
-
-    public void handle(final String command) {
-	StringTokenizer tokens = createTokens(command);
-	String commandToken = getCommandToken(tokens);
-	CommandHandler handler = getHandler(commandToken);
-	Collection<String> parameters = extractParameters(handler, tokens);
-	handler.handleCommand(parameters);
-    }
-
-    private Collection<String> extractParameters(final CommandHandler handler, final StringTokenizer tokens) {
-	Collection<String> back = newArrayList();
-	while (tokens.hasMoreTokens()) {
-	    back.add(tokens.nextToken());
+	public void addCommandHandler(final String command, final CommandHandler handler) {
+		checkState(isNotBlank(command));
+		String commandId = command.toUpperCase();
+		checkState(!commandToHandlerMap.containsKey(commandId));
+		commandToHandlerMap.put(commandId, handler);
 	}
-	return back;
-    }
 
-    private CommandHandler getHandler(final String commandToken) {
-	CommandHandler handler = commandToHandlerMap.get(commandToken);
-	checkState(handler != null);
-	return handler;
-    }
+	public Map<String, CommandHandler> listHandler() {
+		return unmodifiableMap(commandToHandlerMap);
+	}
 
-    private String getCommandToken(final StringTokenizer tokens) {
-	checkState(tokens.hasMoreTokens());
-	String commandToken = tokens.nextToken().toUpperCase();
-	checkState(isNotBlank(commandToken));
-	checkState(isAlpha(commandToken));
-	return commandToken;
-    }
+	public void handle(final String command) {
+		StringTokenizer tokens = createTokens(command);
+		String commandToken = getCommandToken(tokens);
+		CommandHandler handler = getHandler(commandToken);
+		Collection<String> parameters = extractParameters(handler, tokens);
+		handler.handleCommand(parameters);
+	}
 
-    private StringTokenizer createTokens(final String command) {
-	return new StringTokenizer(command);
-    }
+	private Collection<String> extractParameters(final CommandHandler handler, final StringTokenizer tokens) {
+		Collection<String> back = newArrayList();
+		while (tokens.hasMoreTokens()) {
+			back.add(tokens.nextToken());
+		}
+		return back;
+	}
+
+	private CommandHandler getHandler(final String commandToken) {
+		CommandHandler handler = commandToHandlerMap.get(commandToken);
+		checkState(handler != null);
+		return handler;
+	}
+
+	private String getCommandToken(final StringTokenizer tokens) {
+		checkState(tokens.hasMoreTokens());
+		String commandToken = tokens.nextToken().toUpperCase();
+		checkState(isNotBlank(commandToken));
+		checkState(isAlpha(commandToken));
+		return commandToken;
+	}
+
+	private StringTokenizer createTokens(final String command) {
+		return new StringTokenizer(command);
+	}
 }

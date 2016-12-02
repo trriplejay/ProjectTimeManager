@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -14,28 +13,6 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * Class which offers the services needed for entering the bookings of a day
  */
 public interface BookingService {
-    /**
-     * Create a new day bookings object for a day
-     *
-     * @param day
-     *            The day for which bookings should be stored
-     * @return A DayBookings object, never null
-     */
-
-    DayBookings createNewDayBookings(LocalDate day);
-
-    /**
-     * Add a booking which starts at the time the last booking ended
-     *
-     * @param activity
-     *            The activity of the booking
-     * @return The created Booking object, never null
-     * @throws IllegalStateException
-     *             If this is the first booking or the last booking has no
-     *             defined ending
-     */
-    Booking addBooking(DayBookings dayBookings, Activity activity);
-
     /**
      * Add a booking at the corresponding starttime. If the last bogoking has no
      * ended this booking ends the previous booking at the given starttime.

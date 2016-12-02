@@ -17,6 +17,7 @@ import org.junit.Test;
 public class BookingTest {
 	private static final LocalTime TIME1 = LocalTime.of(12, 34);
 	private static final LocalTime TIME2 = LocalTime.of(13, 57);
+	private static final long DIFF = 83;
 
 	private static final Activity ACT1 = Activity.newLineActivity("Act1", "0815");
 
@@ -78,8 +79,7 @@ public class BookingTest {
 		Booking booking = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
 				.build();
 		TimeSpan testee = booking.calculateTimeSpan();
-		assertEquals(TIME1, testee.getStarttime());
-		assertEquals(TIME2, testee.getEndtime());
+		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
 	}
 
 }

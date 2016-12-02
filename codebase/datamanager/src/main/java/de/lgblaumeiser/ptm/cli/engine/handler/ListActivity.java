@@ -13,18 +13,18 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
  *
  */
 public class ListActivity extends AbstractCommandHandler {
-    @Override
-    public void handleCommand(final Collection<String> parameters) {
-	getLogger().log("Known Activities");
-	getLogger().log("======================================");
-	for (Activity current : getServices().getActivityService().getActivityModel().getActivities()) {
-	    getLogger().log(current.toString());
+	@Override
+	public void handleCommand(final Collection<String> parameters) {
+		getLogger().log("Known Activities");
+		getLogger().log("======================================");
+		for (Activity current : getServices().getActivityService().getActivityModel().getActivities()) {
+			getLogger().log(current.toString());
+		}
+		getLogger().log("======================================\n");
 	}
-	getLogger().log("======================================\n");
-    }
 
-    @Override
-    public String toString() {
-	return "Lists all activities known";
-    }
+	@Override
+	public String toString() {
+		return "Lists all activities known";
+	}
 }

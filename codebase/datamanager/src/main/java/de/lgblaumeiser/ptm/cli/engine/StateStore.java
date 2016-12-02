@@ -11,14 +11,14 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * Store to save common state objects for all handlers
  */
 public class StateStore {
-    private DayBookings currentDay;
+	private DayBookings currentDay;
 
-    public DayBookings getCurrentDay() {
-	checkState(currentDay != null);
-	return currentDay;
-    }
+	public DayBookings getCurrentDay() {
+		checkState(currentDay != null);
+		return currentDay;
+	}
 
-    public void setCurrentDay(final DayBookings currentDay) {
-	this.currentDay = currentDay;
-    }
+	public void setCurrentDay(final DayBookings currentDay) {
+		this.currentDay = currentDay;
+	}
 }

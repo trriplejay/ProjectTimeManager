@@ -9,5 +9,5 @@ import java.util.Collection;
  * Interface to be implemented for an anaylsis of the data
  */
 public interface Analysis {
-    AnalysisResult analyze(Collection<String> parameter);
+	Collection<Collection<Object>> analyze(Collection<String> parameter);
 }

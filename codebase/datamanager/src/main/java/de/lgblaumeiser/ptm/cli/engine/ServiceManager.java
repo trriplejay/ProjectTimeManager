@@ -15,54 +15,54 @@ import de.lgblaumeiser.store.ObjectStore;
  * implementations.
  */
 public class ServiceManager {
-    private ActivityService activityService;
-    private BookingService bookingService;
-    private DataAnalysisService analysisService;
-    private ObjectStore<ActivityModel> activityStore;
-    private ObjectStore<DayBookings> bookingsStore;
-    private final StateStore stateStore = new StateStore();
+	private ActivityService activityService;
+	private BookingService bookingService;
+	private DataAnalysisService analysisService;
+	private ObjectStore<ActivityModel> activityStore;
+	private ObjectStore<DayBookings> bookingsStore;
+	private final StateStore stateStore = new StateStore();
 
-    public ActivityService getActivityService() {
-	return activityService;
-    }
+	public ActivityService getActivityService() {
+		return activityService;
+	}
 
-    public void setActivityService(final ActivityService activityService) {
-	this.activityService = activityService;
-    }
+	public void setActivityService(final ActivityService activityService) {
+		this.activityService = activityService;
+	}
 
-    public BookingService getBookingService() {
-	return bookingService;
-    }
+	public BookingService getBookingService() {
+		return bookingService;
+	}
 
-    public void setBookingService(final BookingService bookingService) {
-	this.bookingService = bookingService;
-    }
+	public void setBookingService(final BookingService bookingService) {
+		this.bookingService = bookingService;
+	}
 
-    public DataAnalysisService getAnalysisService() {
-	return analysisService;
-    }
+	public DataAnalysisService getAnalysisService() {
+		return analysisService;
+	}
 
-    public void setAnalysisService(final DataAnalysisService analysisService) {
-	this.analysisService = analysisService;
-    }
+	public void setAnalysisService(final DataAnalysisService analysisService) {
+		this.analysisService = analysisService;
+	}
 
-    public ObjectStore<ActivityModel> getActivityStore() {
-	return activityStore;
-    }
+	public ObjectStore<ActivityModel> getActivityStore() {
+		return activityStore;
+	}
 
-    public void setActivityStore(final ObjectStore<ActivityModel> activityStore) {
-	this.activityStore = activityStore;
-    }
+	public void setActivityStore(final ObjectStore<ActivityModel> activityStore) {
+		this.activityStore = activityStore;
+	}
 
-    public ObjectStore<DayBookings> getBookingsStore() {
-	return bookingsStore;
-    }
+	public ObjectStore<DayBookings> getBookingsStore() {
+		return bookingsStore;
+	}
 
-    public void setBookingsStore(final ObjectStore<DayBookings> bookingsStore) {
-	this.bookingsStore = bookingsStore;
-    }
+	public void setBookingsStore(final ObjectStore<DayBookings> bookingsStore) {
+		this.bookingsStore = bookingsStore;
+	}
 
-    public StateStore getStateStore() {
-	return stateStore;
-    }
+	public StateStore getStateStore() {
+		return stateStore;
+	}
 }

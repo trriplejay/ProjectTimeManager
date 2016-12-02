@@ -18,25 +18,25 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * Add a booking for the day
  */
 public class AddBooking extends AbstractCommandHandler {
-    @Override
-    public void handleCommand(final Collection<String> parameters) {
-	DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
-	checkState(parameters.size() > 1);
-	getLogger().log("Add new booking ...");
-	Iterator<String> paramIter = parameters.iterator();
-	String activityAbbrev = paramIter.next();
-	Activity activity = getServices().getActivityService().getActivityByAbbreviatedName(activityAbbrev);
-	LocalTime starttime = LocalTime.parse(paramIter.next());
-	Booking addedBooking = getServices().getBookingService().addBooking(currentBookings, activity, starttime);
-	if (paramIter.hasNext()) {
-	    LocalTime endtime = LocalTime.parse(paramIter.next());
-	    addedBooking = getServices().getBookingService().endBooking(currentBookings, addedBooking, endtime);
+	@Override
+	public void handleCommand(final Collection<String> parameters) {
+		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
+		checkState(parameters.size() > 1);
+		getLogger().log("Add new booking ...");
+		Iterator<String> paramIter = parameters.iterator();
+		String activityAbbrev = paramIter.next();
+		Activity activity = getServices().getActivityService().getActivityByAbbreviatedName(activityAbbrev);
+		LocalTime starttime = LocalTime.parse(paramIter.next());
+		Booking addedBooking = getServices().getBookingService().addBooking(currentBookings, activity, starttime);
+		if (paramIter.hasNext()) {
+			LocalTime endtime = LocalTime.parse(paramIter.next());
+			addedBooking = getServices().getBookingService().endBooking(currentBookings, addedBooking, endtime);
+		}
+		getLogger().log(" ... booking added with information: " + addedBooking.toString());
 	}
-	getLogger().log(" ... booking added with information: " + addedBooking.toString());
-    }
 
-    @Override
-    public String toString() {
-	return "Add a booking for the day, Params: <1> Activity, <2> Starttime, <3o> Endtime";
-    }
+	@Override
+	public String toString() {
+		return "Add a booking for the day, Params: <1> Activity, <2> Starttime, <3o> Endtime";
+	}
 }
