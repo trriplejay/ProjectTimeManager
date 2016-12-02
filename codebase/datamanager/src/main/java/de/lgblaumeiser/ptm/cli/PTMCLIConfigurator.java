@@ -24,7 +24,6 @@ import de.lgblaumeiser.ptm.cli.engine.handler.ListActivity;
 import de.lgblaumeiser.ptm.cli.engine.handler.ListBookings;
 import de.lgblaumeiser.ptm.cli.engine.handler.OpenDay;
 import de.lgblaumeiser.ptm.cli.engine.handler.RunAnalysis;
-import de.lgblaumeiser.ptm.cli.engine.handler.SaveDay;
 import de.lgblaumeiser.ptm.datamanager.model.ActivityModel;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.ActivityService;
@@ -42,7 +41,6 @@ public class PTMCLIConfigurator {
 	private static final String ADD_ACTIVITY_COMMAND = "AA";
 	private static final String LIST_ACTIVITY_COMMAND = "LA";
 	private static final String OPEN_DAY_COMMAND = "OD";
-	private static final String SAVE_DAY_COMMAND = "SD";
 	private static final String ADD_BOOKING_COMMAND = "AB";
 	private static final String DELETE_BOOKING_COMMAND = "DB";
 	private static final String END_BOOKING_COMMAND = "EB";
@@ -140,7 +138,6 @@ public class PTMCLIConfigurator {
 		interpreter.addCommandHandler(ADD_ACTIVITY_COMMAND, new AddActivity());
 		interpreter.addCommandHandler(LIST_ACTIVITY_COMMAND, new ListActivity());
 		interpreter.addCommandHandler(OPEN_DAY_COMMAND, new OpenDay());
-		interpreter.addCommandHandler(SAVE_DAY_COMMAND, new SaveDay());
 		interpreter.addCommandHandler(ADD_BOOKING_COMMAND, new AddBooking());
 		interpreter.addCommandHandler(DELETE_BOOKING_COMMAND, new DeleteBooking());
 		interpreter.addCommandHandler(END_BOOKING_COMMAND, new EndBooking());

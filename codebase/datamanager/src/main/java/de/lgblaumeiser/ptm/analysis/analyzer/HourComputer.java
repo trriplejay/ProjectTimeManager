@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 
-
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
@@ -44,8 +43,7 @@ public class HourComputer implements Analysis {
 				Duration worktime = calculateWorktime(presence);
 				Duration currentOvertime = calculateOvertime(worktime, currentDay);
 				overtime = overtime.plus(currentOvertime);
-				result.add(
-						asList(day, formatDuration(presence), formatDuration(worktime), formatDuration(overtime)));
+				result.add(asList(day, formatDuration(presence), formatDuration(worktime), formatDuration(overtime)));
 			}
 			currentDay = currentDay.plusDays(1);
 		} while (!firstDayInMonth(currentDay));

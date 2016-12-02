@@ -17,23 +17,25 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
  * Delete a booking
  */
 public class DeleteBooking extends AbstractCommandHandler {
-    @Override
-    public void handleCommand(final Collection<String> parameters) {
-	DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
-	checkState(parameters.size() > 0);
-	getLogger().log("Delete booking now ...");
-	LocalTime starttime = LocalTime.parse(parameters.iterator().next());
-	Optional<Booking> bookingToDelete = currentBookings.getBookings().stream()
-		.filter((booking) -> booking.getStarttime().equals(starttime)).findAny();
-	if (bookingToDelete.isPresent()) {
+	@Override
+	public void handleCommand(final Collection<String> parameters) {
+		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
+		checkState(parameters.size() > 0);
+		getLogger().log("Delete booking now ...");
+		LocalTime starttime = LocalTime.parse(parameters.iterator().next());
+		Optional<Booking> bookingToDelete = currentBookings.getBookings().stream()
+				.filter((booking) -> booking.getStarttime().equals(starttime)).findAny();
+		if (bookingToDelete.isPresent()) {
 			getServices().getBookingService().removeBooking(currentBookings, bookingToDelete.get());
+		}
+		getLogger().log("... booking deleted");
+		getServices().getBookingsStore().store(currentBookings);
+		getLogger().log("... bookings stored");
 	}
-	getLogger().log("... booking deleted");
-    }
 
-    @Override
-    public String toString() {
-	return "Delete a booking, Params: <1> Starttime of booking";
-    }
+	@Override
+	public String toString() {
+		return "Delete a booking, Params: <1> Starttime of booking";
+	}
 
 }

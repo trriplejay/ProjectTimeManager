@@ -25,6 +25,8 @@ public class EndBooking extends AbstractCommandHandler {
 		Booking booking = getServices().getBookingService().endBooking(currentBookings,
 				currentBookings.getLastBooking(), endtime);
 		getLogger().log("... new booking data: " + booking.toString());
+		getServices().getBookingsStore().store(currentBookings);
+		getLogger().log("... bookings stored");
 	}
 
 	@Override

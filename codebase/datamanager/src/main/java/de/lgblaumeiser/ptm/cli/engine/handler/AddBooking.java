@@ -33,6 +33,8 @@ public class AddBooking extends AbstractCommandHandler {
 			addedBooking = getServices().getBookingService().endBooking(currentBookings, addedBooking, endtime);
 		}
 		getLogger().log(" ... booking added with information: " + addedBooking.toString());
+		getServices().getBookingsStore().store(currentBookings);
+		getLogger().log("... bookings stored");
 	}
 
 	@Override
