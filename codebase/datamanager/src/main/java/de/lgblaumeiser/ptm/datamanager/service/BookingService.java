@@ -64,15 +64,12 @@ public interface BookingService {
      *            The endtime of the booking
      * @return The created Booking object, never null
      * @throws IllegalStateException
-     *             If the last booking has an end or if an booking overlap is
-     *             added
+     *             If a booking overlap is added
      */
     Booking endBooking(DayBookings dayBookings, Booking booking, LocalTime endtime);
 
     /**
-     * Removes the given booking, the endtime of the previous booking will be
-     * set to the endtime of the deleted booking. If the booking is the first,
-     * it will simply be deleted.
+     * Removes the given booking, might create a gap in the days bookings, since no other booking is changed.
      *
      * @param dayBookings
      *            The day for which the booking should be created
@@ -80,78 +77,4 @@ public interface BookingService {
      *            The booking to delete
      */
     void removeBooking(DayBookings dayBookings, Booking booking);
-
-    /**
-     * Splits the booking at the splittime into two
-     *
-     * @param dayBookings
-     *            The day for which the booking should be created
-     * @param booking
-     *            The booking to split
-     * @param splittime
-     *            The time, where to split the booking
-     * @return The first of the create Booking objects, never null
-     */
-    Booking splitBooking(DayBookings dayBookings, Booking booking, LocalTime splittime);
-
-    /**
-     * Changes the activity of the booking
-     *
-     * @param dayBookings
-     *            The day for which the booking should be created
-     * @param booking
-     *            The booking to change the activity
-     * @param activity
-     *            The new activity of the booking
-     * @return The changed Booking object, never null
-     * @throws IllegalStateException
-     *             If booking is unknown or the activity is already set
-     */
-    Booking changeActivity(DayBookings dayBookings, Booking booking, Activity activity);
-
-    /**
-     * Change start and endtime of the given Booking. Bookings prior or after
-     * this booking will be adapted. according their end resp. starttime. If the
-     * new times will overlap the previous or next booking completely, the
-     * method returns with an error.
-     *
-     * @param dayBookings
-     *            The day for which the booking should be created
-     * @param booking
-     *            The booking to change
-     * @param starttime
-     *            The new starttime of the booking
-     * @param endtime
-     *            The new endtime of the booking
-     * @param comment
-     *            Optional comment for the booking
-     * @return The changed Booking object, never null
-     * @throws IllegalStateException
-     *             If the booking times overlap or are not in the right order
-     */
-    Booking changeBookingTimes(DayBookings dayBookings, Booking booking, LocalTime starttime, LocalTime endtime);
-
-    /**
-     * Change the comment of the booking
-     *
-     * @param dayBookings
-     *            The day for which the booking should be created
-     * @param booking
-     *            The booking to change
-     * @param comment
-     *            The new comment of the booking
-     * @return The change booking object, never null
-     */
-    Booking changeComment(DayBookings dayBookings, Booking booking, String comment);
-
-    /**
-     * Delete the comment of the booking
-     *
-     * @param dayBookings
-     *            The day for which the booking should be created
-     * @param booking
-     *            The booking to change
-     * @return The change booking object, never null
-     */
-    Booking deleteComment(DayBookings dayBookings, Booking booking);
 }
