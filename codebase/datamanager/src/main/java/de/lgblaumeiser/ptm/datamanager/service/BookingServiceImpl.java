@@ -55,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
 		checkNotNull(booking);
 		checkNotNull(endtime);
 		checkState(dayBookings.getBookings().contains(booking));
-		checkState(booking.getEndtime().equals(endtime));
+		checkState(!endtime.equals(booking.getEndtime()));
 		Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
 		dayBookings.replaceBooking(booking, endedBooking);
 		return endedBooking;

@@ -100,11 +100,13 @@ public class BookingServiceTest {
 		assertTrue(testBookings.getLastBooking().hasEndtime());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testEndBookingSecondEnd() {
 		Booking booking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
 		Booking endedBooking = testee.endBooking(testBookings, booking, TIME2);
-		testee.endBooking(testBookings, endedBooking, TIME3);
+		Booking testBooking = testee.endBooking(testBookings, endedBooking, TIME3);
+		assertTrue(testBooking.hasEndtime());
+		assertEquals(TIME3, testBooking.getEndtime());
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -141,7 +143,7 @@ public class BookingServiceTest {
 		Booking testBooking = testee.endBooking(testBookings, startBooking, TIME3);
 		testee.removeBooking(testBookings, testBooking);
 		assertEquals(1, testBookings.getBookings().size());
-		assertEquals(TIME3, testBookings.getLastBooking().getEndtime());
+		assertEquals(TIME2, testBookings.getLastBooking().getEndtime());
 		assertEquals(TIME1, testBookings.getLastBooking().getStarttime());
 	}
 
@@ -152,7 +154,7 @@ public class BookingServiceTest {
 		testee.removeBooking(testBookings, testBooking);
 		assertEquals(1, testBookings.getBookings().size());
 		assertEquals(TIME1, testBookings.getLastBooking().getStarttime());
-		assertFalse(testBookings.getLastBooking().hasEndtime());
+		assertTrue(testBookings.getLastBooking().hasEndtime());
 	}
 
 	@Test

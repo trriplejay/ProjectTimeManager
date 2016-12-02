@@ -9,8 +9,6 @@ import static com.google.common.base.Preconditions.checkState;
 import java.time.LocalTime;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.MoreObjects;
 
 /**
