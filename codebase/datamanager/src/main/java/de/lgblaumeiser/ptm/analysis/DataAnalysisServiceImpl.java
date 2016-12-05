@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.ptm.analysis;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -20,9 +19,9 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
 	@Override
 	public Collection<Collection<Object>> analyze(final String analyzerId, final Collection<String> parameter) {
 		checkState(isNotBlank(analyzerId));
-		checkNotNull(parameter);
+		checkState(parameter != null);
 		Analysis analysis = analysisStore.get(analyzerId);
-		checkNotNull(analysis);
+		checkState(analysis != null);
 		return analysis.analyze(parameter);
 	}
 
