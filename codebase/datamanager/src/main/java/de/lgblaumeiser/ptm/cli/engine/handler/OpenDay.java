@@ -3,6 +3,9 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -19,6 +22,7 @@ public class OpenDay extends AbstractCommandHandler {
 		LocalDate date = LocalDate.now();
 		if (parameters.size() > 0) {
 			String day = parameters.iterator().next();
+			checkState(isNotBlank(day));
 			date = LocalDate.parse(day);
 		}
 		getLogger().log("Opening day: " + date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " ...");

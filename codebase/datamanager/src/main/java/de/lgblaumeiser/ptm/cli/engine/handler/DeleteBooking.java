@@ -4,6 +4,7 @@
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalTime;
 import java.util.Collection;
@@ -22,6 +23,8 @@ public class DeleteBooking extends AbstractCommandHandler {
 		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
 		checkState(parameters.size() > 0);
 		getLogger().log("Delete booking now ...");
+		String timestring = parameters.iterator().next();
+		checkState(isNotBlank(timestring));
 		LocalTime starttime = LocalTime.parse(parameters.iterator().next());
 		Optional<Booking> bookingToDelete = currentBookings.getBookings().stream()
 				.filter((booking) -> booking.getStarttime().equals(starttime)).findAny();

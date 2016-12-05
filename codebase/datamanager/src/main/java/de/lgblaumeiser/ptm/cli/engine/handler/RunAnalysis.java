@@ -20,8 +20,8 @@ public class RunAnalysis extends AbstractCommandHandler {
 		checkState(parameters.size() > 0);
 		String analysis = Iterables.get(parameters, 0);
 		parameters.remove(analysis);
-		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(analysis.toUpperCase(), parameters);
 		getLogger().log("Run analysis " + analysis + " on data ...");
+		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(analysis.toUpperCase(), parameters);
 		for (Collection<Object> current : result) {
 			getLogger().log(createString(current));
 		}

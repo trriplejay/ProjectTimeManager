@@ -3,6 +3,9 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.time.LocalTime;
 import java.util.Collection;
 
@@ -18,10 +21,10 @@ public class EndBooking extends AbstractCommandHandler {
 	public void handleCommand(final Collection<String> parameters) {
 		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
 		getLogger().log("End booking ...");
-		LocalTime endtime = LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute());
-		if (parameters.size() > 0) {
-			endtime = LocalTime.parse(parameters.iterator().next());
-		}
+		checkState(parameters.size() > 0);
+		String timestring = parameters.iterator().next();
+		checkState(isNotBlank(timestring));
+		LocalTime endtime = LocalTime.parse(timestring);
 		Booking booking = getServices().getBookingService().endBooking(currentBookings,
 				currentBookings.getLastBooking(), endtime);
 		getLogger().log("... new booking data: " + booking.toString());
