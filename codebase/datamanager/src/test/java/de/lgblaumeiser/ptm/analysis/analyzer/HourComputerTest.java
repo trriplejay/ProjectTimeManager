@@ -13,24 +13,25 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.store.ObjectStore;
 
 public class HourComputerTest extends AbstractComputerTest {
-	private HourComputer testee = new HourComputer();
-	
-	protected void setTesteeStore(ObjectStore<DayBookings> store) {
-		testee.setStore(store);
-	}
-	
-	@Test
-	public void testHourComputerToday() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(emptyList());
-		assertEquals(4, analysisResults.size());
-		assertEquals("-10:13", get(get(analysisResults, 3), 3));
-	}
+    private final HourComputer testee = new HourComputer();
 
-	@Test
-	public void testHourComputerFixed() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2015-12"));
-		System.out.println(analysisResults);
-		assertEquals(4, analysisResults.size());
-		assertEquals(" 10:43", get(get(analysisResults, 3), 3));
-	}	
+    @Override
+    protected void setTesteeStore(final ObjectStore<DayBookings> store) {
+	testee.setStore(store);
+    }
+
+    @Test
+    public void testHourComputerToday() {
+	Collection<Collection<Object>> analysisResults = testee.analyze(emptyList());
+	assertEquals(4, analysisResults.size());
+	assertEquals("-03:58", get(get(analysisResults, 3), 3));
+    }
+
+    @Test
+    public void testHourComputerFixed() {
+	Collection<Collection<Object>> analysisResults = testee.analyze(asList("2015-12"));
+	System.out.println(analysisResults);
+	assertEquals(4, analysisResults.size());
+	assertEquals(" 10:28", get(get(analysisResults, 3), 3));
+    }
 }
