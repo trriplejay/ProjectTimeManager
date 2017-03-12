@@ -57,8 +57,8 @@ public class HourComputer implements Analysis {
 		}
 		Duration currentOvertime = calculateOvertime(worktime, currentDay);
 		overtime = overtime.plus(currentOvertime);
-		result.add(asList(day, starttime.format(DateTimeFormatter.ISO_LOCAL_TIME),
-			endtime.format(DateTimeFormatter.ISO_LOCAL_TIME), formatDuration(presence),
+		result.add(asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
+			endtime.format(DateTimeFormatter.ofPattern("HH:mm")), formatDuration(presence),
 			formatDuration(worktime), formatDuration(overtime)));
 	    }
 	    currentDay = currentDay.plusDays(1);
