@@ -12,7 +12,11 @@ import static java.util.Arrays.asList;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+
+import com.google.common.collect.Iterables;
 
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -36,12 +40,14 @@ public class HourComputer implements Analysis {
 	    currentDay = LocalDate.parse(date);
 	}
 	Collection<Collection<Object>> result = newArrayList();
-	result.add(asList("Work Day", "Presence", "Worktime", "Overtime"));
+	result.add(asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Overtime"));
 	Duration overtime = Duration.ZERO;
 	do {
 	    DayBookings currentBookings = store.retrieveByIndexKey(currentDay);
 	    if (currentBookings != null && hasCompleteBookings(currentBookings)) {
 		String day = currentDay.format(ISO_LOCAL_DATE);
+		LocalTime starttime = Iterables.getFirst(currentBookings.getBookings(), null).getStarttime();
+		LocalTime endtime = Iterables.getLast(currentBookings.getBookings()).getEndtime();
 		Duration presence = calculatePresence(currentBookings);
 		Duration worktime = Duration.ofMinutes(0);
 		if (SITEETAS) {
@@ -51,7 +57,9 @@ public class HourComputer implements Analysis {
 		}
 		Duration currentOvertime = calculateOvertime(worktime, currentDay);
 		overtime = overtime.plus(currentOvertime);
-		result.add(asList(day, formatDuration(presence), formatDuration(worktime), formatDuration(overtime)));
+		result.add(asList(day, starttime.format(DateTimeFormatter.ISO_LOCAL_TIME),
+			endtime.format(DateTimeFormatter.ISO_LOCAL_TIME), formatDuration(presence),
+			formatDuration(worktime), formatDuration(overtime)));
 	    }
 	    currentDay = currentDay.plusDays(1);
 	} while (!firstDayInMonth(currentDay));
