@@ -4,9 +4,9 @@
 package de.lgblaumeiser.ptm.rest;
 
 /**
- * @author gel2fr
- *
+ * Rest Controller for Booking Management
  */
+
 public class BookingRestController {
 
 }
