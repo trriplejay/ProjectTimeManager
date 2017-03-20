@@ -72,5 +72,7 @@
 
   <modules>
     <module>codebase/datamanager</module>
+
+    <module>codebase/ptm_rest</module>
   </modules>
 </project>

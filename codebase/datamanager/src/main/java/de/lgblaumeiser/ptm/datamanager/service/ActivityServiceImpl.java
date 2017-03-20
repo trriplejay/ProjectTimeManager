@@ -35,19 +35,15 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public void addLineActivity(final String name, final String id) {
-		checkNotNull(name);
-		checkNotNull(id);
-		addActivity(Activity.newLineActivity(name, id));
+		addActivityInternal(Activity.newLineActivity(name, id));
 	}
 
 	@Override
 	public void addProjectActivity(final String name, final String id) {
-		checkNotNull(name);
-		checkNotNull(id);
-		addActivity(Activity.newProjectActivity(name, id));
+		addActivityInternal(Activity.newProjectActivity(name, id));
 	}
 
-	private void addActivity(final Activity newActivity) {
+	private void addActivityInternal(final Activity newActivity) {
 		activityModel.addActivity(newActivity);
 		try {
 			activityModel.validate();
@@ -59,5 +55,12 @@ public class ActivityServiceImpl implements ActivityService {
 
 	public void setActivityStore(final ActivityModel activityStore) {
 		this.activityModel = activityStore;
+	}
+
+	@Override
+	public Activity addActivity(String name, String id) {
+		Activity activity = Activity.newActivity(name, id);
+		addActivityInternal(activity);
+		return activity;
 	}
 }

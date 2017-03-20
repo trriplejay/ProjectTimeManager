@@ -42,4 +42,14 @@ public interface ActivityService {
      *            Booking number of the activity
      */
     void addProjectActivity(String name, String id);
+    
+    /**
+     * Add a new activity
+     *
+     * @param name
+     *            Name of the activity
+     * @param id
+     *            Booking number of the activity
+     */
+    Activity addActivity(String name, String id);
 }
