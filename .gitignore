@@ -8,3 +8,5 @@ dependency-reduced-pom.xml
 buildNumber.properties
 shippable/
 cobertura/
+/.settings/
+/.project
