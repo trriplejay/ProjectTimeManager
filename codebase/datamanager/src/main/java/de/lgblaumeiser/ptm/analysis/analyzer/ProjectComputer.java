@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,10 +45,10 @@ public class ProjectComputer implements Analysis {
 		int numberOfDays = 0;
 		Map<String, Duration> activityToMinutesMap = newHashMap();
 		do {
-			DayBookings currentBookings = store.retrieveByIndexKey(currentDay);
-			if (currentBookings != null && hasCompleteBookings(currentBookings)) {
+			Optional<DayBookings> currentBookings = getBookingsForDay(currentDay);
+			if (currentBookings.isPresent() && hasCompleteBookings(currentBookings.get())) {
 				numberOfDays++;
-				for (Booking currentBooking : currentBookings.getBookings()) {
+				for (Booking currentBooking : currentBookings.get().getBookings()) {
 					Activity currentActivity = currentBooking.getActivity();
 					Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity.getBookingNumber());
 					if (accumulatedMinutes == null) {
@@ -78,6 +79,10 @@ public class ProjectComputer implements Analysis {
 		}
 
 		return result;
+	}
+
+	private Optional<DayBookings> getBookingsForDay(final LocalDate currentDay) {
+		return store.retrieveAll().stream().filter(d -> currentDay.equals(d.getDay())).findFirst();
 	}
 
 	private boolean firstDayInMonth(final LocalDate currentDay) {

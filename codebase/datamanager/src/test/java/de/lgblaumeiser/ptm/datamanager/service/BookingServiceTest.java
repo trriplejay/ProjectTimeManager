@@ -24,8 +24,8 @@ public class BookingServiceTest {
 	private static final LocalTime TIME1 = LocalTime.of(10, 12);
 	private static final LocalTime TIME2 = LocalTime.of(12, 15);
 	private static final LocalTime TIME3 = LocalTime.of(13, 45);
-	private static final Activity ACTIVITY1 = Activity.newLineActivity("a", "b");
-	private static final Activity ACTIVITY2 = Activity.newLineActivity("a1", "c");
+	private static final Activity ACTIVITY1 = Activity.newActivity("a", "b");
+	private static final Activity ACTIVITY2 = Activity.newActivity("a1", "c");
 	private static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setActivity(ACTIVITY1).build();
 
 	private final DayBookings testBookings = DayBookings.newDay(DATE1);

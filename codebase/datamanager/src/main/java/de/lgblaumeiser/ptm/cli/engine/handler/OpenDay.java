@@ -9,6 +9,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Optional;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
@@ -26,12 +27,15 @@ public class OpenDay extends AbstractCommandHandler {
 			date = LocalDate.parse(day);
 		}
 		getLogger().log("Opening day: " + date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " ...");
-		DayBookings dayBookings = getServices().getBookingsStore().retrieveByIndexKey(date);
-		if (dayBookings == null) {
-			dayBookings = DayBookings.newDay(date);
-		}
+		DayBookings dayBookings = extractBookings(date);
 		getServices().getStateStore().setCurrentDay(dayBookings);
 		getLogger().log("... Day opened");
+	}
+
+	private DayBookings extractBookings(LocalDate date) {
+		Optional<DayBookings> stored = getServices().getBookingsStore().retrieveAll().stream()
+				.filter(d -> date.equals(d.getDay())).findFirst();
+		return stored.orElse(DayBookings.newDay(date));
 	}
 
 	@Override

@@ -10,9 +10,7 @@ public class ListActivitiyTestTest extends AbstractHandlerTest {
 
 	@Test
 	public void testListActivity() {
-		services.getActivityService().addLineActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
 		testee.handleCommand(emptyList());
-		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NAME));
-		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NUMBER));
+		assertTrue(logger.logMessages.toString().contains("======================================"));
 	}
 }

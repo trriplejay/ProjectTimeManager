@@ -12,6 +12,7 @@ import static org.apache.commons.io.FileUtils.write;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 
@@ -41,6 +42,11 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 	}
 
 	@Override
+	public Collection<File> getAllFiles(File folder, String extension) {
+		return FileUtils.listFiles(folder, new String[] { extension }, false);
+	}
+
+	@Override
 	public String retrieveFromFile(final File source) throws IOException {
 		checkNotNull(source);
 		return FileUtils.readFileToString(source, defaultCharset());
@@ -51,5 +57,4 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 		checkNotNull(source);
 		return source.exists() && source.isFile();
 	}
-
 }

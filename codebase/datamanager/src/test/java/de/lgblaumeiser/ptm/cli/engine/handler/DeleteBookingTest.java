@@ -12,11 +12,11 @@ import org.junit.Test;
 
 public class DeleteBookingTest extends AbstractHandlerTest {
 	private DeleteBooking testee = new DeleteBooking();
-	
+
+	@Override
 	@Before
 	public void before() {
 		super.before();
-		actModel.addActivity(ACTIVITY1);
 		services.getStateStore().getCurrentDay().addBooking(BOOKING1);
 	}
 
@@ -25,13 +25,13 @@ public class DeleteBookingTest extends AbstractHandlerTest {
 		testee.handleCommand(asList(TIME1.toString()));
 		assertEquals(0, services.getStateStore().getCurrentDay().getBookings().size());
 	}
-	
+
 	@Test
 	public void testDeleteBookingUnknownBooking() {
 		testee.handleCommand(asList(TIME2.toString()));
 		assertEquals(1, services.getStateStore().getCurrentDay().getBookings().size());
 	}
-		
+
 	@Test(expected = IllegalStateException.class)
 	public void testDeleteBookingNoParam() {
 		testee.handleCommand(emptyList());
@@ -39,9 +39,9 @@ public class DeleteBookingTest extends AbstractHandlerTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testDeleteBookingEmptyParam() {
-		testee.handleCommand(asList(StringUtils.EMPTY));		
+		testee.handleCommand(asList(StringUtils.EMPTY));
 	}
-	
+
 	@Test(expected = DateTimeParseException.class)
 	public void testDeleteBookingWrongTime() {
 		testee.handleCommand(asList(ACTIVITY1NUMBER));

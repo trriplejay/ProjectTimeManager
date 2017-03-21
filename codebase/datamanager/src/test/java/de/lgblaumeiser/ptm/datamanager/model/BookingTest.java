@@ -19,7 +19,7 @@ public class BookingTest {
 	private static final LocalTime TIME2 = LocalTime.of(13, 57);
 	private static final long DIFF = 83;
 
-	private static final Activity ACT1 = Activity.newLineActivity("Act1", "0815");
+	private static final Activity ACT1 = Activity.newActivity("Act1", "0815");
 
 	/**
 	 * Positive test method for newBooking
@@ -76,8 +76,7 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testCalculateTimeSpan() {
-		Booking booking = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
-				.build();
+		Booking booking = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1).build();
 		TimeSpan testee = booking.calculateTimeSpan();
 		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
 	}

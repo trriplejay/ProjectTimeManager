@@ -16,13 +16,13 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 public class AddBookingTest extends AbstractHandlerTest {
 	private AddBooking testee = new AddBooking();
-	
+
+	@Override
 	@Before
 	public void before() {
 		super.before();
-		actModel.addActivity(ACTIVITY1);
 	}
-	
+
 	@Test
 	public void testAddBookingTwoParamClean() {
 		testee.handleCommand(asList(ACTIVITY1NAME.substring(0, 1), TIME1.toString()));
@@ -42,17 +42,17 @@ public class AddBookingTest extends AbstractHandlerTest {
 		assertEquals(TIME1, results.get(0).getStarttime());
 		assertEquals(TIME2, results.get(0).getEndtime());
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingNoParam() {
 		testee.handleCommand(emptyList());
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingOneParam() {
 		testee.handleCommand(asList(ACTIVITY1NAME));
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingTwoParamWrongActivity() {
 		testee.handleCommand(asList(ACTIVITY1NAME + ACTIVITY1NUMBER, TIME1.toString()));
@@ -75,6 +75,6 @@ public class AddBookingTest extends AbstractHandlerTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingThreeParamWrongTimeSequence() {
-		testee.handleCommand(asList(ACTIVITY1NAME, TIME2.toString(), TIME1.toString()));	
+		testee.handleCommand(asList(ACTIVITY1NAME, TIME2.toString(), TIME1.toString()));
 	}
 }

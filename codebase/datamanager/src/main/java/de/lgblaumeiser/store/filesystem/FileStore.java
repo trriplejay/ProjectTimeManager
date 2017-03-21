@@ -5,27 +5,37 @@ package de.lgblaumeiser.store.filesystem;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
+
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import de.lgblaumeiser.store.AbstractObjectStore;
+import de.lgblaumeiser.store.ObjectStore;
 
 /**
  * A file base store for random objects
  */
-public class FileStore<T> extends AbstractObjectStore<T> {
-	public static final String STORAGE_PATH_KEY = "store";
-	public static final String FILE_ENDING_KEY = "ending";
+public class FileStore<T> implements ObjectStore<T> {
+	private static final String ID = "id";
 
 	private final Gson gsonUtil = new Gson();
 	private FileSystemAbstraction filesystemAccess;
 
+	@SuppressWarnings("serial")
+	public final Type type = new TypeToken<T>(getClass()) {
+	}.getType();
+
 	@Override
-	public void store(final T object) {
+	public T store(final T object) {
 		checkNotNull(object);
 		Object index = getIndexObject(object);
 		File targetFile = getFileInformation(index);
@@ -36,27 +46,22 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+		return object;
 	}
 
 	@Override
-	public T retrieveByIndexKey(final Object key) {
-		checkNotNull(key);
-		File sourceFile = getFileInformation(key);
-		if (!filesystemAccess.dataAvailable(sourceFile)) {
-			return null;
-		}
-		String content;
-		try {
-			content = filesystemAccess.retrieveFromFile(sourceFile);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-		T foundObj = extractFileContent(content);
-		return foundObj;
+	public Collection<T> retrieveAll() {
+		return getAllFiles().stream().map(f -> {
+			try {
+				return extractFileContent(filesystemAccess.retrieveFromFile(f));
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}).collect(Collectors.toList());
 	}
 
 	private T extractFileContent(final String content) {
-		return gsonUtil.fromJson(content, getDataClass());
+		return gsonUtil.fromJson(content, this.type);
 	}
 
 	private String createFileContent(final T object) {
@@ -65,27 +70,57 @@ public class FileStore<T> extends AbstractObjectStore<T> {
 
 	private File getFileInformation(final Object index) {
 		File store = getStore();
-		return new File(store, index.toString() + getEnding());
+		return new File(store, index.toString() + getExtension());
 	}
 
-	private String getEnding() {
-		String ending = getPropertyWithKey(FILE_ENDING_KEY);
-		checkState(isNotBlank(ending));
-		return "." + ending;
+	private Collection<File> getAllFiles() {
+		File store = getStore();
+		return filesystemAccess.getAllFiles(store, getExtension());
+	}
+
+	private String getExtension() {
+		return type.getTypeName().substring(type.getTypeName().lastIndexOf('.')).toLowerCase();
 	}
 
 	private File getStore() {
-		File store = new File(getPropertyWithKey(STORAGE_PATH_KEY));
-		checkState(store.exists() && store.isDirectory());
-		return store;
-	}
-
-	@Override
-	protected boolean allPropertiesSet() {
-		return isNotBlank(getPropertyWithKey(STORAGE_PATH_KEY)) && isNotBlank(getPropertyWithKey(FILE_ENDING_KEY));
+		File homepath = new File(System.getProperty("user.home"));
+		checkState(homepath.isDirectory() && homepath.exists());
+		File applicationPath = new File(homepath, "." + System.getProperty("filestore.folder", "file_store"));
+		if (!applicationPath.exists()) {
+			checkState(applicationPath.mkdir());
+		}
+		return applicationPath;
 	}
 
 	public void setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
 		this.filesystemAccess = filesystemAccess;
+	}
+
+	private Long getIndexObject(final T object) {
+		checkNotNull(object);
+		try {
+			Field f = object.getClass().getDeclaredField(ID);
+			f.setAccessible(true);
+			Long returnVal = (Long) f.get(object);
+			if (returnVal == -1) {
+				f.set(object, getNextId());
+			}
+			returnVal = (Long) f.get(object);
+			f.setAccessible(false);
+			return returnVal;
+		} catch (IllegalAccessException | IllegalArgumentException | ClassCastException | NoSuchFieldException
+				| SecurityException e) {
+			throw new IllegalStateException(e);
+		}
+
+	}
+
+	private Long getNextId() {
+		Optional<String> lastId = getAllFiles().stream().map(f -> FilenameUtils.removeExtension(f.getName()))
+				.max((n1, n2) -> Long.compare(Long.valueOf(n1), Long.valueOf(n2)));
+		if (lastId.isPresent()) {
+			return Long.parseLong(lastId.get()) + 1;
+		}
+		return 1L;
 	}
 }

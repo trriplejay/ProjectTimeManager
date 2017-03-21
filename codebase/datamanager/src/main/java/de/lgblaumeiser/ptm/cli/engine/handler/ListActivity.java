@@ -17,7 +17,7 @@ public class ListActivity extends AbstractCommandHandler {
 	public void handleCommand(final Collection<String> parameters) {
 		getLogger().log("Known Activities");
 		getLogger().log("======================================");
-		for (Activity current : getServices().getActivityService().getActivityModel().getActivities()) {
+		for (Activity current : getServices().getActivityStore().retrieveAll()) {
 			getLogger().log(current.toString());
 		}
 		getLogger().log("======================================\n");

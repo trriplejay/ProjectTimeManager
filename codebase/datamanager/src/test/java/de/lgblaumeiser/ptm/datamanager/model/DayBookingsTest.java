@@ -19,7 +19,7 @@ public class DayBookingsTest {
 
 	private static final LocalTime TIME3 = LocalTime.of(14, 35);
 
-	private static final Activity ACTIVITY1 = Activity.newLineActivity("Act1", "0815");
+	private static final Activity ACTIVITY1 = Activity.newActivity("Act1", "0815");
 
 	private static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2)
 			.setActivity(ACTIVITY1).build();

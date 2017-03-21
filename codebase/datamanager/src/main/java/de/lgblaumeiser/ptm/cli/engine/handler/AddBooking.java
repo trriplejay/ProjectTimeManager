@@ -3,11 +3,14 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -25,7 +28,7 @@ public class AddBooking extends AbstractCommandHandler {
 		getLogger().log("Add new booking ...");
 		Iterator<String> paramIter = parameters.iterator();
 		String activityAbbrev = paramIter.next();
-		Activity activity = getServices().getActivityService().getActivityByAbbreviatedName(activityAbbrev);
+		Activity activity = getActivityByAbbreviatedName(activityAbbrev);
 		LocalTime starttime = LocalTime.parse(paramIter.next());
 		Booking addedBooking = getServices().getBookingService().addBooking(currentBookings, activity, starttime);
 		if (paramIter.hasNext()) {
@@ -35,6 +38,15 @@ public class AddBooking extends AbstractCommandHandler {
 		getLogger().log(" ... booking added with information: " + addedBooking.toString());
 		getServices().getBookingsStore().store(currentBookings);
 		getLogger().log("... bookings stored");
+	}
+
+	private Activity getActivityByAbbreviatedName(final String name) {
+		checkNotNull(name);
+		List<Activity> results = getServices().getActivityStore().retrieveAll().stream()
+				.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
+				.collect(Collectors.toList());
+		checkState(results.size() == 1);
+		return results.get(0);
 	}
 
 	@Override

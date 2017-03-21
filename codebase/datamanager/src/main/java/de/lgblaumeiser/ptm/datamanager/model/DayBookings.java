@@ -19,6 +19,7 @@ import java.util.Objects;
 public class DayBookings {
 	private final LocalDate day;
 	private final List<Booking> bookings = newArrayList();
+	private Long id = Long.valueOf(-1);
 
 	/**
 	 * Create a new day bookings object
