@@ -37,7 +37,7 @@ public class ActivityRestController {
 	ResponseEntity<?> addActivity(@RequestBody String name, @RequestBody String id) {
 		Activity newActivity = activityStore.store(Activity.newActivity(name, id));
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(newActivity.getActivityName()).toUri();
+				.buildAndExpand(newActivity.getId()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 
