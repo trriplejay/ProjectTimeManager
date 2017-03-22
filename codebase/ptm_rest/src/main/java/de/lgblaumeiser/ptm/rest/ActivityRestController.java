@@ -37,9 +37,14 @@ public class ActivityRestController {
 		return services.activityStore().retrieveAll();
 	}
 
+	static class CreateActivityBody {
+		public String name;
+		public String id;
+	}
+
 	@RequestMapping(method = RequestMethod.POST)
-	ResponseEntity<?> addActivity(@RequestBody String name, @RequestBody String id) {
-		Activity newActivity = services.activityStore().store(newActivity(name, id));
+	ResponseEntity<?> addActivity(@RequestBody CreateActivityBody activityData) {
+		Activity newActivity = services.activityStore().store(newActivity(activityData.name, activityData.id));
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newActivity.getId()).toUri();
 		return ResponseEntity.created(location).build();

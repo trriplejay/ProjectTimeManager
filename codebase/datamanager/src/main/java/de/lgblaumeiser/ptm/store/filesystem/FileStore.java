@@ -40,7 +40,7 @@ public class FileStore<T> implements ObjectStore<T> {
 	@Override
 	public T store(final T object) {
 		checkNotNull(object);
-		Object index = getIndexObject(object);
+		Long index = getIndexObject(object);
 		File targetFile = getFileInformation(index);
 		String content = createFileContent(object);
 
@@ -71,9 +71,9 @@ public class FileStore<T> implements ObjectStore<T> {
 		return gsonUtil.toJson(object);
 	}
 
-	private File getFileInformation(final Object index) {
+	private File getFileInformation(final Long index) {
 		File store = getStore();
-		return new File(store, index.toString() + getExtension());
+		return new File(store, index.toString() + "." + getExtension());
 	}
 
 	private Collection<File> getAllFiles() {
@@ -82,7 +82,7 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private String getExtension() {
-		return type.getTypeName().substring(type.getTypeName().lastIndexOf('.')).toLowerCase();
+		return type.getTypeName().substring(type.getTypeName().lastIndexOf('.') + 1).toLowerCase();
 	}
 
 	private File getStore() {
@@ -120,6 +120,8 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private Long getNextId() {
+		Collection<File> allFiles = getAllFiles();
+		System.out.println(allFiles);
 		Optional<String> lastId = getAllFiles().stream().map(f -> removeExtension(f.getName()))
 				.max((n1, n2) -> compare(valueOf(n1), valueOf(n2)));
 		if (lastId.isPresent()) {
