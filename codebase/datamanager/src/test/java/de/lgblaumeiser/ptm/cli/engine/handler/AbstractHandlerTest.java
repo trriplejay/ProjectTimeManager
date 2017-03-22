@@ -1,24 +1,30 @@
+/*
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setLogger;
+import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setServices;
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import static de.lgblaumeiser.ptm.datamanager.model.DayBookings.newDay;
 import static java.util.Arrays.asList;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Before;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
-import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public abstract class AbstractHandlerTest {
 	protected static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
@@ -28,11 +34,11 @@ public abstract class AbstractHandlerTest {
 	protected static final String ACTIVITY1NUMBER = "0815";
 	protected static final String ACTIVITY2NAME = "NewAct2";
 	protected static final String ACTIVITY2NUMBER = "4711";
-	protected static final Activity ACTIVITY1 = Activity.newActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
-	protected static final Activity ACTIVITY2 = Activity.newActivity(ACTIVITY2NAME, ACTIVITY2NUMBER);
-	protected static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2)
-			.setActivity(ACTIVITY1).build();
-	protected DayBookings testDay = DayBookings.newDay(DATE1);
+	protected static final Activity ACTIVITY1 = newActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
+	protected static final Activity ACTIVITY2 = newActivity(ACTIVITY2NAME, ACTIVITY2NUMBER);
+	protected static final Booking BOOKING1 = newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACTIVITY1)
+			.build();
+	protected DayBookings testDay = newDay(DATE1);
 
 	protected boolean activityStoreCalled = false;
 	protected boolean bookingStoreCalled = false;
@@ -62,7 +68,7 @@ public abstract class AbstractHandlerTest {
 
 			@Override
 			public Collection<Activity> retrieveAll() {
-				return Arrays.asList(ACTIVITY1, ACTIVITY2);
+				return asList(ACTIVITY1, ACTIVITY2);
 			}
 		});
 		services.setBookingsStore(new ObjectStore<DayBookings>() {
@@ -74,7 +80,7 @@ public abstract class AbstractHandlerTest {
 
 			@Override
 			public Collection<DayBookings> retrieveAll() {
-				return Arrays.asList(testDay);
+				return asList(testDay);
 			}
 		});
 		services.setBookingService(new BookingServiceImpl());
@@ -89,7 +95,7 @@ public abstract class AbstractHandlerTest {
 				return returnlist;
 			}
 		});
-		AbstractCommandHandler.setLogger(logger);
-		AbstractCommandHandler.setServices(services);
+		setLogger(logger);
+		setServices(services);
 	}
 }

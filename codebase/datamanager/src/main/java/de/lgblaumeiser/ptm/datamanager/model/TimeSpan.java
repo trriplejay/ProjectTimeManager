@@ -1,17 +1,17 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.time.Duration.ofMinutes;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.util.Objects.hash;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time
@@ -47,25 +47,25 @@ public final class TimeSpan {
 	}
 
 	public Duration getLengthInMinutes() {
-		return Duration.ofMinutes(ChronoUnit.MINUTES.between(starttime, endtime));
+		return ofMinutes(MINUTES.between(starttime, endtime));
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(starttime, endtime);
+		return hash(starttime, endtime);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof TimeSpan) {
 			TimeSpan ts = (TimeSpan) obj;
-			return Objects.equals(starttime, ts.starttime) && Objects.equals(endtime, ts.endtime);
+			return starttime.equals(ts.starttime) && endtime.equals(ts.endtime);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("Start time", starttime).add("End time", endtime).toString();
+		return toStringHelper(this).add("Start time", starttime).add("End time", endtime).toString();
 	}
 }

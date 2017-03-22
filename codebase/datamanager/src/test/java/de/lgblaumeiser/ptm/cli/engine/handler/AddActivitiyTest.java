@@ -1,3 +1,6 @@
+/*
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static java.util.Arrays.asList;

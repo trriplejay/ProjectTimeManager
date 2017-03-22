@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine;
 
@@ -7,7 +7,7 @@ import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * Small class that allows to access the services needed by the command handler

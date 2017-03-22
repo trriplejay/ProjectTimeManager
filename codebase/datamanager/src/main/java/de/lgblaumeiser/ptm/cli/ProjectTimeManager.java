@@ -1,7 +1,9 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli;
+
+import static java.lang.System.exit;
 
 /**
  * The main class for the command line interface
@@ -11,6 +13,6 @@ public class ProjectTimeManager {
 		PTMCLIConfigurator configurator = new PTMCLIConfigurator();
 		CLI cli = configurator.configure();
 		cli.runApplication();
-		System.exit(0);
+		exit(0);
 	}
 }

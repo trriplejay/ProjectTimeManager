@@ -1,3 +1,6 @@
+/*
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import static com.google.common.collect.Iterables.get;
@@ -11,26 +14,29 @@ import java.util.Collection;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public class ProjectComputerTest extends AbstractComputerTest {
 	private ProjectComputer testee = new ProjectComputer();
 
+	@Override
 	protected void setTesteeStore(ObjectStore<DayBookings> store) {
 		testee.setStore(store);
 	}
-		
+
 	@Test
 	public void testProjectComputerToday() {
 		Collection<Collection<Object>> analysisResults = testee.analyze(emptyList());
 		assertEquals(3, analysisResults.size());
-		assertEquals(24, parseInt(get(get(analysisResults, 1), 3).toString()) + parseInt(get(get(analysisResults, 2), 3).toString()));
+		assertEquals(24, parseInt(get(get(analysisResults, 1), 3).toString())
+				+ parseInt(get(get(analysisResults, 2), 3).toString()));
 	}
 
 	@Test
 	public void testProjectComputerFixed() {
 		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2015-12"));
 		assertEquals(3, analysisResults.size());
-		assertEquals(24, parseInt(get(get(analysisResults, 1), 3).toString()) + parseInt(get(get(analysisResults, 2), 3).toString()));
+		assertEquals(24, parseInt(get(get(analysisResults, 1), 3).toString())
+				+ parseInt(get(get(analysisResults, 2), 3).toString()));
 	}
 }

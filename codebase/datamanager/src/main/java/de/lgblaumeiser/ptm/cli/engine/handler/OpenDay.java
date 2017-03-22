@@ -1,13 +1,14 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkState;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static com.google.common.collect.Iterables.get;
+import static java.time.LocalDate.now;
+import static java.time.LocalDate.parse;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -20,13 +21,11 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 public class OpenDay extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
-		LocalDate date = LocalDate.now();
+		LocalDate date = now();
 		if (parameters.size() > 0) {
-			String day = parameters.iterator().next();
-			checkState(isNotBlank(day));
-			date = LocalDate.parse(day);
+			date = parse(get(parameters, 0));
 		}
-		getLogger().log("Opening day: " + date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " ...");
+		getLogger().log("Opening day: " + date.format(ISO_LOCAL_DATE) + " ...");
 		DayBookings dayBookings = extractBookings(date);
 		getServices().getStateStore().setCurrentDay(dayBookings);
 		getLogger().log("... Day opened");

@@ -1,16 +1,17 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.get;
+import static java.time.LocalTime.parse;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -26,13 +27,12 @@ public class AddBooking extends AbstractCommandHandler {
 		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
 		checkState(parameters.size() > 1);
 		getLogger().log("Add new booking ...");
-		Iterator<String> paramIter = parameters.iterator();
-		String activityAbbrev = paramIter.next();
+		String activityAbbrev = get(parameters, 0);
 		Activity activity = getActivityByAbbreviatedName(activityAbbrev);
-		LocalTime starttime = LocalTime.parse(paramIter.next());
+		LocalTime starttime = parse(get(parameters, 1));
 		Booking addedBooking = getServices().getBookingService().addBooking(currentBookings, activity, starttime);
-		if (paramIter.hasNext()) {
-			LocalTime endtime = LocalTime.parse(paramIter.next());
+		if (parameters.size() == 3) {
+			LocalTime endtime = parse(get(parameters, 2));
 			addedBooking = getServices().getBookingService().endBooking(currentBookings, addedBooking, endtime);
 		}
 		getLogger().log(" ... booking added with information: " + addedBooking.toString());
@@ -44,7 +44,7 @@ public class AddBooking extends AbstractCommandHandler {
 		checkNotNull(name);
 		List<Activity> results = getServices().getActivityStore().retrieveAll().stream()
 				.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
-				.collect(Collectors.toList());
+				.collect(toList());
 		checkState(results.size() == 1);
 		return results.get(0);
 	}

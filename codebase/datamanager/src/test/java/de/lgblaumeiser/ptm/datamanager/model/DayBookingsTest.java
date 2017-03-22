@@ -1,8 +1,11 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import static de.lgblaumeiser.ptm.datamanager.model.DayBookings.newDay;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -19,20 +22,20 @@ public class DayBookingsTest {
 
 	private static final LocalTime TIME3 = LocalTime.of(14, 35);
 
-	private static final Activity ACTIVITY1 = Activity.newActivity("Act1", "0815");
+	private static final Activity ACTIVITY1 = newActivity("Act1", "0815");
 
-	private static final Booking BOOKING1 = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME2)
-			.setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING1 = newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACTIVITY1)
+			.build();
 
-	private static final Booking BOOKING2 = Booking.newBooking().setStarttime(TIME2).setEndtime(TIME3)
-			.setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING2 = newBooking().setStarttime(TIME2).setEndtime(TIME3).setActivity(ACTIVITY1)
+			.build();
 
-	private static final Booking BOOKING3 = Booking.newBooking().setStarttime(TIME2).setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING3 = newBooking().setStarttime(TIME2).setActivity(ACTIVITY1).build();
 
-	private static final Booking BOOKING4 = Booking.newBooking().setStarttime(TIME1).setEndtime(TIME3)
-			.setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING4 = newBooking().setStarttime(TIME1).setEndtime(TIME3).setActivity(ACTIVITY1)
+			.build();
 
-	private final DayBookings testee = DayBookings.newDay(DATE1);
+	private final DayBookings testee = newDay(DATE1);
 
 	@Test
 	public void testGetDay() {

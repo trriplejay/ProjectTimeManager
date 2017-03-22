@@ -1,8 +1,10 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static java.time.LocalTime.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,10 +17,10 @@ import org.junit.Test;
  * Test class for the class TimeSpan
  */
 public class TimeSpanTest {
-	private static final LocalTime TIME1 = LocalTime.of(12, 34);
-	private static final LocalTime TIME2 = LocalTime.of(13, 57);
-	private static final LocalTime TIME3 = LocalTime.of(14, 57);
-	private static final LocalTime TIME4 = LocalTime.of(15, 47);
+	private static final LocalTime TIME1 = of(12, 34);
+	private static final LocalTime TIME2 = of(13, 57);
+	private static final LocalTime TIME3 = of(14, 57);
+	private static final LocalTime TIME4 = of(15, 47);
 
 	private static final long DIFF23 = 60;
 
@@ -27,7 +29,7 @@ public class TimeSpanTest {
 	 */
 	@Test
 	public final void testNewTimeSpanPositive() {
-		TimeSpan newTimeSpan = TimeSpan.newTimeSpan(TIME2, TIME3);
+		TimeSpan newTimeSpan = newTimeSpan(TIME2, TIME3);
 		assertEquals(DIFF23, newTimeSpan.getLengthInMinutes().toMinutes());
 	}
 
@@ -36,7 +38,7 @@ public class TimeSpanTest {
 	 */
 	@Test(expected = IllegalStateException.class)
 	public final void testNewTimeSpanWrongOrder() {
-		TimeSpan.newTimeSpan(TIME2, TIME1);
+		newTimeSpan(TIME2, TIME1);
 	}
 
 	/**
@@ -44,7 +46,7 @@ public class TimeSpanTest {
 	 */
 	@Test(expected = IllegalStateException.class)
 	public final void testNewTimeSpanSameTime() {
-		TimeSpan.newTimeSpan(TIME1, TIME1);
+		newTimeSpan(TIME1, TIME1);
 	}
 
 	/**
@@ -52,10 +54,10 @@ public class TimeSpanTest {
 	 */
 	@Test
 	public final void testEqualsHash() {
-		TimeSpan timeSpan1 = TimeSpan.newTimeSpan(TIME1, TIME2);
-		TimeSpan timeSpan2 = TimeSpan.newTimeSpan(TIME3, TIME4);
-		TimeSpan timeSpan3 = TimeSpan.newTimeSpan(TIME1, TIME2);
-		TimeSpan timeSpan4 = TimeSpan.newTimeSpan(TIME2, TIME4);
+		TimeSpan timeSpan1 = newTimeSpan(TIME1, TIME2);
+		TimeSpan timeSpan2 = newTimeSpan(TIME3, TIME4);
+		TimeSpan timeSpan3 = newTimeSpan(TIME1, TIME2);
+		TimeSpan timeSpan4 = newTimeSpan(TIME2, TIME4);
 
 		assertTrue(timeSpan1.equals(timeSpan3));
 		assertTrue(timeSpan1.hashCode() == timeSpan3.hashCode());

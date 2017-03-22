@@ -1,13 +1,12 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.get;
 
 import java.util.Collection;
-
-import com.google.common.collect.Iterables;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
@@ -18,10 +17,11 @@ public class RunAnalysis extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
 		checkState(parameters.size() > 0);
-		String analysis = Iterables.get(parameters, 0);
+		String analysis = get(parameters, 0);
 		parameters.remove(analysis);
 		getLogger().log("Run analysis " + analysis + " on data ...");
-		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(analysis.toUpperCase(), parameters);
+		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(analysis.toUpperCase(),
+				parameters);
 		for (Collection<Object> current : result) {
 			getLogger().log(createString(current));
 		}

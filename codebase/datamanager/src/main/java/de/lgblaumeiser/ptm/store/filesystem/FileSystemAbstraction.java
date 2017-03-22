@@ -1,7 +1,7 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
-package de.lgblaumeiser.store.filesystem;
+package de.lgblaumeiser.ptm.store.filesystem;
 
 import java.io.File;
 import java.io.IOException;

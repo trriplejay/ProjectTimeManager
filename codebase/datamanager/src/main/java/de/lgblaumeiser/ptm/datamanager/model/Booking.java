@@ -1,15 +1,15 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static java.util.Objects.hash;
 
 import java.time.LocalTime;
-import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 
 /**
  * This class represents a booking on a day. It is represented by a starting
@@ -146,28 +146,27 @@ public class Booking {
 	 */
 	public TimeSpan calculateTimeSpan() {
 		checkState(hasEndtime());
-		return TimeSpan.newTimeSpan(starttime, endtime);
+		return newTimeSpan(starttime, endtime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(starttime, endtime, activity);
+		return hash(starttime, endtime, activity);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Booking) {
 			Booking bkg = (Booking) obj;
-			return Objects.equals(starttime, bkg.starttime) && Objects.equals(endtime, bkg.endtime)
-					&& Objects.equals(activity, bkg.activity);
-
+			return starttime.equals(bkg.starttime) && activity.equals(bkg.activity) && endtime != null
+					? endtime.equals(bkg.endtime) : bkg.endtime == null;
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).omitNullValues().add("Starttime", starttime).add("Endtime", endtime)
+		return toStringHelper(this).omitNullValues().add("Starttime", starttime).add("Endtime", endtime)
 				.add("Activity", activity).toString();
 	}
 }

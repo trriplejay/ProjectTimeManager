@@ -1,7 +1,10 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli;
+
+import static java.lang.System.err;
+import static java.lang.System.out;
 
 import java.time.format.DateTimeParseException;
 import java.util.Map;
@@ -20,7 +23,7 @@ public class CLI {
 		boolean runnit = true;
 		try (Scanner terminalIn = new Scanner(System.in)) {
 			while (runnit) {
-				System.out.println("Command: ");
+				out.println("Command: ");
 				String command = terminalIn.nextLine();
 				if (command.toUpperCase().equals("X")) {
 					runnit = false;
@@ -30,7 +33,7 @@ public class CLI {
 					try {
 						interpreter.handle(command);
 					} catch (IllegalStateException | NullPointerException | DateTimeParseException e) {
-						System.err.println(e.getMessage());
+						err.println(e.getMessage());
 						e.printStackTrace();
 					}
 				}
@@ -39,14 +42,14 @@ public class CLI {
 	}
 
 	private void printCommandHelp() {
-		System.out.println("\nCommands:");
-		System.out.println("=======================================");
-		System.out.println("\tX\tExit program");
-		System.out.println("\tH\tShow this help");
+		out.println("\nCommands:");
+		out.println("=======================================");
+		out.println("\tX\tExit program");
+		out.println("\tH\tShow this help");
 		for (Map.Entry<String, CommandHandler> current : interpreter.listHandler().entrySet()) {
-			System.out.println("\t" + current.getKey() + "\t" + current.getValue().toString());
+			out.println("\t" + current.getKey() + "\t" + current.getValue().toString());
 		}
-		System.out.println("=======================================\n");
+		out.println("=======================================\n");
 	}
 
 	void setInterpreter(final CommandInterpreter interpreter) {

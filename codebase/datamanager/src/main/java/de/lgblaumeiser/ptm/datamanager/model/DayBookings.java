@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
@@ -7,11 +7,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Long.valueOf;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.hash;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Model class to store all bookings of a day
@@ -19,7 +20,7 @@ import java.util.Objects;
 public class DayBookings {
 	private final LocalDate day;
 	private final List<Booking> bookings = newArrayList();
-	private Long id = Long.valueOf(-1);
+	private Long id = valueOf(-1);
 
 	/**
 	 * Create a new day bookings object
@@ -62,6 +63,14 @@ public class DayBookings {
 	 */
 	public LocalDate getDay() {
 		return day;
+	}
+
+	/**
+	 * @return The internal id of the object. This is created by the storage
+	 *         system.
+	 */
+	Long getId() {
+		return id;
 	}
 
 	/**
@@ -121,14 +130,14 @@ public class DayBookings {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(day, bookings);
+		return hash(id, day, bookings);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof DayBookings) {
 			DayBookings other = (DayBookings) obj;
-			return Objects.equals(day, other.day) && Objects.equals(bookings, other.bookings);
+			return id == other.id && day.equals(other.day) && bookings.equals(other.bookings);
 		}
 		return super.equals(false);
 	}

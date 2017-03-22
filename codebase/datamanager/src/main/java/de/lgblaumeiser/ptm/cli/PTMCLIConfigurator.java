@@ -1,13 +1,16 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli;
+
+import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setLogger;
+import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setServices;
+import static java.lang.System.setProperty;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
 import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
 import de.lgblaumeiser.ptm.analysis.analyzer.ProjectComputer;
-import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
@@ -23,9 +26,9 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
-import de.lgblaumeiser.store.ObjectStore;
-import de.lgblaumeiser.store.filesystem.FileStore;
-import de.lgblaumeiser.store.filesystem.FileSystemAbstractionImpl;
+import de.lgblaumeiser.ptm.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.filesystem.FileStore;
+import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstractionImpl;
 
 /**
  * The configuration object that creates the application structure
@@ -43,7 +46,7 @@ public class PTMCLIConfigurator {
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
 	public CLI configure() {
-		System.setProperty("filestore.folder", "ptm");
+		setProperty("filestore.folder", "ptm");
 		ObjectStore<DayBookings> bookingStore = createBookingFileStore();
 		ObjectStore<Activity> activityStore = createActivityFileStore();
 		BookingService bookingService = createBookingService();
@@ -65,15 +68,13 @@ public class PTMCLIConfigurator {
 	}
 
 	private ObjectStore<DayBookings> createBookingFileStore() {
-		FileStore<DayBookings> store = new FileStore<DayBookings>();
-		store.setFilesystemAccess(new FileSystemAbstractionImpl());
-		return store;
+		return new FileStore<DayBookings>() {
+		}.setFilesystemAccess(new FileSystemAbstractionImpl());
 	}
 
 	private ObjectStore<Activity> createActivityFileStore() {
-		FileStore<Activity> store = new FileStore<Activity>();
-		store.setFilesystemAccess(new FileSystemAbstractionImpl());
-		return store;
+		return new FileStore<Activity>() {
+		}.setFilesystemAccess(new FileSystemAbstractionImpl());
 	}
 
 	private BookingService createBookingService() {
@@ -90,8 +91,8 @@ public class PTMCLIConfigurator {
 		serviceManager.setBookingService(bookingService);
 		serviceManager.setBookingsStore(bookingStore);
 		serviceManager.setAnalysisService(analysisService);
-		AbstractCommandHandler.setLogger(logger);
-		AbstractCommandHandler.setServices(serviceManager);
+		setLogger(logger);
+		setServices(serviceManager);
 		interpreter.addCommandHandler(ADD_ACTIVITY_COMMAND, new AddActivity());
 		interpreter.addCommandHandler(LIST_ACTIVITY_COMMAND, new ListActivity());
 		interpreter.addCommandHandler(OPEN_DAY_COMMAND, new OpenDay());

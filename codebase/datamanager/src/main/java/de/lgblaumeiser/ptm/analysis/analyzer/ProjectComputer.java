@@ -1,12 +1,21 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+import static java.lang.String.format;
+import static java.time.Duration.ZERO;
+import static java.time.Duration.ofHours;
+import static java.time.LocalDate.now;
+import static java.time.LocalDate.of;
+import static java.time.LocalDate.parse;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -15,13 +24,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * An analysis to compute the amount of hours per a activity. The computer
@@ -34,14 +41,14 @@ public class ProjectComputer implements Analysis {
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		LocalDate currentDay = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 1);
+		LocalDate currentDay = of(now().getYear(), now().getMonthValue(), 1);
 		if (parameter.size() > 0) {
 			String date = get(parameter, 0) + "-01";
-			currentDay = LocalDate.parse(date);
+			currentDay = parse(date);
 		}
 		Collection<Collection<Object>> result = newArrayList();
 		result.add(asList("Id", "Total", "%", "Book"));
-		Duration totalMinutes = Duration.ZERO;
+		Duration totalMinutes = ZERO;
 		int numberOfDays = 0;
 		Map<String, Duration> activityToMinutesMap = newHashMap();
 		do {
@@ -52,7 +59,7 @@ public class ProjectComputer implements Analysis {
 					Activity currentActivity = currentBooking.getActivity();
 					Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity.getBookingNumber());
 					if (accumulatedMinutes == null) {
-						accumulatedMinutes = Duration.ZERO;
+						accumulatedMinutes = ZERO;
 					}
 					Duration activityLength = currentBooking.calculateTimeSpan().getLengthInMinutes();
 					totalMinutes = totalMinutes.plus(activityLength);
@@ -68,14 +75,14 @@ public class ProjectComputer implements Analysis {
 			String number = currentNumber.getKey();
 			Duration totalMinutesId = currentNumber.getValue();
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
-			String percentageString = String.format("%2.1f", percentage * 100.0);
-			Duration bookingHours = Duration.ofHours(Math.round(totalNumberOfMinutes * percentage / 60.0));
+			String percentageString = format("%2.1f", percentage * 100.0);
+			Duration bookingHours = ofHours(round(totalNumberOfMinutes * percentage / 60.0));
 			targetHours -= bookingHours.toHours();
 			result.add(asList(number, formatDuration(totalMinutesId), percentageString,
-					Long.toString(bookingHours.toHours())));
+					format("%d", bookingHours.toHours())));
 		}
 		if (targetHours != 0) {
-			result.add(asList("Left", StringUtils.EMPTY, StringUtils.EMPTY, Integer.toString(targetHours)));
+			result.add(asList("Left", EMPTY, EMPTY, format("%d", targetHours)));
 		}
 
 		return result;
@@ -105,8 +112,8 @@ public class ProjectComputer implements Analysis {
 	private String formatDuration(final Duration duration) {
 		long minutes = duration.toMinutes();
 		char pre = minutes < 0 ? '-' : ' ';
-		minutes = Math.abs(minutes);
-		return String.format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
+		minutes = abs(minutes);
+		return format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
 	}
 
 	public void setStore(final ObjectStore<DayBookings> store) {

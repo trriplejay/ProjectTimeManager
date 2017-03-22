@@ -1,3 +1,6 @@
+/*
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static java.util.Arrays.asList;
@@ -37,7 +40,7 @@ public class DeleteBookingTest extends AbstractHandlerTest {
 		testee.handleCommand(emptyList());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = DateTimeParseException.class)
 	public void testDeleteBookingEmptyParam() {
 		testee.handleCommand(asList(StringUtils.EMPTY));
 	}

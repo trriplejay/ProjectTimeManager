@@ -1,11 +1,12 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.store.filesystem;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -13,9 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.lgblaumeiser.ptm.store.filesystem.FileStore;
+import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstraction;
 
 public class FileStoreTest {
 	private static final String TESTINDEX = "TestIndex";
@@ -66,7 +69,7 @@ public class FileStoreTest {
 	@Test
 	public void testStore() {
 		testee.store(testData);
-		assertEquals("teststoreobject", FilenameUtils.getExtension(storageFile.getName()));
+		assertEquals("teststoreobject", getExtension(storageFile.getName()));
 		assertTrue(storageContent.contains("index"));
 		assertTrue(storageContent.contains(TESTINDEX));
 		assertTrue(storageContent.contains("data"));

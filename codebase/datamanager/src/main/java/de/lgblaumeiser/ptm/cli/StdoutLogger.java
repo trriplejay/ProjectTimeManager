@@ -1,7 +1,9 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli;
+
+import static java.lang.System.out;
 
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 
@@ -11,6 +13,6 @@ import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 public class StdoutLogger implements CommandLogger {
 	@Override
 	public void log(final String message) {
-		System.out.println(message);
+		out.println(message);
 	}
 }

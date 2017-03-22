@@ -1,10 +1,16 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
-package de.lgblaumeiser.store.filesystem;
+package de.lgblaumeiser.ptm.store.filesystem;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Long.compare;
+import static java.lang.Long.parseLong;
+import static java.lang.Long.valueOf;
+import static java.lang.System.getProperty;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +18,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import de.lgblaumeiser.store.ObjectStore;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * A file base store for random objects
@@ -57,7 +60,7 @@ public class FileStore<T> implements ObjectStore<T> {
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
-		}).collect(Collectors.toList());
+		}).collect(toList());
 	}
 
 	private T extractFileContent(final String content) {
@@ -83,17 +86,18 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private File getStore() {
-		File homepath = new File(System.getProperty("user.home"));
+		File homepath = new File(getProperty("user.home"));
 		checkState(homepath.isDirectory() && homepath.exists());
-		File applicationPath = new File(homepath, "." + System.getProperty("filestore.folder", "file_store"));
+		File applicationPath = new File(homepath, "." + getProperty("filestore.folder", "file_store"));
 		if (!applicationPath.exists()) {
 			checkState(applicationPath.mkdir());
 		}
 		return applicationPath;
 	}
 
-	public void setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
+	public FileStore<T> setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
 		this.filesystemAccess = filesystemAccess;
+		return this;
 	}
 
 	private Long getIndexObject(final T object) {
@@ -116,10 +120,10 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private Long getNextId() {
-		Optional<String> lastId = getAllFiles().stream().map(f -> FilenameUtils.removeExtension(f.getName()))
-				.max((n1, n2) -> Long.compare(Long.valueOf(n1), Long.valueOf(n2)));
+		Optional<String> lastId = getAllFiles().stream().map(f -> removeExtension(f.getName()))
+				.max((n1, n2) -> compare(valueOf(n1), valueOf(n2)));
 		if (lastId.isPresent()) {
-			return Long.parseLong(lastId.get()) + 1;
+			return parseLong(lastId.get()) + 1;
 		}
 		return 1L;
 	}

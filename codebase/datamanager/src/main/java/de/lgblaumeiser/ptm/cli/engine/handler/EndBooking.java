@@ -1,10 +1,11 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static com.google.common.collect.Iterables.get;
+import static java.time.LocalTime.parse;
 
 import java.time.LocalTime;
 import java.util.Collection;
@@ -22,9 +23,7 @@ public class EndBooking extends AbstractCommandHandler {
 		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
 		getLogger().log("End booking ...");
 		checkState(parameters.size() > 0);
-		String timestring = parameters.iterator().next();
-		checkState(isNotBlank(timestring));
-		LocalTime endtime = LocalTime.parse(timestring);
+		LocalTime endtime = parse(get(parameters, 0));
 		Booking booking = getServices().getBookingService().endBooking(currentBookings,
 				currentBookings.getLastBooking(), endtime);
 		getLogger().log("... new booking data: " + booking.toString());

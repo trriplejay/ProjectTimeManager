@@ -1,9 +1,10 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import java.time.format.DateTimeFormatter;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+
 import java.util.Collection;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -17,8 +18,7 @@ public class ListBookings extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
 		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
-		getLogger()
-				.log("Current Bookings for day " + currentBookings.getDay().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		getLogger().log("Current Bookings for day " + currentBookings.getDay().format(ISO_LOCAL_DATE));
 		getLogger().log("======================================");
 		for (Booking booking : currentBookings.getBookings()) {
 			getLogger().log(booking.toString());

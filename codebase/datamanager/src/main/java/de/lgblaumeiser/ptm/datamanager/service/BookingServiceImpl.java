@@ -1,10 +1,11 @@
 /*
- * Copyright 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 
 import java.time.LocalTime;
 
@@ -25,7 +26,7 @@ public class BookingServiceImpl implements BookingService {
 		if (lastBooking != null && !lastBooking.hasEndtime()) {
 			endBooking(dayBookings, lastBooking, starttime);
 		}
-		Booking newBooking = Booking.newBooking().setStarttime(starttime).setActivity(activity).build();
+		Booking newBooking = newBooking().setStarttime(starttime).setActivity(activity).build();
 		dayBookings.addBooking(newBooking);
 		return newBooking;
 	}

@@ -1,15 +1,13 @@
 /*
- * Copyright 2015, 2016 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright 2015, 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkState;
-
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.MoreObjects;
+import static java.lang.Long.valueOf;
+import static java.util.Objects.hash;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Data structure for representation of an activity. An activity represents a
@@ -19,10 +17,10 @@ import com.google.common.base.MoreObjects;
 public class Activity {
 	private final String activityName;
 	private final String bookingNumber;
-	private Long id = Long.valueOf(-1);
+	private Long id = valueOf(-1);
 
 	/**
-	 * Create new line activity
+	 * Create new activity
 	 *
 	 * @param activityName
 	 *            Name of the new activity
@@ -32,8 +30,8 @@ public class Activity {
 	 *         creating the activity results in runtime exception
 	 */
 	public static Activity newActivity(final String activityName, final String bookingNumber) {
-		checkState(StringUtils.isNotBlank(activityName));
-		checkState(StringUtils.isNotBlank(bookingNumber));
+		checkState(isNotBlank(activityName));
+		checkState(isNotBlank(bookingNumber));
 		return new Activity(activityName, bookingNumber);
 	}
 
@@ -42,6 +40,10 @@ public class Activity {
 		this.bookingNumber = bookingNumber;
 	}
 
+	/**
+	 * @return The internal id of the activity. Automatically created by storage
+	 *         system
+	 */
 	public Long getId() {
 		return id;
 	}
@@ -62,22 +64,20 @@ public class Activity {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName)
-				.toString();
+		return toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName).toString();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Activity) {
 			Activity act = (Activity) obj;
-			return Objects.equals(activityName, act.getActivityName())
-					&& Objects.equals(bookingNumber, act.getBookingNumber());
+			return id == act.id && activityName.equals(act.activityName) && bookingNumber.equals(act.bookingNumber);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(activityName, bookingNumber);
+		return hash(id, activityName, bookingNumber);
 	}
 }

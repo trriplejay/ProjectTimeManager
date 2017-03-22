@@ -1,3 +1,6 @@
+/*
+ * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static java.util.Collections.emptyList;
@@ -10,8 +13,7 @@ public class ListBookingsTest extends AbstractHandlerTest {
 
 	@Test
 	public void test() {
-		services.getBookingService().endBooking(
-				services.getStateStore().getCurrentDay(),
+		services.getBookingService().endBooking(services.getStateStore().getCurrentDay(),
 				services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), ACTIVITY1, TIME1),
 				TIME2);
 		testee.handleCommand(emptyList());
