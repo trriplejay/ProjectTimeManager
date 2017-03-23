@@ -7,6 +7,7 @@ import static com.google.common.io.Files.createTempDir;
 import static java.lang.System.setProperty;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,5 +78,11 @@ public class ActivityControllerTest {
 		mockMvc.perform(get("/activities/1")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
+
+		mockMvc.perform(delete("/activities/1")).andDo(print()).andExpect(status().isOk());
+
+		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("[]")));
+
 	}
 }

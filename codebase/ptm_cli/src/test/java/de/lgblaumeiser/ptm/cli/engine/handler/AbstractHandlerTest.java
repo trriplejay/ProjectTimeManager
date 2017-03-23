@@ -70,6 +70,21 @@ public abstract class AbstractHandlerTest {
 			public Collection<Activity> retrieveAll() {
 				return asList(ACTIVITY1, ACTIVITY2);
 			}
+
+			@Override
+			public Activity retrieveById(Long id) {
+				if (id == 1) {
+					return ACTIVITY1;
+				} else if (id == 2) {
+					return ACTIVITY2;
+				}
+				return null;
+			}
+
+			@Override
+			public void deleteById(Long id) {
+				// Not needed in tests
+			}
 		});
 		services.setBookingsStore(new ObjectStore<DayBookings>() {
 			@Override
@@ -81,6 +96,19 @@ public abstract class AbstractHandlerTest {
 			@Override
 			public Collection<DayBookings> retrieveAll() {
 				return asList(testDay);
+			}
+
+			@Override
+			public DayBookings retrieveById(Long id) {
+				if (id == 1) {
+					return testDay;
+				}
+				return null;
+			}
+
+			@Override
+			public void deleteById(Long id) {
+				// Not needed in tests
 			}
 		});
 		services.setBookingService(new BookingServiceImpl());

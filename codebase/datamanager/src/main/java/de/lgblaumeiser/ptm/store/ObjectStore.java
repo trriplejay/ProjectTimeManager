@@ -10,6 +10,24 @@ import java.util.Collection;
  */
 public interface ObjectStore<T> {
 	/**
+	 * Retrieve all objects stored in the store
+	 * 
+	 * @return All objects found in the store
+	 */
+	Collection<T> retrieveAll();
+
+	/**
+	 * Retrieve object by the id
+	 * 
+	 * @param id
+	 *            Id of the searched object
+	 * @return The object with the given id
+	 * @throws IllegalStateException
+	 *             If the object of the id is not found
+	 */
+	T retrieveById(Long id);
+
+	/**
 	 * Store an object in the store
 	 *
 	 * @param object
@@ -19,10 +37,10 @@ public interface ObjectStore<T> {
 	T store(T object);
 
 	/**
-	 * Retrieve all objects stored in the store
+	 * Delete an object identified by its id
 	 * 
-	 * @return All objects found in the store
-	 * @return
+	 * @param id
+	 *            The id of the object to be deleted
 	 */
-	Collection<T> retrieveAll();
+	void deleteById(Long id);
 }

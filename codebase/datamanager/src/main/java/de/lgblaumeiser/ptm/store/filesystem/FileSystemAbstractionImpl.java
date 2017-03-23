@@ -22,6 +22,17 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 	private static final String TEMP_FILE_ENDING = ".tmpstore";
 
 	@Override
+	public Collection<File> getAllFiles(File folder, String extension) {
+		return listFiles(folder, new String[] { extension }, false);
+	}
+
+	@Override
+	public String retrieveFromFile(final File source) throws IOException {
+		checkNotNull(source);
+		return readFileToString(source, defaultCharset());
+	}
+
+	@Override
 	public void storeToFile(final File target, final String content) throws IOException {
 		checkNotNull(target);
 		checkNotNull(content);
@@ -41,19 +52,25 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 	}
 
 	@Override
-	public Collection<File> getAllFiles(File folder, String extension) {
-		return listFiles(folder, new String[] { extension }, false);
-	}
-
-	@Override
-	public String retrieveFromFile(final File source) throws IOException {
-		checkNotNull(source);
-		return readFileToString(source, defaultCharset());
+	public void deleteFile(File target) throws IOException {
+		forceDelete(target);
 	}
 
 	@Override
 	public boolean dataAvailable(final File source) {
 		checkNotNull(source);
 		return source.exists() && source.isFile();
+	}
+
+	@Override
+	public boolean folderAvailable(File store, boolean createIfNot) {
+		checkNotNull(store);
+		if (store.isDirectory() && store.exists()) {
+			return true;
+		}
+		if (createIfNot) {
+			return store.mkdir();
+		}
+		return false;
 	}
 }

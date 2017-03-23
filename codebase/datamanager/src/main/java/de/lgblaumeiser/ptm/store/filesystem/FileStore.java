@@ -38,6 +38,29 @@ public class FileStore<T> implements ObjectStore<T> {
 	}.getType();
 
 	@Override
+	public Collection<T> retrieveAll() {
+		return getAllFiles().stream().map(f -> {
+			try {
+				return extractFileContent(filesystemAccess.retrieveFromFile(f));
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}).collect(toList());
+	}
+
+	@Override
+	public T retrieveById(Long id) {
+		checkNotNull(id);
+		File searchedFile = getFileInformation(id);
+		checkState(filesystemAccess.dataAvailable(searchedFile));
+		try {
+			return extractFileContent(filesystemAccess.retrieveFromFile(searchedFile));
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
 	public T store(final T object) {
 		checkNotNull(object);
 		Long index = getIndexObject(object);
@@ -53,14 +76,18 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	@Override
-	public Collection<T> retrieveAll() {
-		return getAllFiles().stream().map(f -> {
-			try {
-				return extractFileContent(filesystemAccess.retrieveFromFile(f));
-			} catch (IOException e) {
-				throw new IllegalStateException(e);
-			}
-		}).collect(toList());
+	public void deleteById(Long id) {
+		checkNotNull(id);
+		File deleteFile = getFileInformation(id);
+		checkState(filesystemAccess.dataAvailable(deleteFile));
+		try {
+			filesystemAccess.deleteFile(deleteFile);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+
+		// TODO Auto-generated method stub
+
 	}
 
 	private T extractFileContent(final String content) {
@@ -87,15 +114,13 @@ public class FileStore<T> implements ObjectStore<T> {
 
 	private File getStore() {
 		File applicationPath = new File(getProperty("filestore.folder", getDefaultStore().getAbsolutePath()));
-		if (!applicationPath.exists()) {
-			checkState(applicationPath.mkdir());
-		}
+		checkState(filesystemAccess.folderAvailable(applicationPath, true));
 		return applicationPath;
 	}
 
 	private File getDefaultStore() {
 		File homepath = new File(getProperty("user.home"));
-		checkState(homepath.isDirectory() && homepath.exists());
+		checkState(filesystemAccess.folderAvailable(homepath, false));
 		return new File(homepath, ".file_store");
 	}
 
@@ -124,8 +149,6 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private Long getNextId() {
-		Collection<File> allFiles = getAllFiles();
-		System.out.println(allFiles);
 		Optional<String> lastId = getAllFiles().stream().map(f -> removeExtension(f.getName()))
 				.max((n1, n2) -> compare(valueOf(n1), valueOf(n2)));
 		if (lastId.isPresent()) {

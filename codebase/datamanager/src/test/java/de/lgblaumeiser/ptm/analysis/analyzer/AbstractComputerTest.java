@@ -123,6 +123,16 @@ public abstract class AbstractComputerTest {
 				return testDataStore.values();
 			}
 
+			@Override
+			public DayBookings retrieveById(Long id) {
+				// Not needed here
+				return null;
+			}
+
+			@Override
+			public void deleteById(Long id) {
+				// Not needed here
+			}
 		};
 		setTesteeStore(testdata);
 	}

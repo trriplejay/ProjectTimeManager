@@ -53,8 +53,14 @@ public class ActivityRestController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}")
 	Activity getActivity(@PathVariable String activityId) {
 		long id = parseLong(activityId);
-		return services.activityStore().retrieveAll().stream().filter(a -> a.getId().longValue() == id).findFirst()
-				.orElseThrow(() -> new IllegalStateException("Not Found"));
+		return services.activityStore().retrieveById(id);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{activityId}")
+	ResponseEntity<?> deleteActivity(@PathVariable String activityId) {
+		long id = parseLong(activityId);
+		services.activityStore().deleteById(id);
+		return ResponseEntity.ok().build();
 	}
 
 	@ExceptionHandler(IllegalStateException.class)

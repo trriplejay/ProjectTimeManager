@@ -8,6 +8,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -53,7 +55,25 @@ public class FileStoreTest {
 		public Collection<File> getAllFiles(File folder, String extension) {
 			return storageFile != null ? asList(storageFile) : emptyList();
 		}
+
+		@Override
+		public void deleteFile(File target) throws IOException {
+			if (!target.equals(storageFile)) {
+				throw new IOException();
+			}
+			if (storageContent == null) {
+				throw new IOException();
+			}
+			storageContent = null;
+			storageFile = null;
+		}
+
+		@Override
+		public boolean folderAvailable(File store, boolean createIfNot) {
+			return true;
+		}
 	};
+
 	private File storageFile;
 	private String storageContent;
 
@@ -85,6 +105,26 @@ public class FileStoreTest {
 		TestStoreObject foundObj = getOnlyElement(foundObjs);
 		assertEquals(TESTINDEX, foundObj.index);
 		assertEquals(TESTCONTENT, foundObj.data);
+	}
+
+	@Test
+	public void testRetrieveById() {
+		TestStoreObject returnedObject = testee.store(testData);
+		Long id = returnedObject.id;
+		TestStoreObject foundObj = testee.retrieveById(id);
+		assertEquals(TESTINDEX, foundObj.index);
+		assertEquals(TESTCONTENT, foundObj.data);
+	}
+
+	@Test
+	public void deleteById() {
+		TestStoreObject returnedObject = testee.store(testData);
+		Long id = returnedObject.id;
+		assertNotNull(storageContent);
+		assertNotNull(storageFile);
+		testee.deleteById(id);
+		assertNull(storageContent);
+		assertNull(storageFile);
 	}
 }
 
