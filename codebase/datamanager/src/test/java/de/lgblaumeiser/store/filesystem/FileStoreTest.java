@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
-import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstraction;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
 
 public class FileStoreTest {
 	private static final String TESTINDEX = "TestIndex";
@@ -28,7 +28,7 @@ public class FileStoreTest {
 
 	private FileStore<TestStoreObject> testee;
 
-	private final FileSystemAbstraction stubAccess = new FileSystemAbstraction() {
+	private final FilesystemAbstraction stubAccess = new FilesystemAbstraction() {
 		@Override
 		public void storeToFile(final File target, final String content) {
 			storageFile = target;

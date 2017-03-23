@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.get;
 import static java.time.LocalTime.parse;
@@ -41,7 +40,7 @@ public class AddBooking extends AbstractCommandHandler {
 	}
 
 	private Activity getActivityByAbbreviatedName(final String name) {
-		checkNotNull(name);
+		checkState(name != null);
 		List<Activity> results = getServices().getActivityStore().retrieveAll().stream()
 				.filter((activity) -> activity.getActivityName().toUpperCase().startsWith(name.toUpperCase()))
 				.collect(toList());

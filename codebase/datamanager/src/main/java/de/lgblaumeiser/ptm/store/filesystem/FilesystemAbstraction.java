@@ -11,7 +11,7 @@ import java.util.Collection;
  * Interface to hide the concrete filesystem access implementation. Improved
  * testability for the business functionality
  */
-public interface FileSystemAbstraction {
+public interface FilesystemAbstraction {
 	/**
 	 * @param The
 	 *            folder in which files are searched

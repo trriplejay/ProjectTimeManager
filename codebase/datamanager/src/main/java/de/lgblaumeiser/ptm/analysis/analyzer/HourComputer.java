@@ -13,76 +13,71 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.time.Duration.ZERO;
 import static java.time.Duration.ofMinutes;
-import static java.time.LocalDate.now;
-import static java.time.LocalDate.of;
-import static java.time.LocalDate.parse;
+import static java.time.YearMonth.now;
+import static java.time.YearMonth.parse;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.Collection;
-import java.util.Optional;
 
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * An analysis that counts all hours in the month given as parameter
  */
 public class HourComputer implements Analysis {
-	private ObjectStore<DayBookings> store;
+	private ObjectStore<Booking> store;
 
 	private static final boolean SITEETAS = false;
 	private static final boolean SITESI = true;
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		LocalDate currentDay = of(now().getYear(), now().getMonthValue(), 1);
+		YearMonth requestedMonth = now();
 		if (parameter.size() > 0) {
-			String date = get(parameter, 0) + "-01";
-			currentDay = parse(date);
+			requestedMonth = parse(get(parameter, 0));
 		}
 		Collection<Collection<Object>> result = newArrayList();
 		result.add(asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Overtime"));
 		Duration overtime = ZERO;
-		do {
-			Optional<DayBookings> currentBookings = getBookingsForDay(currentDay);
-			if (currentBookings.isPresent() && hasCompleteBookings(currentBookings.get())) {
-				String day = currentDay.format(ISO_LOCAL_DATE);
-				LocalTime starttime = getFirst(currentBookings.get().getBookings(), null).getStarttime();
-				LocalTime endtime = getLast(currentBookings.get().getBookings()).getEndtime();
-				Duration presence = calculatePresence(currentBookings.get());
+		LocalDate currentday = requestedMonth.atDay(1);
+		while (!currentday.isAfter(requestedMonth.atEndOfMonth())) {
+			Collection<Booking> currentBookings = getBookingsForDay(currentday);
+			if (hasCompleteBookings(currentBookings)) {
+				String day = currentday.format(ISO_LOCAL_DATE);
+				LocalTime starttime = getFirst(currentBookings, null).getStarttime();
+				LocalTime endtime = getLast(currentBookings).getEndtime();
+				Duration presence = calculatePresence(currentBookings);
 				Duration worktime = ZERO;
 				if (SITEETAS) {
 					worktime = calculateWorktimeETAS(presence);
 				} else if (SITESI) {
 					worktime = calculateWorktimeSchwieberdingen(presence);
 				}
-				Duration currentOvertime = calculateOvertime(worktime, currentDay);
+				Duration currentOvertime = calculateOvertime(worktime, currentday);
 				overtime = overtime.plus(currentOvertime);
 				result.add(asList(day, starttime.format(ofPattern("HH:mm")), endtime.format(ofPattern("HH:mm")),
 						formatDuration(presence), formatDuration(worktime), formatDuration(overtime)));
 			}
-			currentDay = currentDay.plusDays(1);
-		} while (!firstDayInMonth(currentDay));
+			currentday = currentday.plusDays(1);
+		}
 		return result;
 	}
 
-	private Optional<DayBookings> getBookingsForDay(final LocalDate currentDay) {
-		return store.retrieveAll().stream().filter(d -> currentDay.equals(d.getDay())).findFirst();
+	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
+		return store.retrieveAll().stream().filter(b -> b.getBookingday().equals(currentday))
+				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(toList());
 	}
 
-	private boolean firstDayInMonth(final LocalDate currentDay) {
-		return currentDay.getDayOfMonth() == 1;
-	}
-
-	private boolean hasCompleteBookings(final DayBookings currentBookings) {
-		Collection<Booking> bookings = currentBookings.getBookings();
+	private boolean hasCompleteBookings(final Collection<Booking> bookings) {
 		if (bookings.isEmpty()) {
 			return false;
 		}
@@ -130,8 +125,7 @@ public class HourComputer implements Analysis {
 		return ofMinutes(minutes);
 	}
 
-	private Duration calculatePresence(final DayBookings currentBookings) {
-		Collection<Booking> bookings = currentBookings.getBookings();
+	private Duration calculatePresence(Collection<Booking> bookings) {
 		Duration minutes = ZERO;
 		for (Booking current : bookings) {
 			minutes = minutes.plus(current.calculateTimeSpan().getLengthInMinutes());
@@ -146,7 +140,7 @@ public class HourComputer implements Analysis {
 		return format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
-	public void setStore(final ObjectStore<DayBookings> store) {
+	public void setStore(final ObjectStore<Booking> store) {
 		this.store = store;
 	}
 }

@@ -31,7 +31,7 @@ import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
-import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstractionImpl;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
 
 /**
  * The configuration object that creates the application structure
@@ -72,12 +72,12 @@ public class PTMCLIConfigurator {
 
 	private ObjectStore<DayBookings> createBookingFileStore() {
 		return new FileStore<DayBookings>() {
-		}.setFilesystemAccess(new FileSystemAbstractionImpl());
+		}.setFilesystemAccess(new FilesystemAbstractionImpl());
 	}
 
 	private ObjectStore<Activity> createActivityFileStore() {
 		return new FileStore<Activity>() {
-		}.setFilesystemAccess(new FileSystemAbstractionImpl());
+		}.setFilesystemAccess(new FilesystemAbstractionImpl());
 	}
 
 	private BookingService createBookingService() {

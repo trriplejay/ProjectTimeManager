@@ -3,7 +3,7 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.listFiles;
@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * Implementation of the real filesystem access
  */
-public class FileSystemAbstractionImpl implements FileSystemAbstraction {
+public class FilesystemAbstractionImpl implements FilesystemAbstraction {
 	private static final String TEMP_FILE_ENDING = ".tmpstore";
 
 	@Override
@@ -28,14 +28,14 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 
 	@Override
 	public String retrieveFromFile(final File source) throws IOException {
-		checkNotNull(source);
+		checkState(source != null);
 		return readFileToString(source, defaultCharset());
 	}
 
 	@Override
 	public void storeToFile(final File target, final String content) throws IOException {
-		checkNotNull(target);
-		checkNotNull(content);
+		checkState(target != null);
+		checkState(content != null);
 		File tmpFile = new File(target.getParentFile(), target.getName() + TEMP_FILE_ENDING);
 		try {
 			write(tmpFile, content, defaultCharset());
@@ -58,18 +58,18 @@ public class FileSystemAbstractionImpl implements FileSystemAbstraction {
 
 	@Override
 	public boolean dataAvailable(final File source) {
-		checkNotNull(source);
+		checkState(source != null);
 		return source.exists() && source.isFile();
 	}
 
 	@Override
-	public boolean folderAvailable(File store, boolean createIfNot) {
-		checkNotNull(store);
-		if (store.isDirectory() && store.exists()) {
+	public boolean folderAvailable(File folder, boolean createIfNot) {
+		checkState(folder != null);
+		if (folder.isDirectory() && folder.exists()) {
 			return true;
 		}
 		if (createIfNot) {
-			return store.mkdir();
+			return folder.mkdir();
 		}
 		return false;
 	}

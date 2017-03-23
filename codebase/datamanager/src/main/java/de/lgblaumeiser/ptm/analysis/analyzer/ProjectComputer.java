@@ -6,28 +6,32 @@ package de.lgblaumeiser.ptm.analysis.analyzer;
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 import static java.lang.String.format;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import static java.time.Duration.ZERO;
 import static java.time.Duration.ofHours;
-import static java.time.LocalDate.now;
-import static java.time.LocalDate.of;
-import static java.time.LocalDate.parse;
+import static java.time.YearMonth.from;
+import static java.time.YearMonth.now;
+import static java.time.YearMonth.parse;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.Set;
 
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -37,38 +41,38 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
  * the requirements of the author concerning his time keeping.
  */
 public class ProjectComputer implements Analysis {
-	private ObjectStore<DayBookings> store;
+	private ObjectStore<Booking> store;
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		LocalDate currentDay = of(now().getYear(), now().getMonthValue(), 1);
+		YearMonth requestedMonth = now();
 		if (parameter.size() > 0) {
 			String date = get(parameter, 0) + "-01";
-			currentDay = parse(date);
+			requestedMonth = parse(date);
 		}
 		Collection<Collection<Object>> result = newArrayList();
 		result.add(asList("Id", "Total", "%", "Book"));
 		Duration totalMinutes = ZERO;
-		int numberOfDays = 0;
+		Set<LocalDate> daysWorked = newHashSet();
 		Map<String, Duration> activityToMinutesMap = newHashMap();
-		do {
-			Optional<DayBookings> currentBookings = getBookingsForDay(currentDay);
-			if (currentBookings.isPresent() && hasCompleteBookings(currentBookings.get())) {
-				numberOfDays++;
-				for (Booking currentBooking : currentBookings.get().getBookings()) {
-					Activity currentActivity = currentBooking.getActivity();
-					Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity.getBookingNumber());
-					if (accumulatedMinutes == null) {
-						accumulatedMinutes = ZERO;
-					}
-					Duration activityLength = currentBooking.calculateTimeSpan().getLengthInMinutes();
-					totalMinutes = totalMinutes.plus(activityLength);
-					accumulatedMinutes = accumulatedMinutes.plus(activityLength);
-					activityToMinutesMap.put(currentActivity.getBookingNumber(), accumulatedMinutes);
+		for (Booking current : getBookingsForMonth(requestedMonth)) {
+			if (current.hasEndtime()) {
+				LocalDate bookingDate = current.getBookingday();
+				if (!bookingDate.getDayOfWeek().equals(SATURDAY) && !bookingDate.getDayOfWeek().equals(SUNDAY)) {
+					daysWorked.add(bookingDate);
 				}
+				Activity currentActivity = current.getActivity();
+				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity.getBookingNumber());
+				if (accumulatedMinutes == null) {
+					accumulatedMinutes = ZERO;
+				}
+				Duration activityLength = current.calculateTimeSpan().getLengthInMinutes();
+				totalMinutes = totalMinutes.plus(activityLength);
+				accumulatedMinutes = accumulatedMinutes.plus(activityLength);
+				activityToMinutesMap.put(currentActivity.getBookingNumber(), accumulatedMinutes);
 			}
-			currentDay = currentDay.plusDays(1);
-		} while (!firstDayInMonth(currentDay));
+		}
+		int numberOfDays = daysWorked.size();
 		double totalNumberOfMinutes = 8.0 * 60.0 * numberOfDays;
 		int targetHours = 8 * numberOfDays;
 		for (Entry<String, Duration> currentNumber : activityToMinutesMap.entrySet()) {
@@ -88,25 +92,8 @@ public class ProjectComputer implements Analysis {
 		return result;
 	}
 
-	private Optional<DayBookings> getBookingsForDay(final LocalDate currentDay) {
-		return store.retrieveAll().stream().filter(d -> currentDay.equals(d.getDay())).findFirst();
-	}
-
-	private boolean firstDayInMonth(final LocalDate currentDay) {
-		return currentDay.getDayOfMonth() == 1;
-	}
-
-	private boolean hasCompleteBookings(final DayBookings currentBookings) {
-		Collection<Booking> bookings = currentBookings.getBookings();
-		if (bookings.isEmpty()) {
-			return false;
-		}
-		for (Booking current : bookings) {
-			if (!current.hasEndtime()) {
-				return false;
-			}
-		}
-		return true;
+	private Collection<Booking> getBookingsForMonth(final YearMonth month) {
+		return store.retrieveAll().stream().filter(b -> month.equals(from(b.getBookingday()))).collect(toList());
 	}
 
 	private String formatDuration(final Duration duration) {
@@ -116,7 +103,7 @@ public class ProjectComputer implements Analysis {
 		return format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
 	}
 
-	public void setStore(final ObjectStore<DayBookings> store) {
+	public void setStore(final ObjectStore<Booking> store) {
 		this.store = store;
 	}
 }

@@ -4,11 +4,12 @@
 package de.lgblaumeiser.ptm.datamanager.model;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static java.lang.Long.valueOf;
 import static java.util.Objects.hash;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
@@ -18,16 +19,22 @@ import java.time.LocalTime;
  * onto.
  */
 public class Booking {
+	private final LocalDate bookingday;
 	private final LocalTime starttime;
 	private final LocalTime endtime;
 	private final Activity activity;
+	private Long id;
 
 	public static class BookingBuilder {
+		private Long id = valueOf(-1);
+		private LocalDate bookingday;
 		private LocalTime starttime;
 		private LocalTime endtime = null;
 		private Activity activity;
 
 		private BookingBuilder(final Booking booking) {
+			id = booking.getId();
+			bookingday = booking.getBookingday();
 			starttime = booking.getStarttime();
 			if (booking.hasEndtime()) {
 				endtime = booking.getEndtime();
@@ -40,12 +47,21 @@ public class Booking {
 		}
 
 		/**
+		 * @param bookingDay
+		 *            Day for the booking
+		 * @return The booking build as fluent api, non null
+		 */
+		public BookingBuilder setBookingday(LocalDate bookingDay) {
+			this.bookingday = bookingDay;
+			return this;
+		}
+
+		/**
 		 * @param starttime
 		 *            Start time for the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setStarttime(final LocalTime starttime) {
-			checkNotNull(starttime);
 			this.starttime = starttime;
 			return this;
 		}
@@ -66,7 +82,6 @@ public class Booking {
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setActivity(final Activity activity) {
-			checkNotNull(activity);
 			this.activity = activity;
 			return this;
 		}
@@ -78,12 +93,13 @@ public class Booking {
 		 */
 		public Booking build() {
 			checkData();
-			return new Booking(starttime, endtime, activity);
+			return new Booking(id, bookingday, starttime, endtime, activity);
 		}
 
 		private void checkData() {
-			checkNotNull(starttime);
-			checkNotNull(activity);
+			checkState(bookingday != null);
+			checkState(starttime != null);
+			checkState(activity != null);
 
 			if (endtime != null) {
 				checkState(endtime.isAfter(starttime));
@@ -104,10 +120,17 @@ public class Booking {
 		return new BookingBuilder(this);
 	}
 
-	private Booking(final LocalTime starttime, final LocalTime endtime, final Activity activity) {
+	private Booking(final Long id, final LocalDate bookingday, final LocalTime starttime, final LocalTime endtime,
+			final Activity activity) {
+		this.id = id;
+		this.bookingday = bookingday;
 		this.starttime = starttime;
 		this.endtime = endtime;
 		this.activity = activity;
+	}
+
+	public LocalDate getBookingday() {
+		return bookingday;
 	}
 
 	/**
@@ -139,6 +162,14 @@ public class Booking {
 	}
 
 	/**
+	 * @return The internal id of the booking. Automatically created by storage
+	 *         system
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
 	 * @return Calculates the duration of the booking. Is only allowed if end
 	 *         time is given
 	 * @throws IllegalStateException
@@ -151,22 +182,23 @@ public class Booking {
 
 	@Override
 	public int hashCode() {
-		return hash(starttime, endtime, activity);
+		return hash(id, bookingday, starttime, endtime, activity);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Booking) {
 			Booking bkg = (Booking) obj;
-			return starttime.equals(bkg.starttime) && activity.equals(bkg.activity) && endtime != null
-					? endtime.equals(bkg.endtime) : bkg.endtime == null;
+			return id == bkg.id && bookingday.equals(bkg.bookingday) && starttime.equals(bkg.starttime)
+					&& activity.equals(bkg.activity) && endtime != null ? endtime.equals(bkg.endtime)
+							: bkg.endtime == null;
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).omitNullValues().add("Starttime", starttime).add("Endtime", endtime)
-				.add("Activity", activity).toString();
+		return toStringHelper(this).omitNullValues().add("Bookingday", bookingday).add("Starttime", starttime)
+				.add("Endtime", endtime).add("Activity", activity).toString();
 	}
 }

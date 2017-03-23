@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Long.compare;
 import static java.lang.Long.parseLong;
@@ -31,7 +30,7 @@ public class FileStore<T> implements ObjectStore<T> {
 	private static final String ID = "id";
 
 	private final Gson gsonUtil = new Gson();
-	private FileSystemAbstraction filesystemAccess;
+	private FilesystemAbstraction filesystemAccess;
 
 	@SuppressWarnings("serial")
 	public final Type type = new TypeToken<T>(getClass()) {
@@ -50,7 +49,7 @@ public class FileStore<T> implements ObjectStore<T> {
 
 	@Override
 	public T retrieveById(Long id) {
-		checkNotNull(id);
+		checkState(id != null);
 		File searchedFile = getFileInformation(id);
 		checkState(filesystemAccess.dataAvailable(searchedFile));
 		try {
@@ -62,7 +61,7 @@ public class FileStore<T> implements ObjectStore<T> {
 
 	@Override
 	public T store(final T object) {
-		checkNotNull(object);
+		checkState(object != null);
 		Long index = getIndexObject(object);
 		File targetFile = getFileInformation(index);
 		String content = createFileContent(object);
@@ -77,7 +76,7 @@ public class FileStore<T> implements ObjectStore<T> {
 
 	@Override
 	public void deleteById(Long id) {
-		checkNotNull(id);
+		checkState(id != null);
 		File deleteFile = getFileInformation(id);
 		checkState(filesystemAccess.dataAvailable(deleteFile));
 		try {
@@ -85,9 +84,6 @@ public class FileStore<T> implements ObjectStore<T> {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
-
-		// TODO Auto-generated method stub
-
 	}
 
 	private T extractFileContent(final String content) {
@@ -124,13 +120,13 @@ public class FileStore<T> implements ObjectStore<T> {
 		return new File(homepath, ".file_store");
 	}
 
-	public FileStore<T> setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
+	public FileStore<T> setFilesystemAccess(final FilesystemAbstraction filesystemAccess) {
 		this.filesystemAccess = filesystemAccess;
 		return this;
 	}
 
 	private Long getIndexObject(final T object) {
-		checkNotNull(object);
+		checkState(object != null);
 		try {
 			Field f = object.getClass().getDeclaredField(ID);
 			f.setAccessible(true);

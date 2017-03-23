@@ -4,7 +4,6 @@
 package de.lgblaumeiser.ptm.datamanager.model;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.time.Duration.ofMinutes;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -35,8 +34,8 @@ public final class TimeSpan {
 	 *             be defined within a day.
 	 */
 	static TimeSpan newTimeSpan(final LocalTime starttime, final LocalTime endtime) {
-		checkNotNull(starttime);
-		checkNotNull(endtime);
+		checkState(starttime != null);
+		checkState(endtime != null);
 		checkState(endtime.isAfter(starttime));
 		return new TimeSpan(starttime, endtime);
 	}

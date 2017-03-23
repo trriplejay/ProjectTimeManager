@@ -1,11 +1,11 @@
 /*
+
  * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
-import static de.lgblaumeiser.ptm.datamanager.model.DayBookings.newDay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 
 /**
  * Tests for the DayBookings service
@@ -31,13 +30,11 @@ public class BookingServiceTest {
 	private static final Activity ACTIVITY2 = newActivity("a1", "c");
 	private static final Booking BOOKING1 = newBooking().setStarttime(TIME1).setActivity(ACTIVITY1).build();
 
-	private final DayBookings testBookings = newDay(DATE1);
 	private final BookingService testee = new BookingServiceImpl();
 
 	@Test
 	public void testAddBooking1Empty() {
-		Booking booking = testee.addBooking(testBookings, ACTIVITY1, TIME1);
-		assertFalse(testBookings.getBookings().isEmpty());
+		Booking booking = testee.addBooking(DATE1, ACTIVITY1, TIME1);
 		assertEquals(1, testBookings.getBookings().size());
 		assertEquals(booking, testBookings.getLastBooking());
 		assertFalse(testBookings.getLastBooking().hasEndtime());

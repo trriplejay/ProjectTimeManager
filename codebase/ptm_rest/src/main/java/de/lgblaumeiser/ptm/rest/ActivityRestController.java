@@ -28,7 +28,6 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 @RestController
 @RequestMapping("/activities")
 public class ActivityRestController {
-
 	@Autowired
 	private ServiceMapper services;
 

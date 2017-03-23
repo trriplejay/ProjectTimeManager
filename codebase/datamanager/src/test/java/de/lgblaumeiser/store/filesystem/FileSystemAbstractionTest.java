@@ -16,15 +16,15 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstraction;
-import de.lgblaumeiser.ptm.store.filesystem.FileSystemAbstractionImpl;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
 
 public class FileSystemAbstractionTest {
 	private final static String FILENAME = "dummy.test";
 	private final static String FOLDERNAME = "dummy.folder";
 	private final static String FILECONTENT = "Test Content";
 
-	private final FileSystemAbstraction testee = new FileSystemAbstractionImpl();
+	private final FilesystemAbstraction testee = new FilesystemAbstractionImpl();
 
 	@Test
 	public void testStoreAndRetrieve() throws IOException {
