@@ -3,7 +3,10 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
+import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+
+import java.io.File;
 
 import org.springframework.stereotype.Component;
 
@@ -21,7 +24,7 @@ public class ServiceMapper {
 	private ObjectStore<Activity> activityStore;
 
 	public ServiceMapper() {
-		setProperty("filestore.folder", "ptm");
+		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
 		activityStore = new FileStore<Activity>() {
 		}.setFilesystemAccess(new FileSystemAbstractionImpl());
 	}

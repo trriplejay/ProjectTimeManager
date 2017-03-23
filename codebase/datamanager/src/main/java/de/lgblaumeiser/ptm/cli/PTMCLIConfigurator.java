@@ -5,7 +5,10 @@ package de.lgblaumeiser.ptm.cli;
 
 import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setLogger;
 import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setServices;
+import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+
+import java.io.File;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
@@ -46,7 +49,7 @@ public class PTMCLIConfigurator {
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
 	public CLI configure() {
-		setProperty("filestore.folder", "ptm");
+		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
 		ObjectStore<DayBookings> bookingStore = createBookingFileStore();
 		ObjectStore<Activity> activityStore = createActivityFileStore();
 		BookingService bookingService = createBookingService();

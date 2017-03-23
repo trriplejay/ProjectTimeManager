@@ -86,13 +86,17 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private File getStore() {
-		File homepath = new File(getProperty("user.home"));
-		checkState(homepath.isDirectory() && homepath.exists());
-		File applicationPath = new File(homepath, "." + getProperty("filestore.folder", "file_store"));
+		File applicationPath = new File(getProperty("filestore.folder", getDefaultStore().getAbsolutePath()));
 		if (!applicationPath.exists()) {
 			checkState(applicationPath.mkdir());
 		}
 		return applicationPath;
+	}
+
+	private File getDefaultStore() {
+		File homepath = new File(getProperty("user.home"));
+		checkState(homepath.isDirectory() && homepath.exists());
+		return new File(homepath, ".file_store");
 	}
 
 	public FileStore<T> setFilesystemAccess(final FileSystemAbstraction filesystemAccess) {
