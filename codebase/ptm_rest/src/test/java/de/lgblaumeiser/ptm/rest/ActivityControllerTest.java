@@ -3,33 +3,79 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static org.junit.Assert.fail;
+import static com.google.common.io.Files.createTempDir;
+import static java.lang.System.setProperty;
+import static org.apache.commons.io.FileUtils.forceDelete;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test the activity rest controller
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ActivityControllerTest {
-
-	@LocalServerPort
-	private int port;
+	@Autowired
+	private MockMvc mockMvc;
 
 	@Autowired
-	private TestRestTemplate restTemplate;
+	private ObjectMapper objectMapper;
 
-	@Test
-	public void roundtripCreateAndRetrieveActivity() {
-		fail("Not yet implemented");
+	private File tempFolder;
+
+	@Before
+	public void before() {
+		tempFolder = createTempDir();
+		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
+		setProperty("filestore.folder", tempStorage);
 	}
 
+	@After
+	public void after() throws IOException {
+		forceDelete(tempFolder);
+	}
+
+	@Test
+	public void testWithInitialSetupNoActivities() throws Exception {
+		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("[]")));
+	}
+
+	@Test
+	public void testRoundtripCreateAndRetrieveActivity() throws Exception {
+		ActivityRestController.CreateActivityBody data = new ActivityRestController.CreateActivityBody();
+		data.name = "MyTestActivity";
+		data.id = "0815";
+		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(data))).andExpect(status().isCreated());
+
+		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("MyTestActivity")))
+				.andExpect(content().string(containsString("0815")));
+
+		mockMvc.perform(get("/activities/1")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("MyTestActivity")))
+				.andExpect(content().string(containsString("0815")));
+	}
 }
