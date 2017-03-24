@@ -7,7 +7,6 @@ import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -21,20 +20,20 @@ public class OpenDayTest extends AbstractHandlerTest {
 	@Test
 	public void testOpenDayNoParam() {
 		testee.handleCommand(emptyList());
-		assertEquals(now(), services.getStateStore().getCurrentDay().getDay());
+		assertEquals(now(), services.getStateStore().getCurrentDay());
 	}
 
 	@Test
 	public void testOpenDayOneParamFromRepo() {
 		testee.handleCommand(asList(DATE1.toString()));
-		assertTrue(testDay == services.getStateStore().getCurrentDay());
+		assertEquals(DATE1, services.getStateStore().getCurrentDay());
 	}
 
 	@Test
 	public void testOpenDayOneParamFresh() {
-		LocalDate testDate = now().minusWeeks(1);
+		LocalDate testDate = DATE1.minusWeeks(1);
 		testee.handleCommand(asList(testDate.toString()));
-		assertEquals(testDate, services.getStateStore().getCurrentDay().getDay());
+		assertEquals(testDate, services.getStateStore().getCurrentDay());
 	}
 
 	@Test(expected = DateTimeParseException.class)

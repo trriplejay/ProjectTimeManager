@@ -13,13 +13,10 @@ public class ListBookingsTest extends AbstractHandlerTest {
 
 	@Test
 	public void test() {
-		services.getBookingService().endBooking(services.getStateStore().getCurrentDay(),
-				services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), ACTIVITY1, TIME1),
-				TIME2);
+		services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), ACTIVITY1, TIME1);
 		testee.handleCommand(emptyList());
 		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NAME));
 		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NUMBER));
 		assertTrue(logger.logMessages.toString().contains(TIME1.toString()));
-		assertTrue(logger.logMessages.toString().contains(TIME2.toString()));
 	}
 }

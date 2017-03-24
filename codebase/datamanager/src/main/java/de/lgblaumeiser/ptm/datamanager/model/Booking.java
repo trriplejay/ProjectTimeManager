@@ -199,6 +199,6 @@ public class Booking {
 	@Override
 	public String toString() {
 		return toStringHelper(this).omitNullValues().add("Bookingday", bookingday).add("Starttime", starttime)
-				.add("Endtime", endtime).add("Activity", activity).toString();
+				.add("Endtime", endtime).add("Activity", activity).add("Id", id).toString();
 	}
 }

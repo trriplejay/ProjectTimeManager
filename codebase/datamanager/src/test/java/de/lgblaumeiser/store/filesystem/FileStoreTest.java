@@ -111,7 +111,7 @@ public class FileStoreTest {
 	public void testRetrieveById() {
 		TestStoreObject returnedObject = testee.store(testData);
 		Long id = returnedObject.id;
-		TestStoreObject foundObj = testee.retrieveById(id);
+		TestStoreObject foundObj = testee.retrieveById(id).get();
 		assertEquals(TESTINDEX, foundObj.index);
 		assertEquals(TESTCONTENT, foundObj.data);
 	}

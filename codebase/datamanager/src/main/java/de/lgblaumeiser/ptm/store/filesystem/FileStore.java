@@ -48,14 +48,16 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	@Override
-	public T retrieveById(Long id) {
+	public Optional<T> retrieveById(Long id) {
 		checkState(id != null);
 		File searchedFile = getFileInformation(id);
-		checkState(filesystemAccess.dataAvailable(searchedFile));
+		if (!filesystemAccess.dataAvailable(searchedFile)) {
+			return Optional.empty();
+		}
 		try {
-			return extractFileContent(filesystemAccess.retrieveFromFile(searchedFile));
+			return Optional.of(extractFileContent(filesystemAccess.retrieveFromFile(searchedFile)));
 		} catch (IOException e) {
-			throw new IllegalStateException(e);
+			return Optional.empty();
 		}
 	}
 

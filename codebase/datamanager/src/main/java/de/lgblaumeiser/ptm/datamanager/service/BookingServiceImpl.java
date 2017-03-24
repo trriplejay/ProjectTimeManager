@@ -40,7 +40,6 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public Booking endBooking(final Booking booking, final LocalTime endtime) {
 		checkState(booking != null);
-		checkState(!endtime.equals(booking.getEndtime()));
 		Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
 		bookingStore.store(endedBooking);
 		return endedBooking;

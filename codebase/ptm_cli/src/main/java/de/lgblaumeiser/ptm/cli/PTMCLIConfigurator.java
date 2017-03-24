@@ -26,7 +26,7 @@ import de.lgblaumeiser.ptm.cli.engine.handler.ListBookings;
 import de.lgblaumeiser.ptm.cli.engine.handler.OpenDay;
 import de.lgblaumeiser.ptm.cli.engine.handler.RunAnalysis;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
@@ -50,16 +50,16 @@ public class PTMCLIConfigurator {
 
 	public CLI configure() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
-		ObjectStore<DayBookings> bookingStore = createBookingFileStore();
+		ObjectStore<Booking> bookingStore = createBookingFileStore();
 		ObjectStore<Activity> activityStore = createActivityFileStore();
-		BookingService bookingService = createBookingService();
+		BookingService bookingService = createBookingService(bookingStore);
 		DataAnalysisService analysisService = createAnalysisService(bookingStore);
 		CommandInterpreter interpreter = createCommandInterpreter(bookingStore, activityStore, bookingService,
 				analysisService);
 		return createCLI(interpreter);
 	}
 
-	private DataAnalysisService createAnalysisService(final ObjectStore<DayBookings> store) {
+	private DataAnalysisService createAnalysisService(final ObjectStore<Booking> store) {
 		DataAnalysisServiceImpl service = new DataAnalysisServiceImpl();
 		HourComputer hourComputer = new HourComputer();
 		hourComputer.setStore(store);
@@ -70,8 +70,8 @@ public class PTMCLIConfigurator {
 		return service;
 	}
 
-	private ObjectStore<DayBookings> createBookingFileStore() {
-		return new FileStore<DayBookings>() {
+	private ObjectStore<Booking> createBookingFileStore() {
+		return new FileStore<Booking>() {
 		}.setFilesystemAccess(new FilesystemAbstractionImpl());
 	}
 
@@ -80,11 +80,11 @@ public class PTMCLIConfigurator {
 		}.setFilesystemAccess(new FilesystemAbstractionImpl());
 	}
 
-	private BookingService createBookingService() {
-		return new BookingServiceImpl();
+	private BookingService createBookingService(ObjectStore<Booking> bookingStore) {
+		return new BookingServiceImpl().setBookingStore(bookingStore);
 	}
 
-	private CommandInterpreter createCommandInterpreter(final ObjectStore<DayBookings> bookingStore,
+	private CommandInterpreter createCommandInterpreter(final ObjectStore<Booking> bookingStore,
 			final ObjectStore<Activity> activityStore, final BookingService bookingService,
 			final DataAnalysisService analysisService) {
 		CommandInterpreter interpreter = new CommandInterpreter();

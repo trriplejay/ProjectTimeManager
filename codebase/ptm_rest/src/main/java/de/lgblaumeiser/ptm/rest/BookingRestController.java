@@ -4,14 +4,13 @@
 package de.lgblaumeiser.ptm.rest;
 
 import static java.lang.Long.parseLong;
-import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 
 /**
  * Rest Controller for Booking Management
@@ -37,14 +35,15 @@ public class BookingRestController {
 	private ServiceMapper services;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Map<LocalDate, Long> getDaysForWhichBookingsExist() {
-		return emptyMap();
+	public Collection<LocalDate> getDaysForWhichBookingsExist() {
+		return services.bookingStore().retrieveAll().stream().map(b -> b.getBookingday()).distinct().sorted()
+				.collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{dayId}")
-	public Collection<Booking> getBookingsForDay(@PathVariable String dayId) {
-		DayBookings requestedDay = services.bookingStore().retrieveById(parseLong(dayId));
-		return requestedDay.getBookings();
+	@RequestMapping(method = RequestMethod.GET, value = "/{day}")
+	public Collection<Booking> getBookingsForDay(@PathVariable LocalDate day) {
+		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day)).sorted()
+				.collect(toList());
 	}
 
 	static class BookingBody {
@@ -53,29 +52,29 @@ public class BookingRestController {
 		public LocalTime endtime;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{dayId}")
-	public ResponseEntity<?> addBooking(@PathVariable String dayId, @RequestBody BookingBody newData) {
-		DayBookings requestedDay = services.bookingStore().retrieveById(parseLong(dayId));
-		Activity activity = services.activityStore().retrieveById(parseLong(newData.activityId));
-		Booking newBooking = services.bookingService().addBooking(requestedDay, activity, newData.starttime);
+	@RequestMapping(method = RequestMethod.POST, value = "/{day}")
+	public ResponseEntity<?> addBooking(@PathVariable LocalDate day, @RequestBody BookingBody newData) {
+		Activity activity = services.activityStore().retrieveById(parseLong(newData.activityId))
+				.orElseThrow(IllegalStateException::new);
+		Booking newBooking = services.bookingService().addBooking(day, activity, newData.starttime);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newBooking.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{dayId}/{booking}")
-	public Booking getBooking(@PathVariable String dayId, @PathVariable String booking) {
+	@RequestMapping(method = RequestMethod.GET, value = "/{day}/{booking}")
+	public Booking getBooking(@PathVariable LocalDate day, @PathVariable String booking) {
 		return null;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{dayId}/{booking}")
-	public ResponseEntity<?> changeBooking(@PathVariable String dayId, @PathVariable String booking,
+	@RequestMapping(method = RequestMethod.POST, value = "/{day}/{booking}")
+	public ResponseEntity<?> changeBooking(@PathVariable String day, @PathVariable String booking,
 			@RequestBody BookingBody changedData) {
 		return ResponseEntity.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{dayId}/{booking}")
-	public ResponseEntity<?> deleteBooking(@PathVariable String dayId, @PathVariable String booking) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{day}/{booking}")
+	public ResponseEntity<?> deleteBooking(@PathVariable String day, @PathVariable String booking) {
 		return ResponseEntity.ok().build();
 	}
 

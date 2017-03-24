@@ -5,36 +5,27 @@ package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import static com.google.common.collect.Iterables.get;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
 import org.junit.Test;
 
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public class HourComputerTest extends AbstractComputerTest {
 	private final HourComputer testee = new HourComputer();
 
 	@Override
-	protected void setTesteeStore(final ObjectStore<DayBookings> store) {
+	protected void setTesteeStore(final ObjectStore<Booking> store) {
 		testee.setStore(store);
 	}
 
 	@Test
 	public void testHourComputerToday() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(emptyList());
-		assertEquals(4, analysisResults.size());
-		assertEquals("-03:58", get(get(analysisResults, 3), 5));
-	}
-
-	@Test
-	public void testHourComputerFixed() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2015-12"));
-		System.out.println(analysisResults);
-		assertEquals(4, analysisResults.size());
-		assertEquals(" 10:28", get(get(analysisResults, 3), 5));
+		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2017-03"));
+		assertEquals(6, analysisResults.size());
+		assertEquals("-11:15", get(get(analysisResults, 5), 5));
 	}
 }

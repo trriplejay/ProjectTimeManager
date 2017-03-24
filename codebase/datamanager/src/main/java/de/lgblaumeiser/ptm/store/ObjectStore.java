@@ -4,6 +4,7 @@
 package de.lgblaumeiser.ptm.store;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A general interface for storing objects
@@ -21,11 +22,9 @@ public interface ObjectStore<T> {
 	 * 
 	 * @param id
 	 *            Id of the searched object
-	 * @return The object with the given id
-	 * @throws IllegalStateException
-	 *             If the object of the id is not found
+	 * @return The object with the given id as potentially empty optional
 	 */
-	T retrieveById(Long id);
+	Optional<T> retrieveById(Long id);
 
 	/**
 	 * Store an object in the store

@@ -11,7 +11,7 @@ import java.io.File;
 import org.springframework.stereotype.Component;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
@@ -27,7 +27,7 @@ import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
 public class ServiceMapper {
 	private final ObjectStore<Activity> activityStore;
 
-	private final ObjectStore<DayBookings> bookingStore;
+	private final ObjectStore<Booking> bookingStore;
 	private final BookingService bookingService;
 
 	public ServiceMapper() {
@@ -35,7 +35,7 @@ public class ServiceMapper {
 		FilesystemAbstraction filesystemAbstraction = new FilesystemAbstractionImpl();
 		activityStore = new FileStore<Activity>() {
 		}.setFilesystemAccess(filesystemAbstraction);
-		bookingStore = new FileStore<DayBookings>() {
+		bookingStore = new FileStore<Booking>() {
 		}.setFilesystemAccess(filesystemAbstraction);
 		bookingService = new BookingServiceImpl();
 	}
@@ -44,7 +44,7 @@ public class ServiceMapper {
 		return activityStore;
 	}
 
-	public ObjectStore<DayBookings> bookingStore() {
+	public ObjectStore<Booking> bookingStore() {
 		return bookingStore;
 	}
 

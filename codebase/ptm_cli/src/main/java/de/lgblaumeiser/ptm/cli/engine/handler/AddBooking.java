@@ -8,6 +8,7 @@ import static com.google.common.collect.Iterables.get;
 import static java.time.LocalTime.parse;
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.List;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 
 /**
  * Add a booking for the day
@@ -23,20 +23,18 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 public class AddBooking extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
-		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
+		LocalDate currentDay = getServices().getStateStore().getCurrentDay();
 		checkState(parameters.size() > 1);
 		getLogger().log("Add new booking ...");
 		String activityAbbrev = get(parameters, 0);
 		Activity activity = getActivityByAbbreviatedName(activityAbbrev);
 		LocalTime starttime = parse(get(parameters, 1));
-		Booking addedBooking = getServices().getBookingService().addBooking(currentBookings, activity, starttime);
+		Booking addedBooking = getServices().getBookingService().addBooking(currentDay, activity, starttime);
 		if (parameters.size() == 3) {
 			LocalTime endtime = parse(get(parameters, 2));
-			addedBooking = getServices().getBookingService().endBooking(currentBookings, addedBooking, endtime);
+			addedBooking = getServices().getBookingService().endBooking(addedBooking, endtime);
 		}
 		getLogger().log(" ... booking added with information: " + addedBooking.toString());
-		getServices().getBookingsStore().store(currentBookings);
-		getLogger().log("... bookings stored");
 	}
 
 	private Activity getActivityByAbbreviatedName(final String name) {

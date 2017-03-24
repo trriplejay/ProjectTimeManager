@@ -7,13 +7,13 @@ import static com.google.common.collect.Lists.newArrayList;
 import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setLogger;
 import static de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler.setServices;
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
-import static de.lgblaumeiser.ptm.datamanager.model.DayBookings.newDay;
 import static java.util.Arrays.asList;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.junit.Before;
 
@@ -22,7 +22,6 @@ import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
@@ -36,9 +35,6 @@ public abstract class AbstractHandlerTest {
 	protected static final String ACTIVITY2NUMBER = "4711";
 	protected static final Activity ACTIVITY1 = newActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
 	protected static final Activity ACTIVITY2 = newActivity(ACTIVITY2NAME, ACTIVITY2NUMBER);
-	protected static final Booking BOOKING1 = newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACTIVITY1)
-			.build();
-	protected DayBookings testDay = newDay(DATE1);
 
 	protected boolean activityStoreCalled = false;
 	protected boolean bookingStoreCalled = false;
@@ -58,7 +54,7 @@ public abstract class AbstractHandlerTest {
 
 	@Before
 	public void before() {
-		services.getStateStore().setCurrentDay(testDay);
+		services.getStateStore().setCurrentDay(DATE1);
 		services.setActivityStore(new ObjectStore<Activity>() {
 			@Override
 			public Activity store(Activity object) {
@@ -72,13 +68,13 @@ public abstract class AbstractHandlerTest {
 			}
 
 			@Override
-			public Activity retrieveById(Long id) {
+			public Optional<Activity> retrieveById(Long id) {
 				if (id == 1) {
-					return ACTIVITY1;
+					return Optional.of(ACTIVITY1);
 				} else if (id == 2) {
-					return ACTIVITY2;
+					return Optional.of(ACTIVITY2);
 				}
-				return null;
+				return Optional.empty();
 			}
 
 			@Override
@@ -86,32 +82,43 @@ public abstract class AbstractHandlerTest {
 				// Not needed in tests
 			}
 		});
-		services.setBookingsStore(new ObjectStore<DayBookings>() {
+		services.setBookingsStore(new ObjectStore<Booking>() {
+			private Collection<Booking> bookings = newArrayList();
+			private Long id = 1L;
+
 			@Override
-			public DayBookings store(DayBookings object) {
-				bookingStoreCalled = true;
+			public Booking store(Booking object) {
+				bookings.stream().filter(b -> b.getId() == object.getId()).findFirst().ifPresent(bookings::remove);
+				try {
+					Field f = object.getClass().getDeclaredField("id");
+					f.setAccessible(true);
+					f.set(object, id);
+					id++;
+					f.setAccessible(false);
+				} catch (IllegalAccessException | IllegalArgumentException | ClassCastException | NoSuchFieldException
+						| SecurityException e) {
+					throw new IllegalStateException(e);
+				}
+				bookings.add(object);
 				return object;
 			}
 
 			@Override
-			public Collection<DayBookings> retrieveAll() {
-				return asList(testDay);
+			public Collection<Booking> retrieveAll() {
+				return bookings;
 			}
 
 			@Override
-			public DayBookings retrieveById(Long id) {
-				if (id == 1) {
-					return testDay;
-				}
-				return null;
+			public Optional<Booking> retrieveById(Long id) {
+				return bookings.stream().filter(b -> b.getId() == id).findFirst();
 			}
 
 			@Override
 			public void deleteById(Long id) {
-				// Not needed in tests
+				bookings.stream().filter(b -> b.getId() == id).findFirst().ifPresent(bookings::remove);
 			}
 		});
-		services.setBookingService(new BookingServiceImpl());
+		services.setBookingService(new BookingServiceImpl().setBookingStore(services.getBookingsStore()));
 		services.setAnalysisService(new DataAnalysisService() {
 			@Override
 			public Collection<Collection<Object>> analyze(String analyzerId, Collection<String> parameter) {

@@ -4,12 +4,13 @@
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 
 /**
  * List the bookings of the day
@@ -17,10 +18,11 @@ import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 public class ListBookings extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
-		DayBookings currentBookings = getServices().getStateStore().getCurrentDay();
-		getLogger().log("Current Bookings for day " + currentBookings.getDay().format(ISO_LOCAL_DATE));
+		LocalDate currentBookings = getServices().getStateStore().getCurrentDay();
+		getLogger().log("Current Bookings for day " + currentBookings.format(ISO_LOCAL_DATE));
 		getLogger().log("======================================");
-		for (Booking booking : currentBookings.getBookings()) {
+		for (Booking booking : getServices().getBookingsStore().retrieveAll().stream()
+				.filter(b -> currentBookings.equals(b.getBookingday())).collect(toList())) {
 			getLogger().log(booking.toString());
 		}
 		getLogger().log("======================================\n");

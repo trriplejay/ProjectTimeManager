@@ -52,7 +52,7 @@ public class ActivityRestController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}")
 	Activity getActivity(@PathVariable String activityId) {
 		long id = parseLong(activityId);
-		return services.activityStore().retrieveById(id);
+		return services.activityStore().retrieveById(id).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{activityId}")

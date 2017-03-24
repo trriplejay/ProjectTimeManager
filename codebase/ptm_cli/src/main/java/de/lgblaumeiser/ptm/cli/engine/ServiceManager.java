@@ -5,7 +5,7 @@ package de.lgblaumeiser.ptm.cli.engine;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
@@ -17,7 +17,7 @@ public class ServiceManager {
 	private BookingService bookingService;
 	private DataAnalysisService analysisService;
 	private ObjectStore<Activity> activityStore;
-	private ObjectStore<DayBookings> bookingsStore;
+	private ObjectStore<Booking> bookingsStore;
 	private final StateStore stateStore = new StateStore();
 
 	public BookingService getBookingService() {
@@ -44,11 +44,11 @@ public class ServiceManager {
 		this.activityStore = activityStore;
 	}
 
-	public ObjectStore<DayBookings> getBookingsStore() {
+	public ObjectStore<Booking> getBookingsStore() {
 		return bookingsStore;
 	}
 
-	public void setBookingsStore(final ObjectStore<DayBookings> bookingsStore) {
+	public void setBookingsStore(final ObjectStore<Booking> bookingsStore) {
 		this.bookingsStore = bookingsStore;
 	}
 

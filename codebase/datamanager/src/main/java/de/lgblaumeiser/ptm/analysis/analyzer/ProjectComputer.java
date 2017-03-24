@@ -47,8 +47,7 @@ public class ProjectComputer implements Analysis {
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
 		YearMonth requestedMonth = now();
 		if (parameter.size() > 0) {
-			String date = get(parameter, 0) + "-01";
-			requestedMonth = parse(date);
+			requestedMonth = parse(get(parameter, 0));
 		}
 		Collection<Collection<Object>> result = newArrayList();
 		result.add(asList("Id", "Total", "%", "Book"));

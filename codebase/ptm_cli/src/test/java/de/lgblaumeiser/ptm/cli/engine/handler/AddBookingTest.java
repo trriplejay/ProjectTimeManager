@@ -3,16 +3,16 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.collect.Iterables.get;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.time.format.DateTimeParseException;
-import java.util.List;
+import java.util.Collection;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -20,30 +20,24 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
 public class AddBookingTest extends AbstractHandlerTest {
 	private AddBooking testee = new AddBooking();
 
-	@Override
-	@Before
-	public void before() {
-		super.before();
-	}
-
 	@Test
 	public void testAddBookingTwoParamClean() {
 		testee.handleCommand(asList(ACTIVITY1NAME.substring(0, 1), TIME1.toString()));
-		List<Booking> results = services.getStateStore().getCurrentDay().getBookings();
+		Collection<Booking> results = services.getBookingsStore().retrieveAll();
 		assertEquals(1, results.size());
-		assertEquals(ACTIVITY1, results.get(0).getActivity());
-		assertEquals(TIME1, results.get(0).getStarttime());
-		assertFalse(results.get(0).hasEndtime());
+		assertEquals(ACTIVITY1, get(results, 0).getActivity());
+		assertEquals(TIME1, get(results, 0).getStarttime());
+		assertFalse(get(results, 0).hasEndtime());
 	}
 
 	@Test
 	public void testAddBookingThreeParamClean() {
 		testee.handleCommand(asList(ACTIVITY1NAME, TIME1.toString(), TIME2.toString()));
-		List<Booking> results = services.getStateStore().getCurrentDay().getBookings();
+		Collection<Booking> results = services.getBookingsStore().retrieveAll();
 		assertEquals(1, results.size());
-		assertEquals(ACTIVITY1, results.get(0).getActivity());
-		assertEquals(TIME1, results.get(0).getStarttime());
-		assertEquals(TIME2, results.get(0).getEndtime());
+		assertEquals(ACTIVITY1, get(results, 0).getActivity());
+		assertEquals(TIME1, get(results, 0).getStarttime());
+		assertEquals(TIME2, get(results, 0).getEndtime());
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -63,7 +57,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingTwoParamEmptyTime() {
-		testee.handleCommand(asList(ACTIVITY1NAME, StringUtils.EMPTY));
+		testee.handleCommand(asList(ACTIVITY1NAME, EMPTY));
 	}
 
 	@Test(expected = DateTimeParseException.class)

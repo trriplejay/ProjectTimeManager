@@ -3,22 +3,19 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Lists.newArrayList;
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
-import static de.lgblaumeiser.ptm.datamanager.model.DayBookings.newDay;
-import static java.time.LocalDate.now;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.DayBookings;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public abstract class AbstractComputerTest {
@@ -44,89 +41,48 @@ public abstract class AbstractComputerTest {
 	private static final LocalTime TIME7 = LocalTime.of(15, 39);
 	private static final LocalTime TIME8 = LocalTime.of(18, 45);
 
-	private static final Booking BOOKING1 = newBooking().setStarttime(TIME1).setEndtime(TIME2).setActivity(ACTIVITY1)
-			.build();
-	private static final Booking BOOKING2 = newBooking().setStarttime(TIME2).setEndtime(TIME3).setActivity(ACTIVITY2)
-			.build();
-	private static final Booking BOOKING3 = newBooking().setStarttime(TIME4).setEndtime(TIME6).setActivity(ACTIVITY3)
-			.build();
-	private static final Booking BOOKING4 = newBooking().setStarttime(TIME7).setEndtime(TIME5).setActivity(ACTIVITY1)
-			.build();
-	private static final Booking BOOKING5 = newBooking().setStarttime(TIME6).setEndtime(TIME3).setActivity(ACTIVITY2)
-			.build();
-	private static final Booking BOOKING6 = newBooking().setStarttime(TIME3).setEndtime(TIME5).setActivity(ACTIVITY3)
-			.build();
-	private static final Booking BOOKING7 = newBooking().setStarttime(TIME4).setEndtime(TIME7).setActivity(ACTIVITY1)
-			.build();
-	private static final Booking BOOKING8 = newBooking().setStarttime(TIME7).setEndtime(TIME8).setActivity(ACTIVITY2)
-			.build();
-	private static final Booking BOOKING9 = newBooking().setStarttime(TIME4).setActivity(ACTIVITY3).build();
-	private static final Booking BOOKING10 = newBooking().setStarttime(TIME6).setEndtime(TIME8).setActivity(ACTIVITY1)
-			.build();
+	private static final Booking BOOKING1 = newBooking().setBookingday(LocalDate.of(2017, 3, 1)).setStarttime(TIME1)
+			.setEndtime(TIME2).setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING2 = newBooking().setBookingday(LocalDate.of(2017, 3, 1)).setStarttime(TIME2)
+			.setEndtime(TIME3).setActivity(ACTIVITY2).build();
+	private static final Booking BOOKING3 = newBooking().setBookingday(LocalDate.of(2017, 3, 6)).setStarttime(TIME4)
+			.setEndtime(TIME6).setActivity(ACTIVITY3).build();
+	private static final Booking BOOKING4 = newBooking().setBookingday(LocalDate.of(2017, 3, 6)).setStarttime(TIME7)
+			.setEndtime(TIME5).setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING5 = newBooking().setBookingday(LocalDate.of(2017, 3, 9)).setStarttime(TIME6)
+			.setEndtime(TIME3).setActivity(ACTIVITY2).build();
+	private static final Booking BOOKING6 = newBooking().setBookingday(LocalDate.of(2017, 3, 9)).setStarttime(TIME3)
+			.setEndtime(TIME5).setActivity(ACTIVITY3).build();
+	private static final Booking BOOKING7 = newBooking().setBookingday(LocalDate.of(2017, 3, 15)).setStarttime(TIME4)
+			.setEndtime(TIME7).setActivity(ACTIVITY1).build();
+	private static final Booking BOOKING8 = newBooking().setBookingday(LocalDate.of(2017, 3, 15)).setStarttime(TIME7)
+			.setEndtime(TIME8).setActivity(ACTIVITY2).build();
+	private static final Booking BOOKING9 = newBooking().setBookingday(LocalDate.of(2017, 3, 24)).setStarttime(TIME4)
+			.setActivity(ACTIVITY3).build();
+	private static final Booking BOOKING10 = newBooking().setBookingday(LocalDate.of(2017, 3, 28)).setStarttime(TIME6)
+			.setEndtime(TIME8).setActivity(ACTIVITY1).build();
 
-	private static Map<LocalDate, DayBookings> testDataStore = newHashMap();
-
-	static {
-		LocalDate currentDay = LocalDate.of(now().getYear(), now().getMonthValue(), 1);
-
-		DayBookings dayOne = newDay(currentDay);
-		dayOne.addBooking(BOOKING1);
-		dayOne.addBooking(BOOKING2);
-		testDataStore.put(currentDay, dayOne);
-
-		currentDay = currentDay.plusDays(4);
-		DayBookings dayTwo = newDay(currentDay);
-		dayTwo.addBooking(BOOKING3);
-		dayTwo.addBooking(BOOKING4);
-		testDataStore.put(currentDay, dayTwo);
-
-		currentDay = currentDay.plusDays(4);
-		DayBookings dayFour = newDay(currentDay);
-		dayFour.addBooking(BOOKING9);
-		testDataStore.put(currentDay, dayFour);
-
-		currentDay = currentDay.plusDays(4);
-		DayBookings dayThree = newDay(currentDay);
-		dayThree.addBooking(BOOKING10);
-		testDataStore.put(currentDay, dayThree);
-
-		currentDay = OTHERMONTH;
-		DayBookings dayFive = newDay(currentDay);
-		dayFive.addBooking(BOOKING5);
-		dayFive.addBooking(BOOKING6);
-		testDataStore.put(currentDay, dayFive);
-
-		currentDay = currentDay.plusDays(4);
-		DayBookings daySix = newDay(currentDay);
-		daySix.addBooking(BOOKING7);
-		daySix.addBooking(BOOKING8);
-		testDataStore.put(currentDay, daySix);
-
-		currentDay = currentDay.plusDays(4);
-		DayBookings daySeven = newDay(currentDay);
-		daySeven.addBooking(BOOKING7);
-		daySeven.addBooking(BOOKING8);
-		testDataStore.put(currentDay, daySeven);
-	}
+	private static Collection<Booking> testDataStore = newArrayList(BOOKING1, BOOKING2, BOOKING3, BOOKING4, BOOKING5,
+			BOOKING6, BOOKING7, BOOKING8, BOOKING9, BOOKING10);
 
 	@Before
 	public void before() {
-		ObjectStore<DayBookings> testdata = new ObjectStore<DayBookings>() {
+		ObjectStore<Booking> testdata = new ObjectStore<Booking>() {
 			@Override
-			public DayBookings store(DayBookings object) {
+			public Booking store(Booking object) {
 				// Not needed for test
 				return object;
 			}
 
 			@Override
-			public Collection<DayBookings> retrieveAll() {
-				return testDataStore.values();
+			public Collection<Booking> retrieveAll() {
+				return testDataStore;
 			}
 
 			@Override
-			public DayBookings retrieveById(Long id) {
+			public Optional<Booking> retrieveById(Long id) {
 				// Not needed here
-				return null;
+				return Optional.empty();
 			}
 
 			@Override
@@ -137,5 +93,5 @@ public abstract class AbstractComputerTest {
 		setTesteeStore(testdata);
 	}
 
-	protected abstract void setTesteeStore(ObjectStore<DayBookings> store);
+	protected abstract void setTesteeStore(ObjectStore<Booking> store);
 }
