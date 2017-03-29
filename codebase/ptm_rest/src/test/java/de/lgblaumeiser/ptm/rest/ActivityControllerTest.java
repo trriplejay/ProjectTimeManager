@@ -65,11 +65,11 @@ public class ActivityControllerTest {
 
 	@Test
 	public void testRoundtripCreateAndRetrieveActivity() throws Exception {
-		ActivityRestController.CreateActivityBody data = new ActivityRestController.CreateActivityBody();
+		ActivityRestController.ActivityBody data = new ActivityRestController.ActivityBody();
 		data.name = "MyTestActivity";
 		data.id = "0815";
 		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(data))).andExpect(status().isCreated());
+				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))

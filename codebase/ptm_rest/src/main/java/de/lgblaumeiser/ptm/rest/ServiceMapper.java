@@ -37,7 +37,7 @@ public class ServiceMapper {
 		}.setFilesystemAccess(filesystemAbstraction);
 		bookingStore = new FileStore<Booking>() {
 		}.setFilesystemAccess(filesystemAbstraction);
-		bookingService = new BookingServiceImpl();
+		bookingService = new BookingServiceImpl().setBookingStore(bookingStore);
 	}
 
 	public ObjectStore<Activity> activityStore() {

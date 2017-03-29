@@ -4,7 +4,7 @@
 package de.lgblaumeiser.ptm.rest;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static java.lang.Long.parseLong;
+import static java.lang.Long.valueOf;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.net.URI;
@@ -36,13 +36,13 @@ public class ActivityRestController {
 		return services.activityStore().retrieveAll();
 	}
 
-	static class CreateActivityBody {
+	static class ActivityBody {
 		public String name;
 		public String id;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	ResponseEntity<?> addActivity(@RequestBody CreateActivityBody activityData) {
+	ResponseEntity<?> addActivity(@RequestBody ActivityBody activityData) {
 		Activity newActivity = services.activityStore().store(newActivity(activityData.name, activityData.id));
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newActivity.getId()).toUri();
@@ -51,14 +51,12 @@ public class ActivityRestController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}")
 	Activity getActivity(@PathVariable String activityId) {
-		long id = parseLong(activityId);
-		return services.activityStore().retrieveById(id).orElseThrow(IllegalStateException::new);
+		return services.activityStore().retrieveById(valueOf(activityId)).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{activityId}")
 	ResponseEntity<?> deleteActivity(@PathVariable String activityId) {
-		long id = parseLong(activityId);
-		services.activityStore().deleteById(id);
+		services.activityStore().deleteById(valueOf(activityId));
 		return ResponseEntity.ok().build();
 	}
 

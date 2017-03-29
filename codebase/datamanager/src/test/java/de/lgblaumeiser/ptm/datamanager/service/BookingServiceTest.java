@@ -145,41 +145,4 @@ public class BookingServiceTest {
 			assertFalse(mockStore.retrieveAll().isEmpty());
 		}
 	}
-
-	@Test
-	public void testRemoveBooking() {
-		Booking testBooking = testee.addBooking(DATE1, ACTIVITY1, TIME1);
-		testee.removeBooking(testBooking);
-		assertTrue(mockStore.retrieveAll().isEmpty());
-	}
-
-	@Test
-	public void testRemoveBookingWithPreviousBooking() {
-		testee.addBooking(DATE1, ACTIVITY1, TIME1);
-		Booking startBooking = testee.addBooking(DATE1, ACTIVITY2, TIME2);
-		Booking testBooking = testee.endBooking(startBooking, TIME3);
-		testee.removeBooking(testBooking);
-		assertEquals(1, mockStore.retrieveAll().size());
-		assertEquals(TIME2, get(mockStore.retrieveAll(), 0).getEndtime());
-		assertEquals(TIME1, get(mockStore.retrieveAll(), 0).getStarttime());
-	}
-
-	@Test
-	public void testRemoveBookingWithPreviousBookingButUnendedRemoveCandidate() {
-		testee.addBooking(DATE1, ACTIVITY1, TIME1);
-		Booking testBooking = testee.addBooking(DATE1, ACTIVITY2, TIME2);
-		testee.removeBooking(testBooking);
-		assertEquals(1, mockStore.retrieveAll().size());
-		assertEquals(TIME1, get(mockStore.retrieveAll(), 0).getStarttime());
-		assertTrue(get(mockStore.retrieveAll(), 0).hasEndtime());
-	}
-
-	@Test
-	public void testRemoveBookingFirst() {
-		testee.addBooking(DATE1, ACTIVITY1, TIME1);
-		testee.addBooking(DATE1, ACTIVITY2, TIME2);
-		testee.removeBooking(get(mockStore.retrieveAll(), 0));
-		assertEquals(1, mockStore.retrieveAll().size());
-		assertEquals(TIME2, get(mockStore.retrieveAll(), 0).getStarttime());
-	}
 }

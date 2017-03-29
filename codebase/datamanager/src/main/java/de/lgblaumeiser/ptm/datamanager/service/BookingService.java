@@ -42,13 +42,4 @@ public interface BookingService {
 	 *             If a booking overlap is added
 	 */
 	Booking endBooking(Booking booking, LocalTime endtime);
-
-	/**
-	 * Removes the given booking, might create a gap in the days bookings, since
-	 * no other booking is changed.
-	 *
-	 * @param booking
-	 *            The booking to delete
-	 */
-	void removeBooking(Booking booking);
 }

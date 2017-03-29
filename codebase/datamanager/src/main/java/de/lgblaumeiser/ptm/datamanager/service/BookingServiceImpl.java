@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
 
 	private Optional<Booking> getLastOpenBooking(LocalDate bookingday) {
 		return bookingStore.retrieveAll().stream().filter(b -> b.getBookingday().equals(bookingday) && !b.hasEndtime())
-				.findAny();
+				.findFirst();
 	}
 
 	@Override
@@ -43,12 +43,6 @@ public class BookingServiceImpl implements BookingService {
 		Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
 		bookingStore.store(endedBooking);
 		return endedBooking;
-	}
-
-	@Override
-	public void removeBooking(final Booking booking) {
-		checkState(booking != null);
-		bookingStore.deleteById(booking.getId());
 	}
 
 	/**

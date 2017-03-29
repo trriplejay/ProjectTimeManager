@@ -3,13 +3,14 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static java.lang.Long.parseLong;
+import static java.lang.Long.valueOf;
+import static java.time.LocalTime.parse;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,46 +36,54 @@ public class BookingRestController {
 	private ServiceMapper services;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Collection<LocalDate> getDaysForWhichBookingsExist() {
-		return services.bookingStore().retrieveAll().stream().map(b -> b.getBookingday()).distinct().sorted()
-				.collect(toList());
+	public Collection<String> getDaysForWhichBookingsExist() {
+		return services.bookingStore().retrieveAll().stream().map(b -> b.getBookingday()).distinct()
+				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{day}")
-	public Collection<Booking> getBookingsForDay(@PathVariable LocalDate day) {
+	@RequestMapping(method = RequestMethod.GET, value = "/{dayString}")
+	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
+		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day)).sorted()
 				.collect(toList());
 	}
 
 	static class BookingBody {
 		public String activityId;
-		public LocalTime starttime;
-		public LocalTime endtime;
+		public String starttime;
+		public String endtime;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{day}")
-	public ResponseEntity<?> addBooking(@PathVariable LocalDate day, @RequestBody BookingBody newData) {
-		Activity activity = services.activityStore().retrieveById(parseLong(newData.activityId))
+	@RequestMapping(method = RequestMethod.POST, value = "/{dayString}")
+	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
+		LocalDate day = LocalDate.parse(dayString);
+		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
 				.orElseThrow(IllegalStateException::new);
-		Booking newBooking = services.bookingService().addBooking(day, activity, newData.starttime);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newBooking.getId())
-				.toUri();
+		Booking newBooking = services.bookingService().addBooking(day, activity, parse(newData.starttime));
+		if (newData.endtime != null) {
+			newBooking = services.bookingService().endBooking(newBooking, parse(newData.endtime));
+		}
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{day}/{id}")
+				.buildAndExpand(day.format(ISO_LOCAL_DATE), newBooking.getId()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{day}/{booking}")
-	public Booking getBooking(@PathVariable LocalDate day, @PathVariable String booking) {
-		return null;
+	@RequestMapping(method = RequestMethod.GET, value = "/{dayString}/{booking}")
+	public Booking getBooking(@PathVariable String dayString, @PathVariable String booking) {
+		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{day}/{booking}")
-	public ResponseEntity<?> changeBooking(@PathVariable String day, @PathVariable String booking,
+	@RequestMapping(method = RequestMethod.POST, value = "/{dayString}/{booking}")
+	public ResponseEntity<?> endBooking(@PathVariable String dayString, @PathVariable String booking,
 			@RequestBody BookingBody changedData) {
+		services.bookingStore().retrieveById(valueOf(booking))
+				.ifPresent(b -> services.bookingService().endBooking(b, parse(changedData.endtime)));
 		return ResponseEntity.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{day}/{booking}")
-	public ResponseEntity<?> deleteBooking(@PathVariable String day, @PathVariable String booking) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{dayString}/{booking}")
+	public ResponseEntity<?> deleteBooking(@PathVariable String dayString, @PathVariable String booking) {
+		services.bookingStore().deleteById(valueOf(booking));
 		return ResponseEntity.ok().build();
 	}
 
