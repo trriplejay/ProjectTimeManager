@@ -64,7 +64,8 @@ public class Activity {
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName).toString();
+		return toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName).add("Id", id)
+				.toString();
 	}
 
 	@Override
