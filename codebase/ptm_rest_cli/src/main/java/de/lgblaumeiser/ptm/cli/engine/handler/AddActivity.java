@@ -22,9 +22,9 @@ public class AddActivity extends AbstractCommandHandler {
 		String id = get(parameters, 1);
 		checkState(isNotBlank(name));
 		checkState(isNotBlank(id));
-		getLogger().log("Add activity " + name + " with id " + id);
-		String restId = getServices().getRestUtils().post("/activities", "name", name, "id", id);
-		getLogger().log("Activity added with id " + restId + "\n");
+		getLogger().log("Add activity " + name + " with booking number " + id);
+		String restId = getServices().getRestUtils().postActivity(name, id);
+		getLogger().log("Activity added with internal id " + restId + "\n");
 	}
 
 	@Override

@@ -5,7 +5,6 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.get;
-import static java.lang.Long.valueOf;
 
 import java.util.Collection;
 
@@ -17,10 +16,11 @@ import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 public class DeleteBooking extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
+		String currentBookings = getServices().getStateStore().getCurrentDayString();
 		checkState(parameters.size() > 0);
 		getLogger().log("Delete booking now ...");
-		Long id = valueOf(get(parameters, 0));
-		getServices().getBookingsStore().deleteById(id);
+		String id = get(parameters, 0);
+		getServices().getRestUtils().deleteBooking(currentBookings, id);
 		getLogger().log("... booking deleted");
 	}
 

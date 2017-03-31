@@ -3,7 +3,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -18,7 +17,7 @@ public class ListActivity extends AbstractCommandHandler {
 	public void handleCommand(final Collection<String> parameters) {
 		getLogger().log("Known Activities");
 		getLogger().log("======================================");
-		for (Activity current : getServices().getRestUtils().<Collection<Activity>>get("/activities", Collection<Activity>.class) {
+		for (Activity current : getServices().getRestUtils().getActivities()) {
 			getLogger().log(current.toString());
 		}
 		getLogger().log("======================================\n");
