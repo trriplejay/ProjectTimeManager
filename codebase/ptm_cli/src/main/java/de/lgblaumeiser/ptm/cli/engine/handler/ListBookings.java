@@ -22,7 +22,8 @@ public class ListBookings extends AbstractCommandHandler {
 		getLogger().log("Current Bookings for day " + currentBookings.format(ISO_LOCAL_DATE));
 		getLogger().log("======================================");
 		for (Booking booking : getServices().getBookingsStore().retrieveAll().stream()
-				.filter(b -> currentBookings.equals(b.getBookingday())).collect(toList())) {
+				.filter(b -> currentBookings.equals(b.getBookingday()))
+				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(toList())) {
 			getLogger().log(booking.toString());
 		}
 		getLogger().log("======================================\n");

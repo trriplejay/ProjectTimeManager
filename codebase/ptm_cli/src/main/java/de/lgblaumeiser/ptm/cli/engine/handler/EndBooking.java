@@ -5,9 +5,9 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.get;
+import static java.lang.Long.valueOf;
 import static java.time.LocalTime.parse;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 
@@ -19,15 +19,14 @@ import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 public class EndBooking extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
-		LocalDate currentDay = getServices().getStateStore().getCurrentDay();
 		getLogger().log("End booking ...");
-		checkState(parameters.size() > 0);
-		LocalTime endtime = parse(get(parameters, 0));
-		getServices().getBookingsStore().retrieveAll().stream()
-				.filter(b -> currentDay.equals(b.getBookingday()) && !b.hasEndtime()).findFirst().ifPresent(b -> {
-					getServices().getBookingService().endBooking(b, endtime);
-					getLogger().log("... new booking data: " + b.toString());
-				});
+		checkState(parameters.size() > 1);
+		Long id = valueOf(get(parameters, 0));
+		LocalTime endtime = parse(get(parameters, 1));
+		getServices().getBookingsStore().retrieveById(id).ifPresent(b -> {
+			getServices().getBookingService().endBooking(b, endtime);
+			getLogger().log("... new booking data: " + b.toString());
+		});
 	}
 
 	@Override
