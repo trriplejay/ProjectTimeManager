@@ -4,9 +4,11 @@
 package de.lgblaumeiser.ptm.cli.rest;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +31,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -153,6 +157,24 @@ public class RestUtils {
 			HttpResponse response = clientConnector.execute(request);
 			checkState(response.getStatusLine().getStatusCode() == 200,
 					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + requestString);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public Collection<Collection<Object>> getAnalysisResult(String monthString, String analysisString) {
+		try {
+			final String requestString = baseUrl + "/analysis/" + analysisString + "/" + monthString;
+			final HttpGet request = new HttpGet(requestString);
+			HttpResponse response = clientConnector.execute(request);
+			checkState(response.getStatusLine().getStatusCode() == 200,
+					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + requestString);
+			String jsonData = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+			Collection<Collection<Object>> result = newArrayList();
+			JsonArray resultArray = (JsonArray) new JsonParser().parse(jsonData);
+			resultArray.forEach(
+					jss -> result.add(asList(gsonUtil.fromJson(jss, String[].class)).stream().collect(toList())));
+			return result;
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

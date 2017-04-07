@@ -10,6 +10,10 @@ import java.io.File;
 
 import org.springframework.stereotype.Component;
 
+import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
+import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
+import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
+import de.lgblaumeiser.ptm.analysis.analyzer.ProjectComputer;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
@@ -25,10 +29,15 @@ import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
  */
 @Component
 public class ServiceMapper {
+	private static final String ANALYSIS_HOURS_ID = "HOURS";
+	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
+
 	private final ObjectStore<Activity> activityStore;
 
 	private final ObjectStore<Booking> bookingStore;
 	private final BookingService bookingService;
+
+	private final DataAnalysisService analysisService;
 
 	public ServiceMapper() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
@@ -38,6 +47,18 @@ public class ServiceMapper {
 		bookingStore = new FileStore<Booking>() {
 		}.setFilesystemAccess(filesystemAbstraction);
 		bookingService = new BookingServiceImpl().setBookingStore(bookingStore);
+		analysisService = createAnalysisService(bookingStore);
+	}
+
+	private DataAnalysisService createAnalysisService(final ObjectStore<Booking> store) {
+		DataAnalysisServiceImpl service = new DataAnalysisServiceImpl();
+		HourComputer hourComputer = new HourComputer();
+		hourComputer.setStore(store);
+		service.addAnalysis(ANALYSIS_HOURS_ID, hourComputer);
+		ProjectComputer projectComputer = new ProjectComputer();
+		projectComputer.setStore(store);
+		service.addAnalysis(ANALYSIS_PROJECTS_ID, projectComputer);
+		return service;
 	}
 
 	public ObjectStore<Activity> activityStore() {
@@ -50,5 +71,9 @@ public class ServiceMapper {
 
 	public BookingService bookingService() {
 		return bookingService;
+	}
+
+	public DataAnalysisService analysisService() {
+		return analysisService;
 	}
 }

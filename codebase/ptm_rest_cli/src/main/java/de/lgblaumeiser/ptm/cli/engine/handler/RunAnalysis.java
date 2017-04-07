@@ -3,6 +3,11 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.get;
+
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -13,17 +18,19 @@ import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 public class RunAnalysis extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
-		// checkState(parameters.size() > 0);
-		// String analysis = get(parameters, 0);
-		// parameters.remove(analysis);
-		// getLogger().log("Run analysis " + analysis + " on data ...");
-		// Collection<Collection<Object>> result =
-		// getServices().getAnalysisService().analyze(analysis.toUpperCase(),
-		// parameters);
-		// for (Collection<Object> current : result) {
-		// getLogger().log(createString(current));
-		// }
-		// getLogger().log("... analysis done");
+		checkState(parameters.size() > 0);
+		String analysis = get(parameters, 0);
+		YearMonth month = YearMonth.now();
+		if (parameters.size() > 1) {
+			month = YearMonth.parse(get(parameters, 1));
+		}
+		getLogger().log("Run analysis " + analysis + " on data ...");
+		Collection<Collection<Object>> result = getServices().getRestUtils()
+				.getAnalysisResult(month.format(DateTimeFormatter.ISO_LOCAL_DATE), analysis.toUpperCase());
+		for (Collection<Object> current : result) {
+			getLogger().log(createString(current));
+		}
+		getLogger().log("... analysis done");
 	}
 
 	private String createString(final Collection<Object> columns) {
