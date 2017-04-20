@@ -26,7 +26,7 @@ public class RunAnalysis extends AbstractCommandHandler {
 		}
 		getLogger().log("Run analysis " + analysis + " on data ...");
 		Collection<Collection<Object>> result = getServices().getRestUtils()
-				.getAnalysisResult(month.format(DateTimeFormatter.ISO_LOCAL_DATE), analysis.toUpperCase());
+				.getAnalysisResult(month.format(DateTimeFormatter.ofPattern("yyyy-MM")), analysis.toUpperCase());
 		for (Collection<Object> current : result) {
 			getLogger().log(createString(current));
 		}

@@ -19,10 +19,10 @@ import java.time.LocalTime;
  * onto.
  */
 public class Booking {
-	private final LocalDate bookingday;
-	private final LocalTime starttime;
-	private final LocalTime endtime;
-	private final Activity activity;
+	private LocalDate bookingday;
+	private LocalTime starttime;
+	private LocalTime endtime;
+	private Activity activity;
 	private Long id;
 
 	public static class BookingBuilder {
@@ -127,6 +127,10 @@ public class Booking {
 		this.starttime = starttime;
 		this.endtime = endtime;
 		this.activity = activity;
+	}
+
+	private Booking() {
+		// Only needed for deserialization
 	}
 
 	public LocalDate getBookingday() {

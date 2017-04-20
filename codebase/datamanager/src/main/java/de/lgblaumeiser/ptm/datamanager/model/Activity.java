@@ -15,8 +15,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * activity and there are reports on hours spent on activities.
  */
 public class Activity {
-	private final String activityName;
-	private final String bookingNumber;
+	private String activityName;
+	private String bookingNumber;
 	private Long id = valueOf(-1);
 
 	/**
@@ -38,6 +38,10 @@ public class Activity {
 	private Activity(final String activityName, final String bookingNumber) {
 		this.activityName = activityName;
 		this.bookingNumber = bookingNumber;
+	}
+
+	private Activity() {
+		// Only needed for deserialization
 	}
 
 	/**

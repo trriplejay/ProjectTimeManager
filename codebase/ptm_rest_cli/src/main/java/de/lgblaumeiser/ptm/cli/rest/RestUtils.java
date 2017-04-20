@@ -8,7 +8,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +29,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -41,13 +39,12 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
  * Utils to do rest calls on the rest api
  */
 public class RestUtils {
-
 	private static final int TIMEOUT = 5 * 1000; // 5 times 1000 msec
 
 	private final CloseableHttpClient clientConnector;
 	private final String baseUrl;
 
-	private final Gson gsonUtil = new Gson();
+	private final ObjectMapper jsonMapper;
 
 	private final Properties applicationProps;
 
@@ -66,7 +63,7 @@ public class RestUtils {
 			Map<String, String> bodyData = newHashMap();
 			bodyData.put("name", name);
 			bodyData.put("id", number);
-			StringEntity bodyJson = new StringEntity(gsonUtil.toJson(bodyData));
+			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData));
 			bodyJson.setContentType("application/json");
 			bodyJson.setContentEncoding("UTF-8");
 			request.setEntity(bodyJson);
@@ -90,7 +87,7 @@ public class RestUtils {
 			checkState(response.getStatusLine().getStatusCode() == 200,
 					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: /activities");
 			return asList(
-					gsonUtil.fromJson(new InputStreamReader(response.getEntity().getContent()), Activity[].class));
+					jsonMapper.readValue(new InputStreamReader(response.getEntity().getContent()), Activity[].class));
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -104,7 +101,7 @@ public class RestUtils {
 			bodyData.put("activityId", activityId);
 			bodyData.put("starttime", starttime.format(ISO_LOCAL_TIME));
 			endtime.ifPresent(time -> bodyData.put("endtime", time.format(ISO_LOCAL_TIME)));
-			StringEntity bodyJson = new StringEntity(gsonUtil.toJson(bodyData));
+			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData));
 			bodyJson.setContentType("application/json");
 			bodyJson.setContentEncoding("UTF-8");
 			request.setEntity(bodyJson);
@@ -126,7 +123,7 @@ public class RestUtils {
 			checkState(response.getStatusLine().getStatusCode() == 200,
 					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + requestString);
 			String jsonData = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
-			return asList(gsonUtil.fromJson(jsonData, Booking[].class));
+			return asList(jsonMapper.readValue(jsonData, Booking[].class));
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -150,7 +147,7 @@ public class RestUtils {
 			final HttpPost request = new HttpPost(requestString);
 			Map<String, String> bodyData = newHashMap();
 			bodyData.put("endtime", endtime.format(ISO_LOCAL_TIME));
-			StringEntity bodyJson = new StringEntity(gsonUtil.toJson(bodyData));
+			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData));
 			bodyJson.setContentType("application/json");
 			bodyJson.setContentEncoding("UTF-8");
 			request.setEntity(bodyJson);
@@ -170,14 +167,19 @@ public class RestUtils {
 			checkState(response.getStatusLine().getStatusCode() == 200,
 					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + requestString);
 			String jsonData = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
-			Collection<Collection<Object>> result = newArrayList();
-			JsonArray resultArray = (JsonArray) new JsonParser().parse(jsonData);
-			resultArray.forEach(
-					jss -> result.add(asList(gsonUtil.fromJson(jss, String[].class)).stream().collect(toList())));
-			return result;
+			Object[][] resultData = jsonMapper.readValue(jsonData, Object[][].class);
+			return convertToCollection(resultData);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private Collection<Collection<Object>> convertToCollection(Object[][] resultData) {
+		Collection<Collection<Object>> converted = newArrayList();
+		for (Object[] currentLine : resultData) {
+			converted.add(asList(currentLine));
+		}
+		return converted;
 	}
 
 	/**
@@ -191,6 +193,8 @@ public class RestUtils {
 		String host = getProperty("ptm.host");
 		String port = getProperty("ptm.port");
 		baseUrl = "http://" + host + ":" + port;
+		jsonMapper = new ObjectMapper();
+		jsonMapper.registerModule(new JavaTimeModule());
 	}
 
 	private Properties loadAppProps() {

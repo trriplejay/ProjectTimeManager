@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class PtmRestApplication {
-
 	public static void main(String[] args) {
 		run(PtmRestApplication.class, args);
 	}
