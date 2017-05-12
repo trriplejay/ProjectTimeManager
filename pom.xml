@@ -76,6 +76,6 @@
     <module>codebase/ptm_rest</module>
     <module>codebase/ptm_cli</module>
     
-    <module>codebase/ptm_rest_cli</module>
+    
   </modules>
 </project>

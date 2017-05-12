@@ -4,6 +4,7 @@
 package de.lgblaumeiser.ptm.cli.engine;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.time.LocalDate;
 
@@ -20,5 +21,9 @@ public class StateStore {
 
 	public void setCurrentDay(final LocalDate currentDay) {
 		this.currentDay = currentDay;
+	}
+
+	public String getCurrentDayString() {
+		return currentDay.format(ISO_LOCAL_DATE);
 	}
 }

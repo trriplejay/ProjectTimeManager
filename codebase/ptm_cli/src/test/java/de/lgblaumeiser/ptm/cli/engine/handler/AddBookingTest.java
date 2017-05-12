@@ -22,7 +22,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddBookingTwoParamClean() {
-		testee.handleCommand(asList(ACTIVITY1NAME.substring(0, 1), TIME1.toString()));
+		testee.handleCommand(asList(Long.toString(1L), TIME1.toString()));
 		Collection<Booking> results = services.getBookingsStore().retrieveAll();
 		assertEquals(1, results.size());
 		assertEquals(ACTIVITY1, get(results, 0).getActivity());
@@ -32,7 +32,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddBookingThreeParamClean() {
-		testee.handleCommand(asList(ACTIVITY1NAME, TIME1.toString(), TIME2.toString()));
+		testee.handleCommand(asList(Long.toString(1L), TIME1.toString(), TIME2.toString()));
 		Collection<Booking> results = services.getBookingsStore().retrieveAll();
 		assertEquals(1, results.size());
 		assertEquals(ACTIVITY1, get(results, 0).getActivity());
@@ -47,31 +47,31 @@ public class AddBookingTest extends AbstractHandlerTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingOneParam() {
-		testee.handleCommand(asList(ACTIVITY1NAME));
+		testee.handleCommand(asList(Long.toString(1L)));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingTwoParamWrongActivity() {
-		testee.handleCommand(asList(ACTIVITY1NAME + ACTIVITY1NUMBER, TIME1.toString()));
+		testee.handleCommand(asList(Long.toString(3L), TIME1.toString()));
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingTwoParamEmptyTime() {
-		testee.handleCommand(asList(ACTIVITY1NAME, EMPTY));
+		testee.handleCommand(asList(Long.toString(1L), EMPTY));
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingTwoParamWrongTime() {
-		testee.handleCommand(asList(ACTIVITY1NAME, ACTIVITY1NUMBER));
+		testee.handleCommand(asList(Long.toString(1L), ACTIVITY1NUMBER));
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingThreeParamWrongTime() {
-		testee.handleCommand(asList(ACTIVITY1NAME, TIME1.toString(), ACTIVITY1NUMBER));
+		testee.handleCommand(asList(Long.toString(1L), TIME1.toString(), ACTIVITY1NUMBER));
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingThreeParamWrongTimeSequence() {
-		testee.handleCommand(asList(ACTIVITY1NAME, TIME2.toString(), TIME1.toString()));
+		testee.handleCommand(asList(Long.toString(1L), TIME2.toString(), TIME1.toString()));
 	}
 }

@@ -25,6 +25,11 @@ import de.lgblaumeiser.ptm.cli.engine.handler.ListActivity;
 import de.lgblaumeiser.ptm.cli.engine.handler.ListBookings;
 import de.lgblaumeiser.ptm.cli.engine.handler.OpenDay;
 import de.lgblaumeiser.ptm.cli.engine.handler.RunAnalysis;
+import de.lgblaumeiser.ptm.cli.rest.RestActivityStore;
+import de.lgblaumeiser.ptm.cli.rest.RestAnalysisService;
+import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
+import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
+import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
@@ -49,13 +54,18 @@ public class PTMCLIConfigurator {
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
 	public CLI configure() {
+		boolean asClient = Boolean.parseBoolean(getProperty("ptm.client.mode", "true"));
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
-		ObjectStore<Booking> bookingStore = createBookingFileStore();
-		ObjectStore<Activity> activityStore = createActivityFileStore();
+		ObjectStore<Booking> bookingStore = asClient ? createRestBookingProxyStore() : createBookingFileStore();
+		ObjectStore<Activity> activityStore = asClient ? createRestActivityProxyStore() : createActivityFileStore();
 		BookingService bookingService = createBookingService(bookingStore);
-		DataAnalysisService analysisService = createAnalysisService(bookingStore);
-		CommandInterpreter interpreter = createCommandInterpreter(bookingStore, activityStore, bookingService,
-				analysisService);
+		DataAnalysisService analysisService = asClient ? createRestAnalysisProxyService()
+				: createAnalysisService(bookingStore);
+		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService);
+		if (asClient) {
+			configureRestSubsystem(manager);
+		}
+		CommandInterpreter interpreter = createCommandInterpreter(manager);
 		return createCLI(interpreter);
 	}
 
@@ -70,9 +80,17 @@ public class PTMCLIConfigurator {
 		return service;
 	}
 
+	private DataAnalysisService createRestAnalysisProxyService() {
+		return new RestAnalysisService();
+	}
+
 	private ObjectStore<Booking> createBookingFileStore() {
 		return new FileStore<Booking>() {
 		}.setFilesystemAccess(new FilesystemAbstractionImpl());
+	}
+
+	private ObjectStore<Booking> createRestBookingProxyStore() {
+		return new RestBookingStore();
 	}
 
 	private ObjectStore<Activity> createActivityFileStore() {
@@ -80,20 +98,33 @@ public class PTMCLIConfigurator {
 		}.setFilesystemAccess(new FilesystemAbstractionImpl());
 	}
 
+	private ObjectStore<Activity> createRestActivityProxyStore() {
+		return new RestActivityStore();
+	}
+
 	private BookingService createBookingService(ObjectStore<Booking> bookingStore) {
 		return new BookingServiceImpl().setBookingStore(bookingStore);
 	}
 
-	private CommandInterpreter createCommandInterpreter(final ObjectStore<Booking> bookingStore,
+	private ServiceManager createServiceManager(final ObjectStore<Booking> bookingStore,
 			final ObjectStore<Activity> activityStore, final BookingService bookingService,
 			final DataAnalysisService analysisService) {
-		CommandInterpreter interpreter = new CommandInterpreter();
-		CommandLogger logger = new StdoutLogger();
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setActivityStore(activityStore);
 		serviceManager.setBookingService(bookingService);
 		serviceManager.setBookingsStore(bookingStore);
 		serviceManager.setAnalysisService(analysisService);
+		return serviceManager;
+	}
+
+	private void configureRestSubsystem(final ServiceManager serviceManager) {
+		RestBaseService.setRestUtils(new RestUtils());
+		RestBaseService.setServices(serviceManager);
+	}
+
+	private CommandInterpreter createCommandInterpreter(final ServiceManager serviceManager) {
+		CommandInterpreter interpreter = new CommandInterpreter();
+		CommandLogger logger = new StdoutLogger();
 		setLogger(logger);
 		setServices(serviceManager);
 		interpreter.addCommandHandler(ADD_ACTIVITY_COMMAND, new AddActivity());

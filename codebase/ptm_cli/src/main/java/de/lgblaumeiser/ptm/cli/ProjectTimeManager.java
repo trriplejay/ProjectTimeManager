@@ -10,9 +10,7 @@ import static java.lang.System.exit;
  */
 public class ProjectTimeManager {
 	public static void main(final String[] args) {
-		PTMCLIConfigurator configurator = new PTMCLIConfigurator();
-		CLI cli = configurator.configure();
-		cli.runApplication();
+		new PTMCLIConfigurator().configure().runApplication();
 		exit(0);
 	}
 }
