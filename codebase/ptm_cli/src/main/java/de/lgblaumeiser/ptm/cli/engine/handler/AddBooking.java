@@ -22,13 +22,14 @@ public class AddBooking extends AbstractCommandHandler {
 	@Override
 	public void handleCommand(final Collection<String> parameters) {
 		LocalDate currentDay = getServices().getStateStore().getCurrentDay();
-		checkState(parameters.size() > 1);
+		checkState(parameters.size() > 2);
 		getLogger().log("Add new booking ...");
 		Activity activity = getActivityById(get(parameters, 0));
-		LocalTime starttime = parse(get(parameters, 1));
-		Booking addedBooking = getServices().getBookingService().addBooking(currentDay, activity, starttime);
-		if (parameters.size() == 3) {
-			LocalTime endtime = parse(get(parameters, 2));
+		String user = get(parameters, 1);
+		LocalTime starttime = parse(get(parameters, 2));
+		Booking addedBooking = getServices().getBookingService().addBooking(currentDay, user, activity, starttime, "");
+		if (parameters.size() == 4) {
+			LocalTime endtime = parse(get(parameters, 3));
 			addedBooking = getServices().getBookingService().endBooking(addedBooking, endtime);
 		}
 		getLogger().log(" ... booking added with id: " + addedBooking.getId());
@@ -42,6 +43,6 @@ public class AddBooking extends AbstractCommandHandler {
 
 	@Override
 	public String toString() {
-		return "Add a booking for the day, Params: <1> Activity, <2> Starttime, <3o> Endtime";
+		return "Add a booking for the day, Params: <1> Activity, <2> User, <3> Starttime, <4o> Endtime";
 	}
 }

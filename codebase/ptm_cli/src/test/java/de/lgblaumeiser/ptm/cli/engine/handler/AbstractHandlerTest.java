@@ -35,6 +35,7 @@ public abstract class AbstractHandlerTest {
 	protected static final String ACTIVITY2NUMBER = "4711";
 	protected static final Activity ACTIVITY1 = newActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
 	protected static final Activity ACTIVITY2 = newActivity(ACTIVITY2NAME, ACTIVITY2NUMBER);
+	protected static final String USER = "TestUser";
 
 	protected boolean activityStoreCalled = false;
 	protected boolean bookingStoreCalled = false;

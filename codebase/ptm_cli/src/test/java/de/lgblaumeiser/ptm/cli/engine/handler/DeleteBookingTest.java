@@ -23,7 +23,7 @@ public class DeleteBookingTest extends AbstractHandlerTest {
 
 	@Test
 	public void testDeleteBookingClean() {
-		services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), ACTIVITY1, TIME1);
+		services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), USER, ACTIVITY1, TIME1, "");
 		assertEquals(1, services.getBookingsStore().retrieveAll().size());
 		assertEquals(1L, get(services.getBookingsStore().retrieveAll(), 0).getId().longValue());
 		testee.handleCommand(asList("1"));
