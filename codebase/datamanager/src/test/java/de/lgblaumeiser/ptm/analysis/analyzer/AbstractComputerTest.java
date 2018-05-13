@@ -28,9 +28,9 @@ public abstract class AbstractComputerTest {
 	private static final String BOOKINGNUMBER1 = "d";
 	private static final String BOOKINGNUMBER2 = "e";
 
-	private static final Activity ACTIVITY1 = newActivity(ACTIVITYNAME1, BOOKINGNUMBER1);
-	private static final Activity ACTIVITY2 = newActivity(ACTIVITYNAME2, BOOKINGNUMBER2);
-	private static final Activity ACTIVITY3 = newActivity(ACTIVITYNAME3, BOOKINGNUMBER1);
+	private static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITYNAME1).setBookingNumber(BOOKINGNUMBER1).build();
+	private static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITYNAME2).setBookingNumber(BOOKINGNUMBER2).build();
+	private static final Activity ACTIVITY3 = newActivity().setActivityName(ACTIVITYNAME3).setBookingNumber(BOOKINGNUMBER1).build();
 
 	private static final LocalTime TIME1 = LocalTime.of(12, 34);
 	private static final LocalTime TIME2 = LocalTime.of(13, 57);

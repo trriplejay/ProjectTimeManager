@@ -25,7 +25,7 @@ public class AddActivity extends AbstractCommandHandler {
 		checkState(isNotBlank(name));
 		checkState(isNotBlank(id));
 		getLogger().log("Add activity " + name + " with id " + id);
-		Activity newAct = getServices().getActivityStore().store(newActivity(name, id));
+		Activity newAct = getServices().getActivityStore().store(newActivity().setActivityName(name).setBookingNumber(id).build());
 		getLogger().log("Activity added with id " + newAct.getId() + "\n");
 	}
 

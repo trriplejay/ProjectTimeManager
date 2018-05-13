@@ -33,8 +33,8 @@ public abstract class AbstractHandlerTest {
 	protected static final String ACTIVITY1NUMBER = "0815";
 	protected static final String ACTIVITY2NAME = "NewAct2";
 	protected static final String ACTIVITY2NUMBER = "4711";
-	protected static final Activity ACTIVITY1 = newActivity(ACTIVITY1NAME, ACTIVITY1NUMBER);
-	protected static final Activity ACTIVITY2 = newActivity(ACTIVITY2NAME, ACTIVITY2NUMBER);
+	protected static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).build();
+	protected static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).build();
 	protected static final String USER = "TestUser";
 
 	protected boolean activityStoreCalled = false;

@@ -26,19 +26,19 @@ public class ActivityTest {
 	 */
 	@Test
 	public final void testNewActivityPositive() {
-		Activity newActivity = newActivity(LINE_ACTIVITY_1_1, LINE_BOOKING_1);
+		Activity newActivity = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
 		assertEquals(LINE_ACTIVITY_1_1, newActivity.getActivityName());
 		assertEquals(LINE_BOOKING_1, newActivity.getBookingNumber());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testWithBlankName() {
-		newActivity(EMPTY, LINE_BOOKING_1);
+		newActivity().setActivityName(EMPTY).setBookingNumber(LINE_BOOKING_1).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testWithBlankNumber() {
-		newActivity(LINE_ACTIVITY_1_1, EMPTY);
+		newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(EMPTY).build();
 	}
 
 	/**
@@ -46,10 +46,10 @@ public class ActivityTest {
 	 */
 	@Test
 	public final void testEquals() {
-		Activity newActivity1 = newActivity(LINE_ACTIVITY_1_1, LINE_BOOKING_1);
-		Activity newActivity2 = newActivity(LINE_ACTIVITY_1_2, LINE_BOOKING_1);
-		Activity newActivity3 = newActivity(PROJECT_ACTIVITY_1_1, PROJECT_BOOKING_1);
-		Activity newActivity4 = newActivity(LINE_ACTIVITY_1_1, LINE_BOOKING_1);
+		Activity newActivity1 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
+		Activity newActivity2 = newActivity().setActivityName(LINE_ACTIVITY_1_2).setBookingNumber(LINE_BOOKING_1).build();
+		Activity newActivity3 = newActivity().setActivityName(PROJECT_ACTIVITY_1_1).setBookingNumber(PROJECT_BOOKING_1).build();
+		Activity newActivity4 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
 
 		assertTrue(newActivity1.equals(newActivity4));
 		assertTrue(newActivity1.hashCode() == newActivity4.hashCode());

@@ -39,11 +39,14 @@ public class ActivityRestController {
 	static class ActivityBody {
 		public String name;
 		public String id;
+		public boolean hidden;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	ResponseEntity<?> addActivity(@RequestBody ActivityBody activityData) {
-		Activity newActivity = services.activityStore().store(newActivity(activityData.name, activityData.id));
+		Activity newActivity = services.activityStore().store(
+				newActivity().setActivityName(activityData.name)
+						.setBookingNumber(activityData.id).setHidden(activityData.hidden).build());
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newActivity.getId()).toUri();
 		return ResponseEntity.created(location).build();

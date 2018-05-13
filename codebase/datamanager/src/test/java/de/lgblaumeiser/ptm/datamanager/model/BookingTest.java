@@ -28,7 +28,7 @@ public class BookingTest {
 	private static final String COMMENT = "Test Comment";
 	private static final long DIFF = 83;
 
-	private static final Activity ACT1 = newActivity("Act1", "0815");
+	private static final Activity ACT1 = newActivity().setActivityName("Act1").setBookingNumber("0815").build();
 
 	/**
 	 * Positive test method for newBooking
