@@ -21,13 +21,13 @@ public class BookingServiceImpl implements BookingService {
 	private ObjectStore<Booking> bookingStore;
 
 	@Override
-	public Booking addBooking(final LocalDate bookingday, final Activity activity, final LocalTime starttime) {
+	public Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime, String comment) {
 		getLastOpenBooking(bookingday).ifPresent(b -> {
 			Booking changed = endBooking(b, starttime);
 			bookingStore.store(changed);
 		});
-		Booking newBooking = newBooking().setBookingday(bookingday).setStarttime(starttime).setActivity(activity)
-				.build();
+		Booking newBooking = newBooking().setBookingday(bookingday).setUser(user).setStarttime(starttime)
+				.setActivity(activity).setComment(comment).build();
 		bookingStore.store(newBooking);
 		return newBooking;
 	}

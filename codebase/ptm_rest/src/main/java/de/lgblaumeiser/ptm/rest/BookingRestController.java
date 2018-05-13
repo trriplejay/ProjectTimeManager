@@ -50,8 +50,10 @@ public class BookingRestController {
 
 	static class BookingBody {
 		public String activityId;
+		public String user;
 		public String starttime;
 		public String endtime;
+		public String comment;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/{dayString}")
@@ -59,7 +61,7 @@ public class BookingRestController {
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
 				.orElseThrow(IllegalStateException::new);
-		Booking newBooking = services.bookingService().addBooking(day, activity, parse(newData.starttime));
+		Booking newBooking = services.bookingService().addBooking(day, newData.user, activity, parse(newData.starttime), newData.comment);
 		if (newData.endtime != null) {
 			newBooking = services.bookingService().endBooking(newBooking, parse(newData.endtime));
 		}

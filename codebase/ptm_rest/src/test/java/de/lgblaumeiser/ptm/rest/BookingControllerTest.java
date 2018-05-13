@@ -80,7 +80,9 @@ public class BookingControllerTest {
 		String dateString = date.format(ISO_LOCAL_DATE);
 		BookingRestController.BookingBody booking = new BookingRestController.BookingBody();
 		booking.activityId = "1";
+		booking.user = "TestUser";
 		booking.starttime = LocalTime.of(8, 15).format(ISO_LOCAL_TIME);
+		booking.comment = "";
 		mockMvc.perform(post("/bookings/" + dateString).contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
@@ -90,11 +92,13 @@ public class BookingControllerTest {
 		mockMvc.perform(get("/bookings/" + dateString)).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
+				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
 		mockMvc.perform(get("/bookings/" + dateString + "/1")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
+				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
 		booking.endtime = LocalTime.of(16, 30).format(ISO_LOCAL_TIME);
@@ -104,6 +108,7 @@ public class BookingControllerTest {
 		mockMvc.perform(get("/bookings/" + dateString + "/1")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
+				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")))
 				.andExpect(content().string(containsString("endtime")));
 
@@ -112,14 +117,18 @@ public class BookingControllerTest {
 
 		booking = new BookingRestController.BookingBody();
 		booking.activityId = "1";
+		booking.user = "TestUser";
 		booking.starttime = LocalTime.of(8, 15).format(ISO_LOCAL_TIME);
 		booking.endtime = LocalTime.of(16, 30).format(ISO_LOCAL_TIME);
+		booking.comment = "Test Comment";
 		mockMvc.perform(post("/bookings/" + dateString2).contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/bookings/" + dateString2 + "/2")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
+				.andExpect(content().string(containsString("TestUser")))
+				.andExpect(content().string(containsString("Test Comment")))
 				.andExpect(content().string(containsString("starttime")))
 				.andExpect(content().string(containsString("endtime")));
 

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 /**
@@ -23,6 +24,8 @@ public class BookingTest {
 	private static final LocalDate DATE = now();
 	private static final LocalTime TIME1 = of(12, 34);
 	private static final LocalTime TIME2 = of(13, 57);
+	private static final String USER = "TestUser";
+	private static final String COMMENT = "Test Comment";
 	private static final long DIFF = 83;
 
 	private static final Activity ACT1 = newActivity("Act1", "0815");
@@ -32,7 +35,7 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testNewBookingLocalTimeActivity() {
-		Booking testee = newBooking().setBookingday(DATE).setStarttime(TIME1).setActivity(ACT1).build();
+		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
 		assertEquals(ACT1, testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
 		assertFalse(testee.hasEndtime());
@@ -43,7 +46,7 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testNewBookingLocalTimeActivityString() {
-		Booking testee = newBooking().setBookingday(DATE).setStarttime(TIME1).setActivity(ACT1).build();
+		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
 		assertEquals(ACT1, testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
 		assertFalse(testee.hasEndtime());
@@ -54,7 +57,7 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testEndBooking() {
-		Booking startBooking = newBooking().setBookingday(DATE).setStarttime(TIME1).setActivity(ACT1).build();
+		Booking startBooking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
 		Booking testee = startBooking.changeBooking().setEndtime(TIME2).build();
 		assertEquals(ACT1, testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
@@ -64,22 +67,37 @@ public class BookingTest {
 
 	@Test(expected = IllegalStateException.class)
 	public final void testEndBookingNegative() {
-		newBooking().setBookingday(DATE).setStarttime(TIME2).setEndtime(TIME1).setActivity(ACT1).build();
+		newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME2).setEndtime(TIME1).setActivity(ACT1).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testNoStarttime() {
-		newBooking().setBookingday(DATE).setActivity(ACT1).build();
+		newBooking().setBookingday(DATE).setUser(USER).setActivity(ACT1).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testNoActivity() {
-		newBooking().setBookingday(DATE).setStarttime(TIME1).setEndtime(TIME2).build();
+		newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testNoBookingday() {
-		newBooking().setStarttime(TIME1).setEndtime(TIME2).build();
+		newBooking().setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public final void testNoUser() { newBooking().setBookingday(DATE).setStarttime(TIME1).setEndtime(TIME2).build(); }
+
+	@Test
+	public final void testNoComment() {
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
+		assertEquals(StringUtils.EMPTY, booking.getComment());
+	}
+
+	@Test
+	public final void testComment() {
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).setComment(COMMENT).build();
+		assertEquals(COMMENT, booking.getComment());
 	}
 
 	/**
@@ -87,7 +105,7 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testCalculateTimeSpan() {
-		Booking booking = newBooking().setBookingday(DATE).setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
 				.build();
 		TimeSpan testee = booking.calculateTimeSpan();
 		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
