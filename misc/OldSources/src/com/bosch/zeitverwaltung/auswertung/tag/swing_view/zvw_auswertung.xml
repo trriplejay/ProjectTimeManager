@@ -1,8 +1,0 @@
-<auswertungen>
-	<auswertung id="1">
-		<name>Tagesdaten</name>
-		<kurzwahl>84</kurzwahl>
-		<modell>com.bosch.zeitverwaltung.auswertung.tag.modell.TagesAuswertungsModell</modell>
-		<view>com.bosch.zeitverwaltung.auswertung.tag.swing_view.TagesAuswertungsView</view>
-	</auswertung>
-</auswertungen>

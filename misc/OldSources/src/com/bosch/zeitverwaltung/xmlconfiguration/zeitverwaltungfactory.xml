@@ -1,6 +1,0 @@
-<definition>
-<factory>
-<typ>KonfigurationsFactory</typ>
-<klasse>com.bosch.zeitverwaltung.xmlconfiguration.XMLKonfigurationsFactory</klasse>
-</factory>
-</definition>

@@ -1,6 +1,0 @@
-<definition>
-<factory>
-<typ>SpeicherFactory</typ>
-<klasse>com.bosch.zeitverwaltung.xmlspeicher.XMLSpeicherFactory</klasse>
-</factory>
-</definition>

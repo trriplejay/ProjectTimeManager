@@ -1,6 +1,0 @@
-<definition>
-<factory>
-<typ>ModellFactory</typ>
-<klasse>com.bosch.zeitverwaltung.modell_impl.StandardModellFactory</klasse>
-</factory>
-</definition>

@@ -1,5 +1,7 @@
 /*
- * Copyright 2016, 2017 Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ * Copyright by Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ *
+ * Licensed under MIT license
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
