@@ -3,32 +3,23 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.common.collect.Sets.newHashSet;
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
-import static java.lang.String.format;
-import static java.time.DayOfWeek.SATURDAY;
-import static java.time.DayOfWeek.SUNDAY;
-import static java.time.Duration.ZERO;
-import static java.time.Duration.ofHours;
-import static java.time.YearMonth.from;
-import static java.time.YearMonth.now;
-import static java.time.YearMonth.parse;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import java.time.DayOfWeek;
+import org.apache.commons.lang3.StringUtils;
+//
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Iterables;
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -45,61 +36,60 @@ public class ProjectComputer implements Analysis {
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		YearMonth requestedMonth = now();
-		if (parameter.size() > 0) {
-			requestedMonth = parse(get(parameter, 0));
-		}
-		Collection<Collection<Object>> result = newArrayList();
-		result.add(asList("Id", "Total", "%", "Book"));
-		Duration totalMinutes = ZERO;
-		Set<LocalDate> daysWorked = newHashSet();
-		Map<String, Duration> activityToMinutesMap = newHashMap();
-		for (Booking current : getBookingsForMonth(requestedMonth)) {
+		Collection<Collection<Object>> result = Lists.newArrayList();
+		result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
+		Duration totalMinutes = Duration.ZERO;
+		Map<Activity, Duration> activityToMinutesMap = Maps.newHashMap();
+		for (Booking current : getRelevantBookings(parameter)) {
 			if (current.hasEndtime()) {
-				LocalDate bookingDate = current.getBookingday();
-				if (!bookingDate.getDayOfWeek().equals(SATURDAY) && !bookingDate.getDayOfWeek().equals(SUNDAY)) {
-					daysWorked.add(bookingDate);
-				}
 				Activity currentActivity = current.getActivity();
-				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity.getBookingNumber());
+				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity);
 				if (accumulatedMinutes == null) {
-					accumulatedMinutes = ZERO;
+					accumulatedMinutes = Duration.ZERO;
 				}
 				Duration activityLength = current.calculateTimeSpan().getLengthInMinutes();
 				totalMinutes = totalMinutes.plus(activityLength);
 				accumulatedMinutes = accumulatedMinutes.plus(activityLength);
-				activityToMinutesMap.put(currentActivity.getBookingNumber(), accumulatedMinutes);
+				activityToMinutesMap.put(currentActivity, accumulatedMinutes);
 			}
 		}
-		int numberOfDays = daysWorked.size();
-		double totalNumberOfMinutes = 8.0 * 60.0 * numberOfDays;
-		int targetHours = 8 * numberOfDays;
-		for (Entry<String, Duration> currentNumber : activityToMinutesMap.entrySet()) {
-			String number = currentNumber.getKey();
-			Duration totalMinutesId = currentNumber.getValue();
+		for (Entry<Activity, Duration> currentActivity : activityToMinutesMap.entrySet()) {
+			Activity activity = currentActivity.getKey();
+			Duration totalMinutesId = currentActivity.getValue();
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
-			String percentageString = format("%2.1f", percentage * 100.0);
-			Duration bookingHours = ofHours(round(totalNumberOfMinutes * percentage / 60.0));
-			targetHours -= bookingHours.toHours();
-			result.add(asList(number, formatDuration(totalMinutesId), percentageString,
-					format("%d", bookingHours.toHours())));
+			String percentageString = String.format("%2.1f", percentage * 100.0);
+			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
+					formatDuration(totalMinutesId), percentageString));
 		}
-		if (targetHours != 0) {
-			result.add(asList("Left", EMPTY, EMPTY, format("%d", targetHours)));
-		}
-
 		return result;
 	}
 
+	private Collection<Booking> getRelevantBookings(final Collection<String> dayOrMonthParameter) {
+		if (dayOrMonthParameter.size() > 0) {
+			String dayOrMonthString = Iterables.get(dayOrMonthParameter, 0);
+			if (dayOrMonthString.length() == 10) {
+				return getBookingsForDay(LocalDate.parse(dayOrMonthString));
+			}
+			if (dayOrMonthString.length() == 7) {
+				return getBookingsForMonth(YearMonth.parse(dayOrMonthString));
+			}
+		}
+		return getBookingsForMonth(YearMonth.now());
+	}
+
 	private Collection<Booking> getBookingsForMonth(final YearMonth month) {
-		return store.retrieveAll().stream().filter(b -> month.equals(from(b.getBookingday()))).collect(toList());
+		return store.retrieveAll().stream().filter(b -> month.equals(YearMonth.from(b.getBookingday()))).collect(Collectors.toList());
+	}
+
+	private Collection<Booking> getBookingsForDay(final LocalDate day) {
+		return store.retrieveAll().stream().filter(b -> day.equals(b.getBookingday())).collect(Collectors.toList());
 	}
 
 	private String formatDuration(final Duration duration) {
 		long minutes = duration.toMinutes();
 		char pre = minutes < 0 ? '-' : ' ';
-		minutes = abs(minutes);
-		return format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
+		minutes = Math.abs(minutes);
+		return String.format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
 	}
 
 	public void setStore(final ObjectStore<Booking> store) {

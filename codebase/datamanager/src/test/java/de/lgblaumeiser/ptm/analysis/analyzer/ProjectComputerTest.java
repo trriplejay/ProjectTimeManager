@@ -3,9 +3,8 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import static com.google.common.collect.Iterables.get;
-import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
+import com.google.common.collect.Iterables;
+import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
@@ -25,10 +24,20 @@ public class ProjectComputerTest extends AbstractComputerTest {
 
 	@Test
 	public void testProjectComputerFixed() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2017-03"));
-		System.out.println(analysisResults);
+		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("2017-03"));
+		assertEquals(4, analysisResults.size());
+		assertEquals(100.0,
+				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString().replaceAll(",", "."))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString().replaceAll(",", "."))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString().replaceAll(",", ".")),
+				0.1);
+	}
+
+	@Test
+	public void testProjectComputerDay() {
+		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("2017-03-15"));
 		assertEquals(3, analysisResults.size());
-		assertEquals(40, parseInt(get(get(analysisResults, 1), 3).toString())
-				+ parseInt(get(get(analysisResults, 2), 3).toString()));
+		assertEquals(100.0, Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString().replaceAll(",", "."))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString().replaceAll(",", ".")), 0.1);
 	}
 }
