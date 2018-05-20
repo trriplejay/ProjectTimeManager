@@ -47,7 +47,7 @@ public class BookingRestController {
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
-				.sorted((b1, b2) -> b1.getBookingday().compareTo(b2.getBookingday())).collect(toList());
+				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(toList());
 	}
 
 	static class BookingBody {
