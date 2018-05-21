@@ -39,16 +39,16 @@ public class ActivityRestController {
 	}
 
 	static class ActivityBody {
-		public String name;
-		public String id;
+		public String activityName;
+		public String bookingNumber;
 		public boolean hidden;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	ResponseEntity<?> addActivity(@RequestBody ActivityBody activityData) {
 		Activity newActivity = services.activityStore().store(
-				newActivity().setActivityName(activityData.name)
-						.setBookingNumber(activityData.id).setHidden(activityData.hidden).build());
+				newActivity().setActivityName(activityData.activityName)
+						.setBookingNumber(activityData.bookingNumber).setHidden(activityData.hidden).build());
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newActivity.getId()).toUri();
 		return ResponseEntity.created(location).build();
@@ -59,9 +59,14 @@ public class ActivityRestController {
 		return services.activityStore().retrieveById(valueOf(activityId)).orElseThrow(IllegalStateException::new);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{activityId}")
-	ResponseEntity<?> deleteActivity(@PathVariable String activityId) {
-		services.activityStore().deleteById(valueOf(activityId));
+	@RequestMapping(method = RequestMethod.POST, value = "/{activityId}")
+	ResponseEntity<?> changeActivity(@PathVariable String activityId, @RequestBody ActivityBody activityData) {
+		services.activityStore().retrieveById(valueOf(activityId)).ifPresent(a ->
+			services.activityStore().store(
+					a.changeActivity().setActivityName(activityData.activityName)
+							.setBookingNumber(activityData.bookingNumber)
+							.setHidden(activityData.hidden).build())
+		);
 		return ResponseEntity.ok().build();
 	}
 

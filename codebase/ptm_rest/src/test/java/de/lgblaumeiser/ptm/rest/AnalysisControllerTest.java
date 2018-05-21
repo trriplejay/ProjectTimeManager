@@ -66,8 +66,8 @@ public class AnalysisControllerTest {
 	@Test
 	public void test() throws Exception {
 		ActivityRestController.ActivityBody data = new ActivityRestController.ActivityBody();
-		data.name = "MyTestActivity";
-		data.id = "0815";
+		data.activityName = "MyTestActivity";
+		data.bookingNumber = "0815";
 		mockMvc.perform(
 				post("/activities").contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(data)))
 				.andDo(print()).andExpect(status().isCreated());
@@ -88,7 +88,7 @@ public class AnalysisControllerTest {
 				.andExpect(content().string(containsString("08:15")))
 				.andExpect(content().string(containsString("16:45")))
 				.andExpect(content().string(containsString("08:30")))
-				.andExpect(content().string(containsString("00:00TOSHORT!!!")));
+				.andExpect(content().string(containsString("00:00")));
 
 		mockMvc.perform(get("/analysis/projects/" + dateString.substring(0, 7))).andDo(print())
 				.andExpect(status().isOk()).andExpect(content().string(containsString("0815")))

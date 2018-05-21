@@ -23,7 +23,8 @@ import org.apache.commons.lang3.StringUtils;
  * An analysis that counts all hours in the month given as parameter
  */
 public class HourComputer implements Analysis {
-	private static final String BREAKTIME_APPENDIX_NOT_VALID = "TOSHORT!!!";
+	private static final String BREAKTIME_COMMENT = "Break too short!";
+	private static final String WORKTIME_COMMENT = "> 10 hours worktime!";
 	private ObjectStore<Booking> store;
 
 	@Override
@@ -33,7 +34,7 @@ public class HourComputer implements Analysis {
 			requestedMonth = YearMonth.parse(Iterables.get(parameter, 0));
 		}
 		Collection<Collection<Object>> result = Lists.newArrayList();
-		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Time Account"));
+		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Overtime", "Comment"));
 		Duration overtime = Duration.ZERO;
 		LocalDate currentday = requestedMonth.atDay(1);
 		while (!currentday.isAfter(requestedMonth.atEndOfMonth())) {
@@ -47,20 +48,14 @@ public class HourComputer implements Analysis {
 				Duration breaktime = calculateBreaktime(presence, worktime);
 				Duration currentOvertime = calculateOvertime(worktime, currentday);
 				overtime = overtime.plus(currentOvertime);
-				boolean breaktimeOk = validateBreaktime(presence, breaktime);
 				result.add(Arrays.asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
 						endtime.format(DateTimeFormatter.ofPattern("HH:mm")),
-						formatDuration(presence), formatDuration(worktime), getBreaktime(breaktime, breaktimeOk), formatDuration(overtime)));
+						formatDuration(presence), formatDuration(worktime), formatDuration(breaktime),
+						formatDuration(overtime), validate(worktime, breaktime)));
 			}
 			currentday = currentday.plusDays(1);
 		}
 		return result;
-	}
-
-	private String getBreaktime(Duration breaktime, boolean breaktimeOk) {
-		String appendix = breaktimeOk ? StringUtils.EMPTY : BREAKTIME_APPENDIX_NOT_VALID;
-		return formatDuration(breaktime) + appendix;
-
 	}
 
 	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
@@ -96,18 +91,19 @@ public class HourComputer implements Analysis {
 		return !(day.getDayOfWeek() == DayOfWeek.SATURDAY || day.getDayOfWeek() == DayOfWeek.SUNDAY);
 	}
 
-	private boolean validateBreaktime(final Duration presence, final Duration breaktime) {
-		long minutes = presence.toMinutes();
-		if (minutes >= 585) { // longer than 9,75 hours => 45 minutes break
-			return breaktime.toMinutes() >= 45;
-		} else if (minutes >= 570) { // longer than 9,5 hours => 9 hours worktime
-			return breaktime.toMinutes() >= minutes - 540;
-		} else if (minutes >= 390) { // longer than 6,5 hours => 30 minutes
-			return breaktime.toMinutes() >= 30;
-		} else if (minutes >= 360) { // longer than 6 hours => 6 hours worktime
-			return breaktime.toMinutes() >= minutes - 360;
+	private String validate(final Duration worktime, final Duration breaktime) {
+		long worktimeMinutes = worktime.toMinutes();
+		long breaktimeMinutes = breaktime.toMinutes();
+		if (worktimeMinutes > 600) {
+			return WORKTIME_COMMENT;
 		}
-		return true;
+		if (worktimeMinutes > 540 && breaktimeMinutes < 45) { // longer than 9 hours => 45 minutes break
+			return BREAKTIME_COMMENT;
+		}
+		if (worktimeMinutes > 360 && breaktimeMinutes < 30) { // longer than 6 hours => 30 minutes break
+			return BREAKTIME_COMMENT;
+		}
+		return StringUtils.EMPTY;
 	}
 
 	private Duration calculatePresence(final LocalTime starttime, final LocalTime endtime) {

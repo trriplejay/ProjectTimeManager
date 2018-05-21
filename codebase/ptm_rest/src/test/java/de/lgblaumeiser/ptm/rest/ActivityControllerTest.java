@@ -68,8 +68,9 @@ public class ActivityControllerTest {
 	@Test
 	public void testRoundtripCreateAndRetrieveActivity() throws Exception {
 		ActivityRestController.ActivityBody data = new ActivityRestController.ActivityBody();
-		data.name = "MyTestActivity";
-		data.id = "0815";
+		data.activityName = "MyTestActivity";
+		data.bookingNumber = "0815";
+		data.hidden = false;
 		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
@@ -81,10 +82,12 @@ public class ActivityControllerTest {
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
 
-		mockMvc.perform(delete("/activities/1")).andDo(print()).andExpect(status().isOk());
+		data.hidden = true;
+		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isOk());
 
 		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("[]")));
+				.andExpect(content().string(containsString("true")));
 
 	}
 }
