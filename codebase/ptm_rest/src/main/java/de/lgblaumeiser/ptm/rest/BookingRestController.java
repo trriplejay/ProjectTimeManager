@@ -14,6 +14,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,11 +44,11 @@ public class BookingRestController {
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{dayString}")
+	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}")
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
-				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(toList());
+				.sorted(Comparator.comparing(Booking::getStarttime)).collect(toList());
 	}
 
 	static class BookingBody {
@@ -58,7 +59,7 @@ public class BookingRestController {
 		public String comment;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{dayString}")
+	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}")
 	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
@@ -67,26 +68,26 @@ public class BookingRestController {
 		if (newData.endtime != null) {
 			newBooking = services.bookingService().endBooking(newBooking, parse(newData.endtime));
 		}
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{day}/{id}")
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(day.format(ISO_LOCAL_DATE), newBooking.getId()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{dayString}/{booking}")
-	public Booking getBooking(@PathVariable String dayString, @PathVariable String booking) {
+	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}")
+	public Booking getBooking(@PathVariable String booking) {
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{dayString}/{booking}")
-	public ResponseEntity<?> endBooking(@PathVariable String dayString, @PathVariable String booking,
+	@RequestMapping(method = RequestMethod.POST, value = "/id/{booking}")
+	public ResponseEntity<?> endBooking(@PathVariable String booking,
 			@RequestBody BookingBody changedData) {
 		services.bookingStore().retrieveById(valueOf(booking))
 				.ifPresent(b -> services.bookingService().endBooking(b, parse(changedData.endtime)));
 		return ResponseEntity.ok().build();
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{dayString}/{booking}")
-	public ResponseEntity<?> deleteBooking(@PathVariable String dayString, @PathVariable String booking) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/id/{booking}")
+	public ResponseEntity<?> deleteBooking(@PathVariable String booking) {
 		services.bookingStore().deleteById(valueOf(booking));
 		return ResponseEntity.ok().build();
 	}

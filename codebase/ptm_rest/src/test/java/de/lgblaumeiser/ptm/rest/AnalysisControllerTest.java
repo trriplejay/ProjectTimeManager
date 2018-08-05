@@ -80,7 +80,7 @@ public class AnalysisControllerTest {
 		booking.starttime = LocalTime.of(8, 15).format(ISO_LOCAL_TIME);
 		booking.endtime = LocalTime.of(16, 45).format(ISO_LOCAL_TIME);
 		booking.comment = "";
-		mockMvc.perform(post("/bookings/" + dateString).contentType(APPLICATION_JSON)
+		mockMvc.perform(post("/bookings/day/" + dateString).contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/analysis/hours/" + dateString.substring(0, 7))).andDo(print()).andExpect(status().isOk())
