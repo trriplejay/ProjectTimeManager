@@ -26,13 +26,13 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 	@Override
 	public Collection<Booking> retrieveAll() {
 		return asList(getRestUtils().<Booking[]>get(
-				"/bookings" + "/" + getServices().getStateStore().getCurrentDayString(), Booking[].class));
+				"/bookings/day/" + getServices().getStateStore().getCurrentDayString(), Booking[].class));
 	}
 
 	@Override
 	public Optional<Booking> retrieveById(Long id) {
 		return Optional.ofNullable(getRestUtils().<Booking>get(
-				"/bookings/" + getServices().getStateStore().getCurrentDayString() + "/" + id.toString(),
+				"/bookings/id/" + id.toString(),
 				Booking.class));
 	}
 
@@ -47,9 +47,11 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 			if (booking.hasEndtime()) {
 				bodyData.put("endtime", booking.getEndtime().format(ISO_LOCAL_TIME));
 			}
-			String apiName = "/bookings/" + booking.getBookingday().format(ISO_LOCAL_DATE);
+			String apiName = "/bookings/";
 			if (booking.getId() > 0) {
-				apiName = apiName + "/" + booking.getId().toString();
+				apiName = apiName + "id/" + booking.getId().toString();
+			} else {
+				apiName = apiName + "day/ " + booking.getBookingday().format(ISO_LOCAL_DATE);
 			}
 			Long id = getRestUtils().post(apiName, bodyData);
 			if (booking.getId() < 0) {
@@ -66,6 +68,6 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 
 	@Override
 	public void deleteById(Long id) {
-		getRestUtils().delete("/bookings/" + getServices().getStateStore().getCurrentDayString() + "/" + id);
+		getRestUtils().delete("/bookings/id/" + id);
 	}
 }
