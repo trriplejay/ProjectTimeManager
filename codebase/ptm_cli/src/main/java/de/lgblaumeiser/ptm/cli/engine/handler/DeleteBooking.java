@@ -5,30 +5,24 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.get;
-import static java.lang.Long.valueOf;
-
-import java.util.Collection;
-
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
+
+import java.time.LocalDate;
 
 /**
  * Delete a booking
  */
+@Parameters(commandDescription="Delete an existing booking")
 public class DeleteBooking extends AbstractCommandHandler {
+	@Parameter(names = { "-b", "--booking" }, description="Booking id of the booking to end", required=true)
+	private Long id;
+
 	@Override
-	public void handleCommand(final Collection<String> parameters) {
-		checkState(parameters.size() > 0);
+	public void handleCommand() {
 		getLogger().log("Delete booking now ...");
-		Long id = valueOf(get(parameters, 0));
 		getServices().getBookingsStore().deleteById(id);
 		getLogger().log("... booking deleted");
 	}
-
-	@Override
-	public String toString() {
-		return "Delete a booking, Params: <1> Starttime of booking";
-	}
-
 }

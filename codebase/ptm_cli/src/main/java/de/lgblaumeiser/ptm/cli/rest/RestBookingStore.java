@@ -6,17 +6,18 @@
 package de.lgblaumeiser.ptm.cli.rest;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Store that uses the rest utils to access the server, i.e., a proxy
@@ -25,8 +26,12 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
 public class RestBookingStore extends RestBaseService implements ObjectStore<Booking> {
 	@Override
 	public Collection<Booking> retrieveAll() {
+		return retrieveForDay(LocalDate.now());
+	}
+
+	public Collection<Booking> retrieveForDay(LocalDate day) {
 		return asList(getRestUtils().<Booking[]>get(
-				"/bookings/day/" + getServices().getStateStore().getCurrentDayString(), Booking[].class));
+				"/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE), Booking[].class));
 	}
 
 	@Override
@@ -43,15 +48,15 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 			bodyData.put("activityId", booking.getActivity().getId().toString());
 			bodyData.put("user", booking.getUser());
 			bodyData.put("comment", booking.getComment());
-			bodyData.put("starttime", booking.getStarttime().format(ISO_LOCAL_TIME));
+			bodyData.put("starttime", booking.getStarttime().format(DateTimeFormatter.ofPattern("HH:mm")));
 			if (booking.hasEndtime()) {
-				bodyData.put("endtime", booking.getEndtime().format(ISO_LOCAL_TIME));
+				bodyData.put("endtime", booking.getEndtime().format(DateTimeFormatter.ofPattern("HH:mm")));
 			}
 			String apiName = "/bookings/";
 			if (booking.getId() > 0) {
 				apiName = apiName + "id/" + booking.getId().toString();
 			} else {
-				apiName = apiName + "day/ " + booking.getBookingday().format(ISO_LOCAL_DATE);
+				apiName = apiName + "day/" + booking.getBookingday().format(DateTimeFormatter.ISO_LOCAL_DATE);
 			}
 			Long id = getRestUtils().post(apiName, bodyData);
 			if (booking.getId() < 0) {

@@ -12,26 +12,46 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
 public class RunAnalysisTest extends AbstractHandlerTest {
-	private RunAnalysis testee = new RunAnalysis();
+    private static final String HOURS_ANALYSIS_COMMAND = "hour_analysis";
+    private static final String ANALYSIS_HOURS_ID = "HOURS";
+    private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
+    private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
-	private static final String ANALYSIS = "MyAnalysis";
-	private static final String PARAM1 = "Param1";
-	private static final String PARAM2 = "Param2";
+    private static final String DATE_FOR_ANALYSIS = "2018-04-05";
+    private static final String MONTH_FOR_ANALYSIS = "2018-04";
 
-	@Test
-	public void testRunAnalysisClean() {
-		testee.handleCommand(newArrayList(ANALYSIS, PARAM1, PARAM2));
-		String logMessages = logger.logMessages.toString();
-		String[] lines = logMessages.split("xxxnewlinexxx");
-		assertEquals(4, lines.length);
-		assertTrue(lines[1].contains(ANALYSIS.toUpperCase()));
-		assertTrue(lines[2].contains(PARAM1));
-		assertTrue(lines[2].contains(PARAM2));
+    @Test
+	public void testRunHoursAnalysisThisMonth() {
+        commandline.runCommand(HOURS_ANALYSIS_COMMAND);
+        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testRunAnalysisNoParams() {
-		testee.handleCommand(emptyList());
-	}
+    @Test
+    public void testRunHoursAnalysisGivenMonth() {
+        commandline.runCommand(HOURS_ANALYSIS_COMMAND, "-m", MONTH_FOR_ANALYSIS);
+        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
+    }
+
+    @Test
+    public void testRunProjectsAnalysisThisMonth() {
+        commandline.runCommand(PROJECTS_ANALYSIS_COMMAND);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
+    }
+
+    @Test
+    public void testRunProjectsAnalysisGivenMonth() {
+        commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-m", MONTH_FOR_ANALYSIS);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
+    }
+
+    @Test
+    public void testRunProjectsAnalysisGivenDay() {
+        commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-d", DATE_FOR_ANALYSIS);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
+    }
 }

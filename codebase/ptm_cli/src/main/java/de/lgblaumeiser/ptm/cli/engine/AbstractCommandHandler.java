@@ -6,10 +6,9 @@
 package de.lgblaumeiser.ptm.cli.engine;
 
 /**
- * An abstract implementation which manages common resources needed by many
- * handlers
+ * An abstract base class with the central handleCommand method and some common resources needed by many handlers
  */
-public abstract class AbstractCommandHandler implements CommandHandler {
+public abstract class AbstractCommandHandler {
 	private static CommandLogger logger;
 	private static ServiceManager services;
 
@@ -28,4 +27,6 @@ public abstract class AbstractCommandHandler implements CommandHandler {
 	protected static ServiceManager getServices() {
 		return services;
 	}
+
+	public abstract void handleCommand();
 }

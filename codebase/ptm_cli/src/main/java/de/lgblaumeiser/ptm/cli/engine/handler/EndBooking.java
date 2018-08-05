@@ -5,34 +5,31 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.get;
-import static java.lang.Long.valueOf;
-import static java.time.LocalTime.parse;
-
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
+import java.util.Optional;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
 /**
  * End a booking that has been started with start booking command
  */
+@Parameters(commandDescription="Add an end time to an existing booking")
 public class EndBooking extends AbstractCommandHandler {
-	@Override
-	public void handleCommand(final Collection<String> parameters) {
-		getLogger().log("End booking ...");
-		checkState(parameters.size() > 1);
-		Long id = valueOf(get(parameters, 0));
-		LocalTime endtime = parse(get(parameters, 1));
-		getServices().getBookingsStore().retrieveById(id).ifPresent(b -> {
-			getServices().getBookingService().endBooking(b, endtime);
-			getLogger().log("... new booking data: " + b.toString());
-		});
-	}
+	@Parameter(names = { "-b", "--booking" }, description="Booking id of the booking to end", required=true)
+	private Long id;
+
+	@Parameter(names = { "-e", "--endtime" }, description="End time of the booking", required=true, converter=LocalTimeConverter.class)
+	private Optional<LocalTime> endtime = Optional.empty();
 
 	@Override
-	public String toString() {
-		return "End an open booking now";
+	public void handleCommand() {
+		getLogger().log("End booking ...");
+		getServices().getBookingsStore().retrieveById(id).ifPresent(b -> {
+			getServices().getBookingService().endBooking(b, endtime.get());
+			getLogger().log("... new booking data: " + b.toString());
+		});
 	}
 }

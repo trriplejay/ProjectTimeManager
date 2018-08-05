@@ -6,10 +6,12 @@
 package de.lgblaumeiser.ptm.cli.engine;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
+import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+
 
 /**
  * Small class that allows to access the services needed by the command handler
@@ -19,8 +21,7 @@ public class ServiceManager {
 	private BookingService bookingService;
 	private DataAnalysisService analysisService;
 	private ObjectStore<Activity> activityStore;
-	private ObjectStore<Booking> bookingsStore;
-	private final StateStore stateStore = new StateStore();
+	private RestBookingStore bookingsStore;
 
 	public BookingService getBookingService() {
 		return bookingService;
@@ -46,15 +47,11 @@ public class ServiceManager {
 		this.activityStore = activityStore;
 	}
 
-	public ObjectStore<Booking> getBookingsStore() {
+	public RestBookingStore getBookingsStore() {
 		return bookingsStore;
 	}
 
-	public void setBookingsStore(final ObjectStore<Booking> bookingsStore) {
+	public void setBookingsStore(final RestBookingStore bookingsStore) {
 		this.bookingsStore = bookingsStore;
-	}
-
-	public StateStore getStateStore() {
-		return stateStore;
 	}
 }

@@ -5,20 +5,29 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class ListBookingsTest extends AbstractHandlerTest {
-	private ListBookings testee = new ListBookings();
+    private static final String LIST_BOOKING_COMMAND = "list_bookings";
+    private static final String DATE_FOR_BOOKINGS = "2018-04-05";
 
 	@Test
-	public void test() {
-		services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), USER, ACTIVITY1, TIME1, "");
-		testee.handleCommand(emptyList());
-		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NAME));
-		assertTrue(logger.logMessages.toString().contains(ACTIVITY1NUMBER));
-		assertTrue(logger.logMessages.toString().contains(TIME1.toString()));
+	public void testToday() {
+        commandline.runCommand(LIST_BOOKING_COMMAND);
+        assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),restutils.apiNameGiven);
+        assertTrue(logger.logMessages.toString().contains(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)));
 	}
+
+    @Test
+    public void testCertainDate() {
+        commandline.runCommand(LIST_BOOKING_COMMAND, "-d", DATE_FOR_BOOKINGS);
+        assertEquals("/bookings/day/" + DATE_FOR_BOOKINGS, restutils.apiNameGiven);
+        assertTrue(logger.logMessages.toString().contains(DATE_FOR_BOOKINGS));
+    }
 }

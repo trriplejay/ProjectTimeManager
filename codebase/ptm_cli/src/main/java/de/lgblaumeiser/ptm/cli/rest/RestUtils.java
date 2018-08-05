@@ -31,12 +31,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class RestUtils {
 	private static final int TIMEOUT = 5 * 1000; // 5 times 1000 msec
 
-	private final CloseableHttpClient clientConnector;
-	private final String baseUrl;
+	private CloseableHttpClient clientConnector;
+	private String baseUrl;
 
-	private final ObjectMapper jsonMapper;
+	private ObjectMapper jsonMapper;
 
-	private final Properties applicationProps;
+	private Properties applicationProps;
 
 	/**
 	 * Post a call to the rest api. Expects that a numerical id is returned as
@@ -114,7 +114,7 @@ public class RestUtils {
 	/**
 	 * Constructor, creates the HTTP Client object to execute http rest requests
 	 */
-	public RestUtils() {
+	public RestUtils configure() {
 		final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(TIMEOUT)
 				.setConnectionRequestTimeout(TIMEOUT).setSocketTimeout(TIMEOUT).build();
 		clientConnector = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
@@ -124,6 +124,7 @@ public class RestUtils {
 		baseUrl = "http://" + host + ":" + port;
 		jsonMapper = new ObjectMapper();
 		jsonMapper.registerModule(new JavaTimeModule());
+		return this;
 	}
 
 	private Properties loadAppProps() {

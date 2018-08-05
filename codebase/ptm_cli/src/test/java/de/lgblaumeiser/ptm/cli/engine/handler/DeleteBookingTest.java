@@ -10,35 +10,27 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
+import com.beust.jcommander.ParameterException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 public class DeleteBookingTest extends AbstractHandlerTest {
-	private DeleteBooking testee = new DeleteBooking();
-
-	@Override
-	@Before
-	public void before() {
-		super.before();
-	}
+    private static final String DELETE_BOOKING_COMMAND = "delete_booking";
 
 	@Test
 	public void testDeleteBookingClean() {
-		services.getBookingService().addBooking(services.getStateStore().getCurrentDay(), USER, ACTIVITY1, TIME1, "");
-		assertEquals(1, services.getBookingsStore().retrieveAll().size());
-		assertEquals(1L, get(services.getBookingsStore().retrieveAll(), 0).getId().longValue());
-		testee.handleCommand(asList("1"));
-		assertEquals(0, services.getBookingsStore().retrieveAll().size());
+        commandline.runCommand(DELETE_BOOKING_COMMAND, "-b", "1");
+        assertEquals("/bookings/id/1", restutils.apiNameGiven);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = ParameterException.class)
 	public void testDeleteBookingNoParam() {
-		testee.handleCommand(emptyList());
+        commandline.runCommand(DELETE_BOOKING_COMMAND);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = ParameterException.class)
 	public void testDeleteBookingEmptyParam() {
-		testee.handleCommand(asList(StringUtils.EMPTY));
+        commandline.runCommand(DELETE_BOOKING_COMMAND, "-b");
 	}
 }

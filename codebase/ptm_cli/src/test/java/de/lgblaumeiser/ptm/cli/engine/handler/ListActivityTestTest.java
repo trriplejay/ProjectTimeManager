@@ -5,17 +5,16 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ListActivitiyTestTest extends AbstractHandlerTest {
-	private ListActivity testee = new ListActivity();
+public class ListActivityTestTest extends AbstractHandlerTest {
+    private static final String LIST_ACTIVITY_COMMAND = "list_activities";
 
 	@Test
 	public void testListActivity() {
-		testee.handleCommand(emptyList());
+        commandline.runCommand(LIST_ACTIVITY_COMMAND);
 		assertTrue(logger.logMessages.toString().contains("======================================"));
 	}
 }

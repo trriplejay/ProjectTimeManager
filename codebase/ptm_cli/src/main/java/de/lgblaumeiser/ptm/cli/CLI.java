@@ -5,56 +5,38 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
-import static java.lang.System.err;
-import static java.lang.System.out;
-
-import java.time.format.DateTimeParseException;
-import java.util.Map;
-import java.util.Scanner;
-
-import de.lgblaumeiser.ptm.cli.engine.CommandHandler;
-import de.lgblaumeiser.ptm.cli.engine.CommandInterpreter;
+import com.beust.jcommander.JCommander;
+import com.google.common.collect.Iterables;
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
 /**
  * The command line interface, which includes the main loop
  */
 public class CLI {
-	private CommandInterpreter interpreter;
+	private JCommander interpreter;
 
-	public void runApplication() {
-		boolean runnit = true;
-		try (Scanner terminalIn = new Scanner(System.in)) {
-			while (runnit) {
-				out.println("Command: ");
-				String command = terminalIn.nextLine();
-				if (command.toUpperCase().equals("X")) {
-					runnit = false;
-				} else if (command.toUpperCase().equals("H")) {
-					printCommandHelp();
-				} else {
-					try {
-						interpreter.handle(command);
-					} catch (IllegalStateException | NullPointerException | DateTimeParseException e) {
-						err.println(e.getMessage());
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+	public void runCommand(final String ... args) {
+		interpreter.parse(args);
+        if (isHelpTextedRequested()) {
+            interpreter.usage();
+        } else {
+            getParsedCommand().handleCommand();
+        }
 	}
 
-	private void printCommandHelp() {
-		out.println("\nCommands:");
-		out.println("=======================================");
-		out.println("\tX\tExit program");
-		out.println("\tH\tShow this help");
-		for (Map.Entry<String, CommandHandler> current : interpreter.listHandler().entrySet()) {
-			out.println("\t" + current.getKey() + "\t" + current.getValue().toString());
-		}
-		out.println("=======================================\n");
-	}
+    private AbstractCommandHandler getParsedCommand() {
+        return (AbstractCommandHandler)(Iterables.get(getParsedCommandWrapper().getObjects(), 0));
+    }
 
-	void setInterpreter(final CommandInterpreter interpreter) {
+    private JCommander getParsedCommandWrapper() {
+        return interpreter.getCommands().get(interpreter.getParsedCommand());
+    }
+
+    private boolean isHelpTextedRequested() {
+        return ((MainParameters) Iterables.get(interpreter.getObjects(), 0)).helpNeeded();
+    }
+
+    void setInterpreter(final JCommander interpreter) {
 		this.interpreter = interpreter;
 	}
 }

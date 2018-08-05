@@ -9,8 +9,6 @@ import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
@@ -21,13 +19,8 @@ import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 public class RestAnalysisService extends RestBaseService implements DataAnalysisService {
 	@Override
 	public Collection<Collection<Object>> analyze(String analyzerId, Collection<String> parameter) {
-		YearMonth month = YearMonth.now();
-		if (!parameter.isEmpty()) {
-			month = YearMonth.parse(get(parameter, 0));
-		}
 		Object[][] result = getRestUtils().get(
-				"/analysis/" + analyzerId + "/" + month.format(DateTimeFormatter.ofPattern("yyyy-MM")),
-				Object[][].class);
+				"/analysis/" + analyzerId + "/" + get(parameter, 0), Object[][].class);
 		return convertToCollection(result);
 	}
 

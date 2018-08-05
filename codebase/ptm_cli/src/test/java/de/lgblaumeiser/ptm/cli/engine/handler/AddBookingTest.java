@@ -12,73 +12,85 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 
+import com.beust.jcommander.ParameterException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 public class AddBookingTest extends AbstractHandlerTest {
-	private AddBooking testee = new AddBooking();
+    private static final String ADD_BOOKING_COMMAND = "add_booking";
 
 	@Test
-	public void testAddBookingThreeParamClean() {
-		testee.handleCommand(asList(Long.toString(1L), USER, TIME1.toString()));
-		Collection<Booking> results = services.getBookingsStore().retrieveAll();
-		assertEquals(1, results.size());
-		assertEquals(ACTIVITY1, get(results, 0).getActivity());
-		assertEquals(TIME1, get(results, 0).getStarttime());
-		assertFalse(get(results, 0).hasEndtime());
+	public void testAddBookingThreeParam() {
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", TIME1.toString());
+        assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), restutils.apiNameGiven);
+        assertEquals("1", restutils.bodyDataGiven.get("activityId"));
+        assertEquals(USER, restutils.bodyDataGiven.get("user"));
+        assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
+        assertEquals(StringUtils.EMPTY, restutils.bodyDataGiven.get("comment"));
+        assertEquals(4, restutils.bodyDataGiven.size());
 	}
 
 	@Test
-	public void testAddBookingFourParamClean() {
-		testee.handleCommand(asList(Long.toString(1L), USER, TIME1.toString(), TIME2.toString()));
-		Collection<Booking> results = services.getBookingsStore().retrieveAll();
-		assertEquals(1, results.size());
-		assertEquals(ACTIVITY1, get(results, 0).getActivity());
-		assertEquals(TIME1, get(results, 0).getStarttime());
-		assertEquals(TIME2, get(results, 0).getEndtime());
+	public void testAddBookingFourParamEndtime() {
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", TIME1.toString(), "-e", TIME2.toString());
+		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
+        assertEquals(USER, restutils.bodyDataGiven.get("user"));
+        assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
+        assertEquals(TIME2.toString(), restutils.bodyDataGiven.get("endtime"));
+        assertEquals(StringUtils.EMPTY, restutils.bodyDataGiven.get("comment"));
+        assertEquals(5, restutils.bodyDataGiven.size());
 	}
 
-	@Test(expected = IllegalStateException.class)
+    @Test
+    public void testAddBookingFourParamComment() {
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", TIME1.toString(), "-c", COMMENT);
+        assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), restutils.apiNameGiven);
+        assertEquals("1", restutils.bodyDataGiven.get("activityId"));
+        assertEquals(USER, restutils.bodyDataGiven.get("user"));
+        assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
+        assertEquals(COMMENT, restutils.bodyDataGiven.get("comment"));
+        assertEquals(4, restutils.bodyDataGiven.size());
+    }
+
+	@Test(expected = ParameterException.class)
 	public void testAddBookingNoParam() {
-		testee.handleCommand(emptyList());
+        commandline.runCommand(ADD_BOOKING_COMMAND);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = ParameterException.class)
 	public void testAddBookingOneParam() {
-		testee.handleCommand(asList(Long.toString(1L)));
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1");
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = ParameterException.class)
 	public void testAddBookingTwoParam() {
-		testee.handleCommand(asList(Long.toString(1L), USER));
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER);
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBookingThreeParamWrongActivity() {
-		testee.handleCommand(asList(Long.toString(3L), USER, TIME1.toString()));
-	}
-
-	@Test(expected = DateTimeParseException.class)
-	public void testAddBookingThreeParamEmptyTime() {
-		testee.handleCommand(asList(Long.toString(1L), USER, EMPTY));
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "3", "-u", USER, "-s", TIME1.toString());
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingTwoParamWrongTime() {
-		testee.handleCommand(asList(Long.toString(1L), USER, ACTIVITY1NUMBER));
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", ACTIVITY1NUMBER);
 	}
 
 	@Test(expected = DateTimeParseException.class)
 	public void testAddBookingThreeParamWrongTime() {
-		testee.handleCommand(asList(Long.toString(1L), USER, TIME1.toString(), ACTIVITY1NUMBER));
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "3", "-u", USER, "-s", TIME1.toString(), "-e", ACTIVITY1NUMBER);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testAddBookingThreeParamWrongTimeSequence() {
-		testee.handleCommand(asList(Long.toString(1L), USER, TIME2.toString(), TIME1.toString()));
+	public void testAddBookingFourParamWrongTimeSequence() {
+        commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "3", "-u", USER, "-s", TIME2.toString(), "-e", TIME1.toString());
 	}
 }
