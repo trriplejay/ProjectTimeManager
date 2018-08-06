@@ -68,8 +68,7 @@ public class BookingRestController {
 		if (newData.endtime != null) {
 			newBooking = services.bookingService().endBooking(newBooking, parse(newData.endtime));
 		}
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(day.format(ISO_LOCAL_DATE), newBooking.getId()).toUri();
+		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/bookings/id/" + newBooking.getId());
 		return ResponseEntity.created(location).build();
 	}
 

@@ -11,12 +11,14 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -35,6 +37,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.web.servlet.MvcResult;
 
 /**
  * Test the booking rest controller
@@ -85,8 +88,9 @@ public class BookingControllerTest {
 		booking.user = "TestUser";
 		booking.starttime = LocalTime.of(8, 15).format(ISO_LOCAL_TIME);
 		booking.comment = "";
-		mockMvc.perform(post("/bookings/day/" + dateString).contentType(APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
+		MvcResult result = mockMvc.perform(post("/bookings/day/" + dateString).contentType(APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated()).andReturn();
+		assertTrue(result.getResponse().getRedirectedUrl().contains("/bookings/id/1"));
 
 		mockMvc.perform(get("/bookings")).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString(dateString)));
