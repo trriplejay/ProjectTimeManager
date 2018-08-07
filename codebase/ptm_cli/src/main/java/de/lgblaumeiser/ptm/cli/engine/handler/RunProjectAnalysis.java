@@ -38,19 +38,7 @@ public class RunProjectAnalysis extends AbstractCommandHandler {
 		}
 		getLogger().log("Run analysis project analysis for " + parameter + " ...");
 		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(ANALYSIS_PROJECTS_ID, Arrays.asList(parameter));
-		for (Collection<Object> current : result) {
-			getLogger().log(createString(current));
-		}
+		getPrinter().tablePrint(result);
 		getLogger().log("... analysis done");
-	}
-
-	private String createString(final Collection<Object> columns) {
-		StringBuilder resultString = new StringBuilder();
-		resultString.append("| ");
-		for (Object current : columns) {
-			resultString.append(current);
-			resultString.append("\t | ");
-		}
-		return resultString.toString();
 	}
 }

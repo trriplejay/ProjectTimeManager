@@ -14,6 +14,7 @@ import com.beust.jcommander.JCommander;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
+import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
 import de.lgblaumeiser.ptm.cli.engine.handler.*;
 import de.lgblaumeiser.ptm.cli.rest.RestActivityStore;
@@ -66,6 +67,7 @@ public class PTMCLIConfigurator {
         CommandLogger logger = new StdoutLogger();
         AbstractCommandHandler.setLogger(logger);
         AbstractCommandHandler.setServices(serviceManager);
+        AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
         JCommander jc = JCommander.newBuilder()
                 .addObject(new MainParameters())
                 .addCommand(ADD_ACTIVITY_COMMAND, new AddActivity())

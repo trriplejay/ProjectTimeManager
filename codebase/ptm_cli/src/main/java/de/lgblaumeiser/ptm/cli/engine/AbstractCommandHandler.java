@@ -11,6 +11,7 @@ package de.lgblaumeiser.ptm.cli.engine;
 public abstract class AbstractCommandHandler {
 	private static CommandLogger logger;
 	private static ServiceManager services;
+	private static PrettyPrinter printer;
 
 	public static void setLogger(final CommandLogger concreteLogger) {
 		logger = concreteLogger;
@@ -24,9 +25,11 @@ public abstract class AbstractCommandHandler {
 		services = concreteServices;
 	}
 
-	protected static ServiceManager getServices() {
-		return services;
-	}
+	protected static ServiceManager getServices() { return services; }
+
+	protected static PrettyPrinter getPrinter() { return printer; }
+
+	public static void setPrinter(PrettyPrinter printer) { AbstractCommandHandler.printer = printer; }
 
 	public abstract void handleCommand();
 }

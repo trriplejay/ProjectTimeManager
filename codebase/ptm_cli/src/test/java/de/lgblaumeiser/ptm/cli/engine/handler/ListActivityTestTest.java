@@ -15,6 +15,6 @@ public class ListActivityTestTest extends AbstractHandlerTest {
 	@Test
 	public void testListActivity() {
         commandline.runCommand(LIST_ACTIVITY_COMMAND);
-		assertTrue(logger.logMessages.toString().contains("======================================"));
+		assertTrue(logger.logMessages.toString().contains("| Activity | Number | Activity Id |"));
 	}
 }

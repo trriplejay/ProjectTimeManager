@@ -9,6 +9,8 @@ import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 
+import java.util.Collection;
+
 /**
  * Command to list all the activities
  *
@@ -17,11 +19,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 public class ListActivity extends AbstractCommandHandler {
 	@Override
 	public void handleCommand() {
-		getLogger().log("Known Activities");
-		getLogger().log("======================================");
-		for (Activity current : getServices().getActivityStore().retrieveAll()) {
-			getLogger().log(current.toString());
-		}
-		getLogger().log("======================================\n");
+		Collection<Activity> result = getServices().getActivityStore().retrieveAll();
+		getPrinter().activityPrint(result);
 	}
 }

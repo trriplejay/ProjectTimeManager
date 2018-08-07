@@ -5,10 +5,12 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Comparator;
 
 import com.beust.jcommander.Parameter;
@@ -27,11 +29,9 @@ public class ListBookings extends AbstractCommandHandler {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Current Bookings for day " + bookingDay.format(ISO_LOCAL_DATE));
-		getLogger().log("======================================");
-		for (Booking booking : getServices().getBookingsStore().retrieveForDay(bookingDay).stream()
-				.sorted(Comparator.comparing(Booking::getStarttime)).collect(toList())) {
-			getLogger().log(booking.toString());
-		}
-		getLogger().log("======================================\n");
+		getLogger().log(" ");
+		Collection<Booking> result = getServices().getBookingsStore().retrieveForDay(bookingDay).stream()
+				.sorted(Comparator.comparing(Booking::getStarttime)).collect(toList());
+		getPrinter().bookingPrint(result);
 	}
 }

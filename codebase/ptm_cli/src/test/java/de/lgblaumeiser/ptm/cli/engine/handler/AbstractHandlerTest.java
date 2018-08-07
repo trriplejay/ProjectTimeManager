@@ -9,6 +9,7 @@ import de.lgblaumeiser.ptm.cli.CLI;
 import de.lgblaumeiser.ptm.cli.PTMCLIConfigurator;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
+import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
 import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -90,6 +91,7 @@ public abstract class AbstractHandlerTest {
 	@Before
 	public void before() {
         AbstractCommandHandler.setLogger(logger);
+        AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
         RestBaseService.setRestUtils(restutils);
 	}
 }

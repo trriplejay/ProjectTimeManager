@@ -30,19 +30,7 @@ public class RunHourAnalysis extends AbstractCommandHandler {
 		getLogger().log("Run analysis project analysis for month " + bookingMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")) + " ...");
 		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(ANALYSIS_HOURS_ID,
 				Arrays.asList(bookingMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"))));
-		for (Collection<Object> current : result) {
-			getLogger().log(createString(current));
-		}
+		getPrinter().tablePrint(result);
 		getLogger().log("... analysis done");
-	}
-
-	private String createString(final Collection<Object> columns) {
-		StringBuilder resultString = new StringBuilder();
-		resultString.append("| ");
-		for (Object current : columns) {
-			resultString.append(current);
-			resultString.append("\t | ");
-		}
-		return resultString.toString();
 	}
 }
