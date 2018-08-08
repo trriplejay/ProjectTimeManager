@@ -5,24 +5,20 @@
  */
 package de.lgblaumeiser.store.filesystem;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.apache.commons.io.FilenameUtils.getExtension;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import de.lgblaumeiser.ptm.store.filesystem.FileStore;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import de.lgblaumeiser.ptm.store.filesystem.FileStore;
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.junit.Assert.*;
 
 public class FileStoreTest {
 	private static final String TESTINDEX = "TestIndex";

@@ -5,14 +5,14 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkState;
 import static java.time.Duration.ofMinutes;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Objects.hash;
-
-import java.time.Duration;
-import java.time.LocalTime;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time

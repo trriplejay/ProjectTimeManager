@@ -5,12 +5,12 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
+
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 
 /**
  * Command to add an activity

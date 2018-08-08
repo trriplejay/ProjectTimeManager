@@ -5,16 +5,16 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Arrays.asList;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.collect.Maps.newHashMap;
+import static java.util.Arrays.asList;
 
 /**
  * Store that uses the rest utils to access the server, i.e., a proxy

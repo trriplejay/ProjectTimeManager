@@ -7,14 +7,14 @@ package de.lgblaumeiser.ptm.datamanager.model;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkState;
 import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
 import static java.lang.Long.valueOf;
 import static java.util.Objects.hash;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * This class represents a booking on a day. It is represented by a starting

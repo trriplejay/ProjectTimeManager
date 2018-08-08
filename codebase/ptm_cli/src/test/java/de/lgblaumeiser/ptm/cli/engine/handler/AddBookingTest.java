@@ -5,23 +5,15 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.collect.Iterables.get;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Collection;
-
 import com.beust.jcommander.ParameterException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import static org.junit.Assert.assertEquals;
 
 public class AddBookingTest extends AbstractHandlerTest {
     private static final String ADD_BOOKING_COMMAND = "add_booking";

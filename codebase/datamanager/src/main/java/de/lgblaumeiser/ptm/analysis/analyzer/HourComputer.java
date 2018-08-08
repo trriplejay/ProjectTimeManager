@@ -7,17 +7,16 @@ package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * An analysis that counts all hours in the month given as parameter

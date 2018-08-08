@@ -5,11 +5,6 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
-import static java.lang.System.getProperty;
-import static java.lang.System.setProperty;
-
-import java.io.File;
-
 import com.beust.jcommander.JCommander;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -17,15 +12,16 @@ import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
 import de.lgblaumeiser.ptm.cli.engine.handler.*;
-import de.lgblaumeiser.ptm.cli.rest.RestActivityStore;
-import de.lgblaumeiser.ptm.cli.rest.RestAnalysisService;
-import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
-import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
-import de.lgblaumeiser.ptm.cli.rest.RestUtils;
+import de.lgblaumeiser.ptm.cli.rest.*;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+
+import java.io.File;
+
+import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
 
 /**
  * The configuration object that creates the application structure

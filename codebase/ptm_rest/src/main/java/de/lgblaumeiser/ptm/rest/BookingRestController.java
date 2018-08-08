@@ -5,29 +5,23 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static java.lang.Long.valueOf;
-import static java.time.LocalTime.parse;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import static java.lang.Long.valueOf;
+import static java.time.LocalTime.parse;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * Rest Controller for Booking Management

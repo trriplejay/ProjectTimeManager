@@ -5,20 +5,19 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.junit.Before;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.junit.Before;
-
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.collect.Lists.newArrayList;
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 
 public abstract class AbstractComputerTest {
 

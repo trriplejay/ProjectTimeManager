@@ -5,15 +5,13 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
-import static java.time.LocalTime.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.time.LocalTime;
 
-import org.junit.Test;
+import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static java.time.LocalTime.of;
+import static org.junit.Assert.*;
 
 /**
  * Test class for the class TimeSpan

@@ -5,13 +5,9 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.lang.Long.compare;
-import static java.lang.Long.parseLong;
-import static java.lang.Long.valueOf;
-import static java.lang.System.getProperty;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.io.FilenameUtils.removeExtension;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,10 +16,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Long.*;
+import static java.lang.System.getProperty;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 /**
  * A file base store for random objects

@@ -5,13 +5,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static java.lang.System.getProperty;
-import static java.lang.System.setProperty;
-
-import java.io.File;
-
-import org.springframework.stereotype.Component;
-
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
 import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
@@ -24,6 +17,12 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+
+import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
 
 /**
  * Small bean that creates and configures the services needed by the Rest

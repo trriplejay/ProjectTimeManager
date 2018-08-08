@@ -6,15 +6,14 @@
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import com.google.common.collect.Iterables;
-import java.util.Arrays;
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-
-import org.junit.Test;
-
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProjectComputerTest extends AbstractComputerTest {
 	private ProjectComputer testee = new ProjectComputer();

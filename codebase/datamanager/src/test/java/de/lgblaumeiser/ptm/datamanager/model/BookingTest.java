@@ -5,19 +5,17 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
-import static java.time.LocalDate.now;
-import static java.time.LocalTime.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import static java.time.LocalDate.now;
+import static java.time.LocalTime.of;
+import static org.junit.Assert.*;
 
 /**
  * Test of the Booking class

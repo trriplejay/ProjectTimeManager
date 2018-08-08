@@ -5,8 +5,13 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import de.lgblaumeiser.ptm.analysis.Analysis;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,12 +21,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Iterables;
-import de.lgblaumeiser.ptm.analysis.Analysis;
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * An analysis to compute the amount of hours per a activity. The computer

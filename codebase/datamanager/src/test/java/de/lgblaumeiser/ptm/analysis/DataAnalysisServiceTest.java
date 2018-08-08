@@ -5,6 +5,11 @@
  */
 package de.lgblaumeiser.ptm.analysis;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collection;
+
 import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
@@ -12,11 +17,6 @@ import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class DataAnalysisServiceTest {
 	private DataAnalysisService testee;

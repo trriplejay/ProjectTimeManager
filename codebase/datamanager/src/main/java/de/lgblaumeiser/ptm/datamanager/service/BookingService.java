@@ -5,11 +5,11 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Class which offers the services needed for entering the bookings of a day
