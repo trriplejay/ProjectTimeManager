@@ -9,8 +9,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
-import java.time.LocalDate;
-
 /**
  * Delete a booking
  */

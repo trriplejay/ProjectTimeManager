@@ -5,13 +5,12 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
+
+import java.time.LocalTime;
+import java.util.Optional;
 
 /**
  * End a booking that has been started with start booking command

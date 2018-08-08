@@ -5,13 +5,11 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
+import org.junit.Test;
+
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the activity class

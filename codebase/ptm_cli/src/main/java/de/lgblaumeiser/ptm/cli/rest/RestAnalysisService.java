@@ -5,13 +5,13 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Arrays.asList;
+import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 
 import java.util.Collection;
 
-import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
+import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
 
 /**
  * Rest Proxy Implementation for accessing analysis results over rest api.

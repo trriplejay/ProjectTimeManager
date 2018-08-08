@@ -5,16 +5,12 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+
+import static org.junit.Assert.assertEquals;
 
 public class RunAnalysisTest extends AbstractHandlerTest {
     private static final String HOURS_ANALYSIS_COMMAND = "hour_analysis";

@@ -5,18 +5,17 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.util.stream.Collectors.toList;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
-import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.stream.Collectors.toList;
 
 /**
  * List the bookings of the day

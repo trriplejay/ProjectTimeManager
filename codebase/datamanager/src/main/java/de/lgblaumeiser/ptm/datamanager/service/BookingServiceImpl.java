@@ -5,16 +5,16 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import static com.google.common.base.Preconditions.checkState;
-import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 
 /**
  * The implementation of the DayBookings service

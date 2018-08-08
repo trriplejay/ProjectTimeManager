@@ -5,21 +5,18 @@
  */
 package de.lgblaumeiser.store.filesystem;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.io.Files.createTempDir;
-import static org.apache.commons.io.FileUtils.forceDelete;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
+import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.junit.Test;
-
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.io.Files.createTempDir;
+import static org.apache.commons.io.FileUtils.forceDelete;
+import static org.junit.Assert.*;
 
 public class FileSystemAbstractionTest {
 	private final static String FILENAME = "dummy.test";

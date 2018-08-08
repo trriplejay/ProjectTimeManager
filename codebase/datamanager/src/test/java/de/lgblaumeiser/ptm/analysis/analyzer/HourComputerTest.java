@@ -5,16 +5,15 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import static com.google.common.collect.Iterables.get;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.junit.Test;
 
 import java.util.Collection;
 
-import org.junit.Test;
-
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.collect.Iterables.get;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 public class HourComputerTest extends AbstractComputerTest {
 	private final HourComputer testee = new HourComputer();

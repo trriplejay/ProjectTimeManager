@@ -5,16 +5,16 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Optional;
 
 /**
  * Add a booking for the day

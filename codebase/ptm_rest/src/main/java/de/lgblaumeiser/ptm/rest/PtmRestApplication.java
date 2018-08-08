@@ -5,12 +5,12 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static org.springframework.boot.SpringApplication.run;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static org.springframework.boot.SpringApplication.run;
 
 @SpringBootApplication
 public class PtmRestApplication {

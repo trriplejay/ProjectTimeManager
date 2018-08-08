@@ -5,9 +5,9 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
-import static java.lang.System.out;
-
 import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
+
+import static java.lang.System.out;
 
 /**
  * Logs the output to stdio

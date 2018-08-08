@@ -5,13 +5,11 @@
  */
 package de.lgblaumeiser.ptm.datamanager.service;
 
-import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static java.util.Collections.unmodifiableCollection;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -19,12 +17,11 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Lists.newArrayList;
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static java.util.Collections.unmodifiableCollection;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the DayBookings service

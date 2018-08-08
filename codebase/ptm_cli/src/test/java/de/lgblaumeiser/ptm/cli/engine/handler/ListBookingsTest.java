@@ -5,13 +5,13 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ListBookingsTest extends AbstractHandlerTest {
     private static final String LIST_BOOKING_COMMAND = "list_bookings";

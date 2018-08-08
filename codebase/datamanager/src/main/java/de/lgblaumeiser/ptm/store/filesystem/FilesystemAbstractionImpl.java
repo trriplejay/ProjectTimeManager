@@ -5,17 +5,13 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.nio.charset.Charset.defaultCharset;
-import static org.apache.commons.io.FileUtils.forceDelete;
-import static org.apache.commons.io.FileUtils.listFiles;
-import static org.apache.commons.io.FileUtils.moveFile;
-import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.apache.commons.io.FileUtils.write;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkState;
+import static java.nio.charset.Charset.defaultCharset;
+import static org.apache.commons.io.FileUtils.*;
 
 /**
  * Implementation of the real filesystem access

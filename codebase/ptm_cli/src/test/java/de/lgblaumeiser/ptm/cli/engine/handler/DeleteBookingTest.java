@@ -5,15 +5,10 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.collect.Iterables.get;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-
 import com.beust.jcommander.ParameterException;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class DeleteBookingTest extends AbstractHandlerTest {
     private static final String DELETE_BOOKING_COMMAND = "delete_booking";
