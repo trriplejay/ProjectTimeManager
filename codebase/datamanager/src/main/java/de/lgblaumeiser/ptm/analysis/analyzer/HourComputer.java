@@ -33,8 +33,9 @@ public class HourComputer implements Analysis {
 			requestedMonth = YearMonth.parse(Iterables.get(parameter, 0));
 		}
 		Collection<Collection<Object>> result = Lists.newArrayList();
-		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Overtime", "Comment"));
+		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Total", "Overtime", "Comment"));
 		Duration overtime = Duration.ZERO;
+		Duration totaltime = Duration.ZERO;
 		LocalDate currentday = requestedMonth.atDay(1);
 		while (!currentday.isAfter(requestedMonth.atEndOfMonth())) {
 			Collection<Booking> currentBookings = getBookingsForDay(currentday);
@@ -45,12 +46,13 @@ public class HourComputer implements Analysis {
 				Duration presence = calculatePresence(starttime, endtime);
 				Duration worktime = calculateWorktime(currentBookings);
 				Duration breaktime = calculateBreaktime(presence, worktime);
+				totaltime = totaltime.plus(worktime);
 				Duration currentOvertime = calculateOvertime(worktime, currentday);
 				overtime = overtime.plus(currentOvertime);
 				result.add(Arrays.asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
 						endtime.format(DateTimeFormatter.ofPattern("HH:mm")),
 						formatDuration(presence), formatDuration(worktime), formatDuration(breaktime),
-						formatDuration(overtime), validate(worktime, breaktime)));
+						formatDuration(totaltime), formatDuration(overtime), validate(worktime, breaktime)));
 			}
 			currentday = currentday.plusDays(1);
 		}

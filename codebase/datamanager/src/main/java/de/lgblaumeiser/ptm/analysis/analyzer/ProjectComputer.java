@@ -54,10 +54,11 @@ public class ProjectComputer implements Analysis {
 			Activity activity = currentActivity.getKey();
 			Duration totalMinutesId = currentActivity.getValue();
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
-			String percentageString = String.format("%2.1f", percentage * 100.0);
+			String percentageString = String.format("%2.1f", percentage * 100.0) + "%";
 			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
 					formatDuration(totalMinutesId), percentageString));
 		}
+		result.add(Arrays.asList("Total","",formatDuration(totalMinutes),"100%"));
 		return result;
 	}
 

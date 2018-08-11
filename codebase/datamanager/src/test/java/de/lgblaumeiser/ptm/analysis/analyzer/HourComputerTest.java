@@ -27,6 +27,6 @@ public class HourComputerTest extends AbstractComputerTest {
 	public void testHourComputerToday() {
 		Collection<Collection<Object>> analysisResults = testee.analyze(asList("2017-03"));
 		assertEquals(6, analysisResults.size());
-		assertEquals("-07:30", get(get(analysisResults, 5), 6));
+		assertEquals("-07:30", get(get(analysisResults, 5), 7));
 	}
 }
