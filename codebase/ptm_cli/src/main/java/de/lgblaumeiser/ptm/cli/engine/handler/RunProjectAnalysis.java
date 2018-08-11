@@ -23,10 +23,10 @@ import java.util.Collection;
 public class RunProjectAnalysis extends AbstractCommandHandler {
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
-	@Parameter(names = { "-m", "--month" }, description="Month for the hour analysis", converter=YearMonthConverter.class)
+	@Parameter(names = { "-m", "--month" }, description="Month for the hour analysis", converter= YearMonthConverter.class)
 	private YearMonth bookingMonth = YearMonth.now();
 
-	@Parameter(names = { "-d", "--day" }, description="Day for project analysis", converter=LocalDateConverter.class)
+	@Parameter(names = { "-d", "--day" }, description="Day for project analysis", converter= LocalDateConverter.class)
 	private LocalDate bookingDay = null;
 
 	@Override

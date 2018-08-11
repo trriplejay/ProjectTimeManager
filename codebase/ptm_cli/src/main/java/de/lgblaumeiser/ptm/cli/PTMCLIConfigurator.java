@@ -60,7 +60,7 @@ public class PTMCLIConfigurator {
 	}
 
 	private JCommander createCommandInterpreter(final ServiceManager serviceManager) {
-        CommandLogger logger = new StdoutLogger();
+        StdoutLogger logger = new StdoutLogger();
         AbstractCommandHandler.setLogger(logger);
         AbstractCommandHandler.setServices(serviceManager);
         AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));

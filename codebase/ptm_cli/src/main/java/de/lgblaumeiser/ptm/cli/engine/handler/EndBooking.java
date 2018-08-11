@@ -20,7 +20,7 @@ public class EndBooking extends AbstractCommandHandler {
 	@Parameter(names = { "-b", "--booking" }, description="Booking id of the booking to end", required=true)
 	private Long id;
 
-	@Parameter(names = { "-e", "--endtime" }, description="End time of the booking", required=true, converter=LocalTimeConverter.class)
+	@Parameter(names = { "-e", "--endtime" }, description="End time of the booking", required=true, converter= LocalTimeConverter.class)
 	private Optional<LocalTime> endtime = Optional.empty();
 
 	@Override

@@ -9,7 +9,7 @@ import com.beust.jcommander.IStringConverter;
 
 import java.time.YearMonth;
 
-public class YearMonthConverter implements IStringConverter<YearMonth> {
+class YearMonthConverter implements IStringConverter<YearMonth> {
     @Override
     public YearMonth convert(String s) {
         return YearMonth.parse(s);

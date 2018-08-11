@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static java.util.Optional.of;
 
-public class LocalTimeConverter implements IStringConverter<Optional<LocalTime>> {
+class LocalTimeConverter implements IStringConverter<Optional<LocalTime>> {
     @Override
     public Optional<LocalTime> convert(String s) {
         return of(LocalTime.parse(s));

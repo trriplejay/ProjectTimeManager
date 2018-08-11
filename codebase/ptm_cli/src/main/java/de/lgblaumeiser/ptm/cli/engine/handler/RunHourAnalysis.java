@@ -22,7 +22,7 @@ import java.util.Collection;
 public class RunHourAnalysis extends AbstractCommandHandler {
 	private static final String ANALYSIS_HOURS_ID = "HOURS";
 
-	@Parameter(names = { "-m", "--month" }, description="Optional day for booking", converter=YearMonthConverter.class)
+	@Parameter(names = { "-m", "--month" }, description="Optional day for booking", converter= YearMonthConverter.class)
 	private YearMonth bookingMonth = YearMonth.now();
 
 	@Override

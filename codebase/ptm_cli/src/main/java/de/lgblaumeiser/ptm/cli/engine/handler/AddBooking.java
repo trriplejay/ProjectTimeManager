@@ -21,13 +21,13 @@ import java.util.Optional;
  */
 @Parameters(commandDescription="Add a new booking")
 public class AddBooking extends AbstractCommandHandler {
-	@Parameter(names = { "-d", "--day" }, description="Optional day for booking", converter=LocalDateConverter.class)
+	@Parameter(names = { "-d", "--day" }, description="Optional day for booking", converter= LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 
 	@Parameter(names = { "-a", "--activity" }, description="Activity id of the bookings activity", required=true)
 	private Long activityId;
 
-	@Parameter(names = { "-s", "--starttime" }, description="Start time of the booked time frame", required=true, converter=LocalTimeConverter.class)
+	@Parameter(names = { "-s", "--starttime" }, description="Start time of the booked time frame", required=true, converter= LocalTimeConverter.class)
 	private Optional<LocalTime> starttime;
 
 	@Parameter(names = { "-e", "--endtime" }, description="End time of the booked time frame", converter=LocalTimeConverter.class)

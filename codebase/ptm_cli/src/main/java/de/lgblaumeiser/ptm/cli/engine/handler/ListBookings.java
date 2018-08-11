@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Parameters(commandDescription="List all bookings of a day")
 public class ListBookings extends AbstractCommandHandler {
-	@Parameter(names = { "-d", "--day" }, description="Optional day for bookings", converter=LocalDateConverter.class)
+	@Parameter(names = { "-d", "--day" }, description="Optional day for bookings", converter= LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 
 	@Override
