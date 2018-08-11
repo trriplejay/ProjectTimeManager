@@ -4,3 +4,9 @@ language: java
 # Version number
 jdk:
   - oraclejdk8
+
+build:
+  ci:
+  - mvn install -DskipTests
+  - mvn test
+  - mvn verify -f pom-jacocomerge.xml
