@@ -55,7 +55,7 @@ public class BookingControllerTest {
 	public void before() {
 		tempFolder = createTempDir();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
-		setProperty("filestore.folder", tempStorage);
+		setProperty("ptm.filestore", tempStorage);
 	}
 
 	@After

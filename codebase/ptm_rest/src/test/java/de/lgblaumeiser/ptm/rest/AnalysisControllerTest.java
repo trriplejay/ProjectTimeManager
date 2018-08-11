@@ -28,7 +28,6 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -55,7 +54,7 @@ public class AnalysisControllerTest {
 	public void before() {
 		tempFolder = createTempDir();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
-		setProperty("filestore.folder", tempStorage);
+		setProperty("ptm.filestore", tempStorage);
 	}
 
 	@After

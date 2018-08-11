@@ -6,23 +6,21 @@
 package de.lgblaumeiser.ptm.store.filesystem;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.reflect.TypeToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.reflect.TypeToken;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
-import static java.lang.Long.*;
-import static java.lang.System.getProperty;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.io.FilenameUtils.removeExtension;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A file base store for random objects
@@ -49,7 +47,7 @@ public class FileStore<T> implements ObjectStore<T> {
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
-		}).collect(toList());
+		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -124,15 +122,16 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private File getStore() {
-		File applicationPath = new File(getProperty("filestore.folder", getDefaultStore().getAbsolutePath()));
+		String storepath = System.getProperty("ptm.filestore");
+		File applicationPath = StringUtils.isNotBlank(storepath) ? new File(storepath) : getDefaultStore();
 		checkState(filesystemAccess.folderAvailable(applicationPath, true));
 		return applicationPath;
 	}
 
 	private File getDefaultStore() {
-		File homepath = new File(getProperty("user.home"));
+		File homepath = new File(System.getProperty("user.home"));
 		checkState(filesystemAccess.folderAvailable(homepath, false));
-		return new File(homepath, ".file_store");
+		return new File(homepath, ".ptm");
 	}
 
 	public FileStore<T> setFilesystemAccess(final FilesystemAbstraction filesystemAccess) {
@@ -160,10 +159,10 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private Long getNextId() {
-		Optional<String> lastId = getAllFiles().stream().map(f -> removeExtension(f.getName()))
-				.max((n1, n2) -> compare(valueOf(n1), valueOf(n2)));
+		Optional<String> lastId = getAllFiles().stream().map(f -> FilenameUtils.removeExtension(f.getName()))
+				.max((n1, n2) -> Long.compare(Long.valueOf(n1), Long.valueOf(n2)));
 		if (lastId.isPresent()) {
-			return parseLong(lastId.get()) + 1;
+			return Long.parseLong(lastId.get()) + 1;
 		}
 		return 1L;
 	}
