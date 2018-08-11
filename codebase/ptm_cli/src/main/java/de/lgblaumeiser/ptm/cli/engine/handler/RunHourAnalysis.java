@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * Run an hour analysis on the data
  */
-@Parameters(commandDescription="Run an hour anaylsis for a month")
+@Parameters(commandDescription="Run an hour analysis for a month")
 public class RunHourAnalysis extends AbstractCommandHandler {
 	private static final String ANALYSIS_HOURS_ID = "HOURS";
 
