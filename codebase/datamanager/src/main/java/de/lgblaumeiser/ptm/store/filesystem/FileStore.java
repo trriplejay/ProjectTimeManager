@@ -5,8 +5,10 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.io.File;
@@ -28,12 +30,16 @@ import static org.apache.commons.io.FilenameUtils.removeExtension;
 public class FileStore<T> implements ObjectStore<T> {
 	private static final String ID = "id";
 
-	private final Gson gsonUtil = new Gson();
+	private final ObjectMapper jsonUtil = new ObjectMapper();
 	private FilesystemAbstraction filesystemAccess;
 
 	@SuppressWarnings("serial")
-	public final Type type = new TypeToken<T>(getClass()) {
-	}.getType();
+	public final Class<T> type = (Class<T>)new TypeToken<T>(getClass()) {
+	}.getRawType();
+
+	public FileStore() {
+		jsonUtil.registerModule(new JavaTimeModule());
+	}
 
 	@Override
 	public Collection<T> retrieveAll() {
@@ -88,11 +94,19 @@ public class FileStore<T> implements ObjectStore<T> {
 	}
 
 	private T extractFileContent(final String content) {
-		return gsonUtil.fromJson(content, this.type);
+		try {
+			return jsonUtil.readValue(content, this.type);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	private String createFileContent(final T object) {
-		return gsonUtil.toJson(object);
+		try {
+			return jsonUtil.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	private File getFileInformation(final Long index) {

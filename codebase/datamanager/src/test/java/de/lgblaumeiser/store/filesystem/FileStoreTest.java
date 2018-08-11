@@ -101,23 +101,23 @@ public class FileStoreTest {
 		Collection<TestStoreObject> foundObjs = testee.retrieveAll();
 		assertEquals(1, foundObjs.size());
 		TestStoreObject foundObj = getOnlyElement(foundObjs);
-		assertEquals(TESTINDEX, foundObj.index);
-		assertEquals(TESTCONTENT, foundObj.data);
+		assertEquals(TESTINDEX, foundObj.getIndex());
+		assertEquals(TESTCONTENT, foundObj.getData());
 	}
 
 	@Test
 	public void testRetrieveById() {
 		TestStoreObject returnedObject = testee.store(testData);
-		Long id = returnedObject.id;
+		Long id = returnedObject.getId();
 		TestStoreObject foundObj = testee.retrieveById(id).get();
-		assertEquals(TESTINDEX, foundObj.index);
-		assertEquals(TESTCONTENT, foundObj.data);
+		assertEquals(TESTINDEX, foundObj.getIndex());
+		assertEquals(TESTCONTENT, foundObj.getData());
 	}
 
 	@Test
 	public void deleteById() {
 		TestStoreObject returnedObject = testee.store(testData);
-		Long id = returnedObject.id;
+		Long id = returnedObject.getId();
 		assertNotNull(storageContent);
 		assertNotNull(storageFile);
 		testee.deleteById(id);
@@ -127,12 +127,28 @@ public class FileStoreTest {
 }
 
 class TestStoreObject {
-	final String index;
-	final String data;
-	final Long id = Long.valueOf(-1);
+	private String index;
+	private String data;
+	private Long id = Long.valueOf(-1);
+
+	TestStoreObject() {
+		// For json serialization purposes
+	}
 
 	TestStoreObject(final String index, final String data) {
 		this.index = index;
 		this.data = data;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getIndex() {
+		return index;
 	}
 }
