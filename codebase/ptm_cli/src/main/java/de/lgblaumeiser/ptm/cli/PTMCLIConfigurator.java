@@ -28,13 +28,21 @@ import static java.lang.System.setProperty;
  */
 public class PTMCLIConfigurator {
 	private static final String ADD_ACTIVITY_COMMAND = "add_activity";
+	private static final String ADD_ACTIVITY_COMMAND_ABBRV = "aa";
 	private static final String LIST_ACTIVITY_COMMAND = "list_activities";
+	private static final String LIST_ACTIVITY_COMMAND_ABBRV = "la";
 	private static final String ADD_BOOKING_COMMAND = "add_booking";
+	private static final String ADD_BOOKING_COMMAND_ABBRV = "ab";
 	private static final String DELETE_BOOKING_COMMAND = "delete_booking";
+	private static final String DELETE_BOOKING_COMMAND_ABBRV = "db";
 	private static final String END_BOOKING_COMMAND = "end_booking";
+	private static final String END_BOOKING_COMMAND_ABBRV = "eb";
 	private static final String LIST_BOOKING_COMMAND = "list_bookings";
+	private static final String LIST_BOOKING_COMMAND_ABBRV = "lb";
 	private static final String HOURS_ANALYSIS_COMMAND = "hour_analysis";
+	private static final String HOURS_ANALYSIS_COMMAND_ABBRV = "ha";
 	private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
+	private static final String PROJECTS_ANALYSIS_COMMAND_ABBRV = "pa";
 
 	public CLI configure() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
@@ -66,14 +74,22 @@ public class PTMCLIConfigurator {
         AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
         JCommander jc = JCommander.newBuilder()
                 .addObject(new MainParameters())
-                .addCommand(ADD_ACTIVITY_COMMAND, new AddActivity())
-                .addCommand(LIST_ACTIVITY_COMMAND, new ListActivity())
-                .addCommand(ADD_BOOKING_COMMAND, new AddBooking())
-                .addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking())
-                .addCommand(END_BOOKING_COMMAND, new EndBooking())
-                .addCommand(LIST_BOOKING_COMMAND, new ListBookings())
-                .addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis())
-                .addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis())
+				.addCommand(ADD_ACTIVITY_COMMAND, new AddActivity())
+				.addCommand(ADD_ACTIVITY_COMMAND_ABBRV, new AddActivity())
+				.addCommand(LIST_ACTIVITY_COMMAND, new ListActivity())
+				.addCommand(LIST_ACTIVITY_COMMAND_ABBRV, new ListActivity())
+				.addCommand(ADD_BOOKING_COMMAND, new AddBooking())
+				.addCommand(ADD_BOOKING_COMMAND_ABBRV, new AddBooking())
+				.addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking())
+				.addCommand(DELETE_BOOKING_COMMAND_ABBRV, new DeleteBooking())
+				.addCommand(END_BOOKING_COMMAND, new EndBooking())
+				.addCommand(END_BOOKING_COMMAND_ABBRV, new EndBooking())
+				.addCommand(LIST_BOOKING_COMMAND, new ListBookings())
+				.addCommand(LIST_BOOKING_COMMAND_ABBRV, new ListBookings())
+				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis())
+				.addCommand(HOURS_ANALYSIS_COMMAND_ABBRV, new RunHourAnalysis())
+				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis())
+				.addCommand(PROJECTS_ANALYSIS_COMMAND_ABBRV, new RunProjectAnalysis())
                 .build();
 		return jc;
 	}
