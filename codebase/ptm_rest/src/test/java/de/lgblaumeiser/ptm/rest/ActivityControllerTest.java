@@ -59,7 +59,8 @@ public class ActivityControllerTest {
 
 	@Test
 	public void testWithInitialSetupNoActivities() throws Exception {
-		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("[]")));
 	}
 
@@ -69,22 +70,25 @@ public class ActivityControllerTest {
 		data.activityName = "MyTestActivity";
 		data.bookingNumber = "0815";
 		data.hidden = false;
-		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
-		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
 
-		mockMvc.perform(get("/activities/1")).andDo(print()).andExpect(status().isOk())
+		mockMvc.perform(get("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
 
 		data.hidden = true;
-		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isOk());
 
-		mockMvc.perform(get("/activities")).andDo(print()).andExpect(status().isOk())
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString("true")));
 
 	}

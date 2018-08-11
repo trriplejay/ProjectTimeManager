@@ -8,6 +8,7 @@ package de.lgblaumeiser.ptm.rest;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,7 +39,9 @@ public class BookingRestController {
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}")
+	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}",
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
@@ -53,7 +56,9 @@ public class BookingRestController {
 		public String comment;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}")
+	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}",
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
@@ -66,7 +71,9 @@ public class BookingRestController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}")
+	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}",
+			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Booking getBooking(@PathVariable String booking) {
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}

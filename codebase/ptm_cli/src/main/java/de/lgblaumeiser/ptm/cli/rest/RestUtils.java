@@ -7,6 +7,7 @@ package de.lgblaumeiser.ptm.cli.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
@@ -51,10 +52,11 @@ public class RestUtils {
 	public Long post(String apiName, Map<String, String> bodyData) {
 		try {
 			final HttpPost request = new HttpPost(baseUrl + apiName);
-			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData));
+			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData), "UTF-8");
 			bodyJson.setContentType("application/json");
 			bodyJson.setContentEncoding("UTF-8");
 			request.setEntity(bodyJson);
+			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
 			checkState(response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200, response);
 			String uri = apiName;
@@ -80,6 +82,7 @@ public class RestUtils {
 	public <T> T get(String apiName, Class<T> returnClass) {
 		try {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
+			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
 			checkState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
 			return jsonMapper.readValue(new InputStreamReader(response.getEntity().getContent()), returnClass);
@@ -99,8 +102,9 @@ public class RestUtils {
 		try {
 			final String requestString = baseUrl + apiName;
 			final HttpDelete request = new HttpDelete(requestString);
+			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() != 200, response);
+			checkState(response.getStatusLine().getStatusCode() == 200, response);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
