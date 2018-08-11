@@ -22,7 +22,7 @@ public class ListBookingsTest extends AbstractHandlerTest {
         commandline.runCommand(LIST_BOOKING_COMMAND);
         assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),restutils.apiNameGiven);
         assertTrue(logger.logMessages.toString().contains(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)));
-        assertTrue(logger.logMessages.toString().contains("| Activity | Number | Activity Id | Starttime | EndTime | Id | Comment |"));
+        assertTrue(logger.logMessages.toString().contains("| Activity | Number | Activity Id | Starttime | Endtime | Id | Comment |"));
 	}
 
     @Test
@@ -30,6 +30,6 @@ public class ListBookingsTest extends AbstractHandlerTest {
         commandline.runCommand(LIST_BOOKING_COMMAND, "-d", DATE_FOR_BOOKINGS);
         assertEquals("/bookings/day/" + DATE_FOR_BOOKINGS, restutils.apiNameGiven);
         assertTrue(logger.logMessages.toString().contains(DATE_FOR_BOOKINGS));
-        assertTrue(logger.logMessages.toString().contains("| Activity | Number | Activity Id | Starttime | EndTime | Id | Comment |"));
+        assertTrue(logger.logMessages.toString().contains("| Activity | Number | Activity Id | Starttime | Endtime | Id | Comment |"));
     }
 }

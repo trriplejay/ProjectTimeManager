@@ -45,7 +45,7 @@ public class PrettyPrinter {
 
     public void bookingPrint(Collection<Booking> data) {
         Collection<Collection<Object>> table = newArrayList();
-        table.add(newArrayList("Activity", "Number", "Activity Id", "Starttime", "EndTime", "Id", "Comment"));
+        table.add(newArrayList("Activity", "Number", "Activity Id", "Starttime", "Endtime", "Id", "Comment"));
         for (Booking booking : data) {
             table.add(flattenBooking(booking));
         }
