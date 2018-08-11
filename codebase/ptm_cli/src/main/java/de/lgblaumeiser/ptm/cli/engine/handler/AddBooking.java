@@ -46,7 +46,7 @@ public class AddBooking extends AbstractCommandHandler {
 		if (endtime.isPresent()) {
 			addedBooking = getServices().getBookingService().endBooking(addedBooking, endtime.get());
 		}
-		getLogger().log(" ... booking added with id: " + addedBooking.getId());
+		getLogger().log(" ... booking added with data: " + addedBooking.toString());
 	}
 
 	private Activity getActivityById(final Long id) {

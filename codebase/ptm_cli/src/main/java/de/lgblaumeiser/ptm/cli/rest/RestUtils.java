@@ -56,9 +56,7 @@ public class RestUtils {
 			bodyJson.setContentEncoding("UTF-8");
 			request.setEntity(bodyJson);
 			HttpResponse response = clientConnector.execute(request);
-			checkState(
-					response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200,
-					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + apiName);
+			checkState(response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200, response);
 			String uri = apiName;
 			if (response.getStatusLine().getStatusCode() == 201) {
 				uri = response.getHeaders("Location")[0].getValue();
@@ -83,8 +81,7 @@ public class RestUtils {
 		try {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200,
-					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + apiName);
+			checkState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
 			return jsonMapper.readValue(new InputStreamReader(response.getEntity().getContent()), returnClass);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -103,8 +100,7 @@ public class RestUtils {
 			final String requestString = baseUrl + apiName;
 			final HttpDelete request = new HttpDelete(requestString);
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200,
-					"Cannot access server properly, Status " + response.getStatusLine() + ", URI: " + requestString);
+			checkState(response.getStatusLine().getStatusCode() != 200, response);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
