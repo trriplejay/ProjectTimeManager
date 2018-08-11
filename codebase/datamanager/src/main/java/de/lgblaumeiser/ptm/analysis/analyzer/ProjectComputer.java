@@ -86,7 +86,7 @@ public class ProjectComputer implements Analysis {
 		long minutes = duration.toMinutes();
 		char pre = minutes < 0 ? '-' : ' ';
 		minutes = Math.abs(minutes);
-		return String.format("%c%02d,%02d", pre, minutes / 60, minutes % 60 * 10 / 6);
+		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
 	public void setStore(final ObjectStore<Booking> store) {

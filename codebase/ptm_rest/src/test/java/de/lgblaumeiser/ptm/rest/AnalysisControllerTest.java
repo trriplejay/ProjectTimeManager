@@ -91,7 +91,7 @@ public class AnalysisControllerTest {
 
 		mockMvc.perform(get("/analysis/projects/" + dateString.substring(0, 7))).andDo(print())
 				.andExpect(status().isOk()).andExpect(content().string(containsString("0815")))
-				.andExpect(content().string(containsString("08,50"))).andExpect(content().string(containsString("100")))
+				.andExpect(content().string(containsString("08:30"))).andExpect(content().string(containsString("100")))
 				.andExpect(content().string(containsString("8")));
 
 	}
