@@ -42,6 +42,7 @@ public class PTMCLIConfigurator {
 	private static final String HOURS_ANALYSIS_COMMAND_ABBRV = "ha";
 	private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
 	private static final String PROJECTS_ANALYSIS_COMMAND_ABBRV = "pa";
+	private static final String BACKEND_COMMAND = "ptm";
 
 	public CLI configure() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
@@ -73,22 +74,15 @@ public class PTMCLIConfigurator {
         AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
         JCommander jc = JCommander.newBuilder()
                 .addObject(new MainParameters())
-				.addCommand(ADD_ACTIVITY_COMMAND, new AddActivity())
-				.addCommand(ADD_ACTIVITY_COMMAND_ABBRV, new AddActivity())
-				.addCommand(LIST_ACTIVITY_COMMAND, new ListActivity())
-				.addCommand(LIST_ACTIVITY_COMMAND_ABBRV, new ListActivity())
-				.addCommand(ADD_BOOKING_COMMAND, new AddBooking())
-				.addCommand(ADD_BOOKING_COMMAND_ABBRV, new AddBooking())
-				.addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking())
-				.addCommand(DELETE_BOOKING_COMMAND_ABBRV, new DeleteBooking())
-				.addCommand(END_BOOKING_COMMAND, new EndBooking())
-				.addCommand(END_BOOKING_COMMAND_ABBRV, new EndBooking())
-				.addCommand(LIST_BOOKING_COMMAND, new ListBookings())
-				.addCommand(LIST_BOOKING_COMMAND_ABBRV, new ListBookings())
-				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis())
-				.addCommand(HOURS_ANALYSIS_COMMAND_ABBRV, new RunHourAnalysis())
-				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis())
-				.addCommand(PROJECTS_ANALYSIS_COMMAND_ABBRV, new RunProjectAnalysis())
+				.addCommand(ADD_ACTIVITY_COMMAND, new AddActivity(), ADD_ACTIVITY_COMMAND_ABBRV)
+				.addCommand(LIST_ACTIVITY_COMMAND, new ListActivity(), LIST_ACTIVITY_COMMAND_ABBRV)
+				.addCommand(ADD_BOOKING_COMMAND, new AddBooking(), ADD_BOOKING_COMMAND_ABBRV)
+				.addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking(), DELETE_BOOKING_COMMAND_ABBRV)
+				.addCommand(END_BOOKING_COMMAND, new EndBooking(), END_BOOKING_COMMAND_ABBRV)
+				.addCommand(LIST_BOOKING_COMMAND, new ListBookings(), LIST_BOOKING_COMMAND_ABBRV)
+				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis(), HOURS_ANALYSIS_COMMAND_ABBRV)
+				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis(), PROJECTS_ANALYSIS_COMMAND_ABBRV)
+				.addCommand(BACKEND_COMMAND, new ControlBackend())
                 .build();
 		return jc;
 	}
