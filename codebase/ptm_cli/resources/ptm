@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Dptm.host=localhost -Dptm.port=27727 -jar ptm_cli-1.1.0.jar "$@"
+java -Dptm.host=localhost -Dptm.port=27727 -jar ptm_cli-1.2.0-SNAPSHOT-jar-with-dependencies.jar "$@"
