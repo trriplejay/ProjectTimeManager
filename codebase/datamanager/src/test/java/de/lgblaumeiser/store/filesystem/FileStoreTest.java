@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
@@ -115,7 +117,7 @@ public class FileStoreTest {
 	}
 
 	@Test
-	public void deleteById() {
+	public void testDeleteById() {
 		TestStoreObject returnedObject = testee.store(testData);
 		Long id = returnedObject.getId();
 		assertNotNull(storageContent);
@@ -123,6 +125,15 @@ public class FileStoreTest {
 		testee.deleteById(id);
 		assertNull(storageContent);
 		assertNull(storageFile);
+	}
+
+	@Test
+	public void testStorepathByEnv() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+		System.setProperty("ptm.filestore", "somedummystring");
+		Class<?> myClass = testee.getClass().getSuperclass();
+        Method method = myClass.getDeclaredMethod("getStore");
+		method.setAccessible(true);
+		assertEquals(new File("somedummystring"), (File)method.invoke(testee));
 	}
 }
 
