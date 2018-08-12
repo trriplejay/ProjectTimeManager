@@ -1,0 +1,17 @@
+#
+# Copyright by Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+#
+# Licensed under MIT license
+#
+version: '3.7'
+
+volumes:
+  PTMDataStore:
+
+services:
+  ptm:
+    image: de.lgblaumeiser/ptm
+    ports:
+    - 27727:8080
+    volumes:
+    - PTMDataStore:/var/ptm
