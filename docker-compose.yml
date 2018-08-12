@@ -1,5 +1,5 @@
 #
-# Copyright by Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+# Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
 #
 # Licensed under MIT license
 #
