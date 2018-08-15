@@ -7,6 +7,7 @@ package de.lgblaumeiser.ptm.rest;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 
 import static java.lang.Long.valueOf;
 import static java.time.LocalTime.parse;
@@ -35,7 +37,7 @@ public class BookingRestController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public Collection<String> getDaysForWhichBookingsExist() {
-		return services.bookingStore().retrieveAll().stream().map(b -> b.getBookingday()).distinct()
+		return services.bookingStore().retrieveAll().stream().map(Booking::getBookingday).distinct()
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
@@ -63,10 +65,9 @@ public class BookingRestController {
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
 				.orElseThrow(IllegalStateException::new);
-		Booking newBooking = services.bookingService().addBooking(day, newData.user, activity, parse(newData.starttime), newData.comment);
-		if (newData.endtime != null) {
-			newBooking = services.bookingService().endBooking(newBooking, parse(newData.endtime));
-		}
+		Booking newBooking = services.bookingService().addBooking(day, newData.user, activity, parse(newData.starttime),
+				newData.endtime != null ? Optional.of(parse(newData.endtime)) : Optional.empty(),
+				StringUtils.isNotBlank(newData.comment) ? Optional.of(newData.comment) : Optional.empty());
 		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/bookings/id/" + newBooking.getId());
 		return ResponseEntity.created(location).build();
 	}
@@ -79,10 +80,15 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/id/{booking}")
-	public ResponseEntity<?> endBooking(@PathVariable String booking,
-			@RequestBody BookingBody changedData) {
+	public ResponseEntity<?> changeBooking(@PathVariable String booking,
+			@RequestBody BookingBody changeData) {
+		Optional<Activity> activity = services.activityStore().retrieveById(valueOf(changeData.activityId));
 		services.bookingStore().retrieveById(valueOf(booking))
-				.ifPresent(b -> services.bookingService().endBooking(b, parse(changedData.endtime)));
+				.ifPresent(b -> services.bookingService().changeBooking(b,
+						Optional.empty(),activity,
+						changeData.starttime != null ? Optional.of(parse(changeData.starttime)) : Optional.empty(),
+                        changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
+                        StringUtils.isNotBlank(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
 		return ResponseEntity.ok().build();
 	}
 
@@ -94,6 +100,6 @@ public class BookingRestController {
 
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<?> handleException(IllegalStateException e) {
-		return new ResponseEntity<String>(e.getMessage(), BAD_REQUEST);
+		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
 	}
 }

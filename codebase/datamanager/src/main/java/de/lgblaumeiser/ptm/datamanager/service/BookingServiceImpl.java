@@ -8,6 +8,7 @@ package de.lgblaumeiser.ptm.datamanager.service;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,13 +24,17 @@ public class BookingServiceImpl implements BookingService {
 	private ObjectStore<Booking> bookingStore;
 
 	@Override
-	public Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime, String comment) {
+	public Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime,
+							  Optional<LocalTime> endtime, Optional<String> comment) {
 		getLastOpenBooking(bookingday).ifPresent(b -> {
-			Booking changed = endBooking(b, starttime);
+			Booking changed = b.changeBooking().setEndtime(starttime).build();
 			bookingStore.store(changed);
 		});
-		Booking newBooking = newBooking().setBookingday(bookingday).setUser(user).setStarttime(starttime)
-				.setActivity(activity).setComment(comment).build();
+		Booking.BookingBuilder newBookingBuilder = newBooking().setBookingday(bookingday).setUser(user).setStarttime(starttime)
+				.setActivity(activity);
+		endtime.ifPresent(newBookingBuilder::setEndtime);
+		comment.ifPresent(c ->  { if (StringUtils.isNotBlank(c)) newBookingBuilder.setComment(c); });
+		Booking newBooking = newBookingBuilder.build();
 		bookingStore.store(newBooking);
 		return newBooking;
 	}
@@ -40,11 +45,18 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public Booking endBooking(final Booking booking, final LocalTime endtime) {
+	public 	Booking changeBooking(Booking booking, Optional<LocalDate> bookingday, Optional<Activity> activity,
+                                    Optional<LocalTime> starttime, Optional<LocalTime> endtime, Optional<String> comment) {
 		checkState(booking != null);
-		Booking endedBooking = booking.changeBooking().setEndtime(endtime).build();
-		bookingStore.store(endedBooking);
-		return endedBooking;
+		Booking.BookingBuilder bookingBuilder = booking.changeBooking();
+		bookingday.ifPresent(bookingBuilder::setBookingday);
+		activity.ifPresent(bookingBuilder::setActivity);
+		starttime.ifPresent(bookingBuilder::setStarttime);
+		endtime.ifPresent(bookingBuilder::setEndtime);
+		comment.ifPresent(c -> { if (StringUtils.isNotBlank(c)) bookingBuilder.setComment(c); });
+		Booking changedBooking = bookingBuilder.build();
+		bookingStore.store(changedBooking);
+		return changedBooking;
 	}
 
 	/**
