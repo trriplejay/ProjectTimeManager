@@ -42,10 +42,9 @@ public class AddBooking extends AbstractCommandHandler {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Add new booking ...");
-		Booking addedBooking = getServices().getBookingService().addBooking(bookingDay, user, getActivityById(activityId), starttime.get(), comment);
-		if (endtime.isPresent()) {
-			addedBooking = getServices().getBookingService().endBooking(addedBooking, endtime.get());
-		}
+		Booking addedBooking = getServices().getBookingService().addBooking(bookingDay, user, getActivityById(activityId),
+				starttime.get(), endtime,
+				StringUtils.isNotBlank(comment) ? Optional.of(comment) : Optional.empty());
 		getLogger().log(" ... booking added with data: " + addedBooking.toString());
 	}
 

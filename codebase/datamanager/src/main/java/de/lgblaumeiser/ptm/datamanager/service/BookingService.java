@@ -10,6 +10,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 /**
  * Class which offers the services needed for entering the bookings of a day
@@ -27,25 +28,37 @@ public interface BookingService {
 	 *            The activity of the booking
 	 * @param starttime
 	 *            The starttime of the booking
+	 * @param endtime
+	 *            The endtime of the booking (optional)
 	 * @param comment
-	 *            A comment for the booking, e.g., work done during the booking
+	 *            A comment for the booking, e.g., work done during the booking (optional)
 	 * @return The created Booking object, never null
 	 * @throws IllegalStateException
-	 *             If the starttime is already within a booked time or the
-	 *             previous booking has already an endtime
+	 *             If given data is not valid, e.g. endtime before starttime
 	 */
-	Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime, String comment);
+	Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime,
+					   Optional<LocalTime> endtime, Optional<String> comment);
 
 	/**
-	 * Ends the given booking with the given endtime.
+	 * Changes the given booking, only user is not changeable. Only changed items are given as parameter,
+	 * rest remains unchanged
 	 *
 	 * @param booking
 	 *            The booking for which an endtime is added
+	 * @param bookingday
+	 *            The day for which the booking should be created (optional)
+	 * @param activity
+	 *            The activity of the booking (optional)
+	 * @param starttime
+	 *            The starttime of the booking(optional)
 	 * @param endtime
-	 *            The endtime of the booking
-	 * @return The created Booking object, never null
+	 *            The endtime of the booking (optional)
+	 * @param comment
+	 *            A comment for the booking, e.g., work done during the booking (optional)
+	 * @return The changed Booking object, never null
 	 * @throws IllegalStateException
-	 *             If a booking overlap is added
+	 *             If given data is not valid, e.g. endtime before starttime
 	 */
-	Booking endBooking(Booking booking, LocalTime endtime);
+	Booking changeBooking(Booking booking, Optional<LocalDate> bookingday, Optional<Activity> activity,
+						  Optional<LocalTime> starttime, Optional<LocalTime> endtime, Optional<String> comment);
 }

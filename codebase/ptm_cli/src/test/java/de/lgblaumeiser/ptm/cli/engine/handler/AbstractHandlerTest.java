@@ -13,9 +13,11 @@ import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
 import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.junit.Before;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
@@ -23,6 +25,8 @@ import java.util.Map;
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 
 public abstract class AbstractHandlerTest {
+	private static final String ID = "id";
+
 	protected static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
 	protected static final LocalTime TIME1 = LocalTime.of(12, 34);
 	protected static final LocalTime TIME2 = LocalTime.of(13, 57);
@@ -34,6 +38,8 @@ public abstract class AbstractHandlerTest {
 	protected static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setId(2L).build();
 	protected static final String USER = "TestUser";
 	protected static final String COMMENT = "TestComment";
+	protected static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
+            .setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
 
 	protected static class TestCommandLogger implements CommandLogger {
 		protected StringBuffer logMessages = new StringBuffer();
@@ -67,6 +73,9 @@ public abstract class AbstractHandlerTest {
 					return returnClass.cast(ACTIVITY2);
 				}
 			}
+			if (apiName.contains("bookings/id/10")) {
+                return returnClass.cast(BOOKING1);
+			}
 			if (returnClass.isArray()) {
 				return returnClass.cast(Array.newInstance(returnClass.getComponentType(), 0));
 			}
@@ -93,5 +102,15 @@ public abstract class AbstractHandlerTest {
         AbstractCommandHandler.setLogger(logger);
         AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
         RestBaseService.setRestUtils(restutils);
+		try {
+			Field f = BOOKING1.getClass().getDeclaredField(ID);
+			f.setAccessible(true);
+			f.set(BOOKING1, 10L);
+			f.setAccessible(false);
+		} catch (IllegalAccessException | IllegalArgumentException | ClassCastException
+				| NoSuchFieldException | SecurityException e) {
+			throw new IllegalStateException(e);
+		}
+
 	}
 }
