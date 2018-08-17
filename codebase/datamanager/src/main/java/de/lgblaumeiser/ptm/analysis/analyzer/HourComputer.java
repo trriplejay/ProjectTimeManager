@@ -28,16 +28,16 @@ public class HourComputer implements Analysis {
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		YearMonth requestedMonth = YearMonth.now();
-		if (parameter.size() > 0) {
-			requestedMonth = YearMonth.parse(Iterables.get(parameter, 0));
+	    LocalDate[] requestedPeriod = getMonthPeriod(YearMonth.now());
+		if (parameter.size() > 1) {
+			requestedPeriod = getCalculationPeriod(parameter);
 		}
 		Collection<Collection<Object>> result = Lists.newArrayList();
 		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Total", "Overtime", "Comment"));
 		Duration overtime = Duration.ZERO;
 		Duration totaltime = Duration.ZERO;
-		LocalDate currentday = requestedMonth.atDay(1);
-		while (!currentday.isAfter(requestedMonth.atEndOfMonth())) {
+		LocalDate currentday = requestedPeriod[0];
+		while (currentday.isBefore(requestedPeriod[1])) {
 			Collection<Booking> currentBookings = getBookingsForDay(currentday);
 			if (hasCompleteBookings(currentBookings)) {
 				String day = currentday.format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -57,6 +57,30 @@ public class HourComputer implements Analysis {
 			currentday = currentday.plusDays(1);
 		}
 		return result;
+	}
+
+	private LocalDate[] getCalculationPeriod(Collection<String> parameter) {
+		String selector = Iterables.get(parameter, 0);
+		String time = Iterables.get(parameter, 1);
+		if ("week".equals(selector.toLowerCase())) {
+			return getWeekPeriod(LocalDate.parse(time));
+		}
+		else if ("month".equals(selector.toLowerCase())) {
+			return getMonthPeriod(YearMonth.parse(time));
+		}
+		return getMonthPeriod(YearMonth.now());
+	}
+
+	private LocalDate[] getWeekPeriod(LocalDate dayInWeek) {
+        LocalDate current = dayInWeek;
+        while (current.getDayOfWeek() != DayOfWeek.MONDAY) {
+            current = current.minusDays(1L);
+        }
+        return new LocalDate[] { current, current.plusDays(7L) };
+	}
+
+	private LocalDate[] getMonthPeriod(YearMonth month) {
+		return new LocalDate[] { month.atDay(1), month.plusMonths(1L).atDay(1) };
 	}
 
 	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {

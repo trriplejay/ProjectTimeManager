@@ -25,9 +25,25 @@ public class ProjectComputerTest extends AbstractComputerTest {
 
 	@Test
 	public void testProjectComputerFixed() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("2017-03"));
+		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("month", "2017-03"));
 		assertEquals(5, analysisResults.size());
-		assertEquals(100.0,
+		assertEquals(200.0,
+				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", ""))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", ""))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", ""))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 4), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", "")),
+				0.1);
+	}
+
+	@Test
+	public void testProjectComputerDay() {
+		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("day", "2017-03-15"));
+		assertEquals(4, analysisResults.size());
+		assertEquals(200.0,
 				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", ""))
 				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
@@ -38,14 +54,18 @@ public class ProjectComputerTest extends AbstractComputerTest {
 	}
 
 	@Test
-	public void testProjectComputerDay() {
-		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("2017-03-15"));
-		assertEquals(4, analysisResults.size());
-		assertEquals(100.0,
+	public void testProjectComputerWeek() {
+		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("week", "2017-03-09"));
+		assertEquals(5, analysisResults.size());
+		assertEquals(200.0,
 				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", ""))
 				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", ""))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString()
+						.replaceAll(",", ".").replaceAll("%", ""))
+				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 4), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", "")),
-				0.1);
+				0.15);
 	}
 }

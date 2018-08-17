@@ -13,12 +13,11 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -62,14 +61,18 @@ public class ProjectComputer implements Analysis {
 		return result;
 	}
 
-	private Collection<Booking> getRelevantBookings(final Collection<String> dayOrMonthParameter) {
-		if (dayOrMonthParameter.size() > 0) {
-			String dayOrMonthString = Iterables.get(dayOrMonthParameter, 0);
-			if (dayOrMonthString.length() == 10) {
-				return getBookingsForDay(LocalDate.parse(dayOrMonthString));
+	private Collection<Booking> getRelevantBookings(final Collection<String> parameters) {
+		if (parameters.size() > 1) {
+			String selector = Iterables.get(parameters, 0);
+			String time = Iterables.get(parameters, 1);
+			if ("day".equals(selector.toLowerCase())) {
+				return getBookingsForDay(LocalDate.parse(time));
 			}
-			if (dayOrMonthString.length() == 7) {
-				return getBookingsForMonth(YearMonth.parse(dayOrMonthString));
+			else if ("week".equals(selector.toLowerCase())) {
+				return getBookingsForWeek(LocalDate.parse(time));
+			}
+			else if ("month".equals(selector.toLowerCase())) {
+				return getBookingsForMonth(YearMonth.parse(time));
 			}
 		}
 		return getBookingsForMonth(YearMonth.now());
@@ -77,6 +80,19 @@ public class ProjectComputer implements Analysis {
 
 	private Collection<Booking> getBookingsForMonth(final YearMonth month) {
 		return store.retrieveAll().stream().filter(b -> month.equals(YearMonth.from(b.getBookingday()))).collect(Collectors.toList());
+	}
+
+	private Collection<Booking> getBookingsForWeek(final LocalDate dayInWeek) {
+		LocalDate currentDay = dayInWeek;
+		while (currentDay.getDayOfWeek() != DayOfWeek.MONDAY) {
+			currentDay = currentDay.minusDays(1L);
+		}
+		final LocalDate mondayOfWeek = currentDay;
+		return store.retrieveAll().stream().filter(b -> isInWeek(mondayOfWeek, b.getBookingday())).collect(Collectors.toList());
+	}
+
+	private boolean isInWeek(LocalDate monday, LocalDate current) {
+		return monday.minusDays(1L).isBefore(current) && monday.isAfter(current.minusDays(7L));
 	}
 
 	private Collection<Booking> getBookingsForDay(final LocalDate day) {
