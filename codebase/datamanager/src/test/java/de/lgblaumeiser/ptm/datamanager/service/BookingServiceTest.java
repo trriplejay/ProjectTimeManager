@@ -88,15 +88,15 @@ public class BookingServiceTest {
 
 	@Test
 	public void testAddBooking1Empty() {
-		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT1);
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
 		assertEquals(1, mockStore.retrieveAll().size());
 		assertEquals(booking, get(mockStore.retrieveAll(), 0));
 	}
 
 	@Test
 	public void testAddBooking1With2Bookings() {
-		testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT2);
-		Booking testBooking = testee.addBooking(DATE1, USER, ACTIVITY2, TIME2, COMMENT1);
+		testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.empty());
+		Booking testBooking = testee.addBooking(DATE1, USER, ACTIVITY2, TIME2, Optional.empty(), Optional.of(COMMENT1));
 		assertEquals(2, mockStore.retrieveAll().size());
 		assertEquals(testBooking, get(mockStore.retrieveAll(), 1));
 		assertTrue(get(mockStore.retrieveAll(), 0).hasEndtime());
@@ -104,9 +104,9 @@ public class BookingServiceTest {
 
 	@Test
 	public void testAddBooking1WithEndedLastBooking() {
-		Booking firstOne = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT1);
-		testee.endBooking(firstOne, TIME2);
-		Booking secondOne = testee.addBooking(DATE1, USER, ACTIVITY2, TIME3, COMMENT2);
+		Booking firstOne = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
+		testee.changeBooking(firstOne, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TIME2), Optional.empty());
+		Booking secondOne = testee.addBooking(DATE1, USER, ACTIVITY2, TIME3, Optional.empty(), Optional.of(COMMENT2));
 		assertEquals(2, mockStore.retrieveAll().size());
 		assertEquals(secondOne, get(mockStore.retrieveAll(), 1));
 		assertTrue(get(mockStore.retrieveAll(), 0).hasEndtime());
@@ -115,23 +115,23 @@ public class BookingServiceTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testAddBooking1WithSameStarttime() {
-		testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT1);
-		testee.addBooking(DATE1, USER, ACTIVITY2, TIME1, COMMENT2);
+		testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
+		testee.addBooking(DATE1, USER, ACTIVITY2, TIME1, Optional.empty(), Optional.of(COMMENT2));
 	}
 
 	@Test
 	public void testEndBooking() {
-		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT1);
-		Booking result = testee.endBooking(booking, TIME2);
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
+		Booking result = testee.changeBooking(booking, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TIME2), Optional.empty());
 		assertEquals(1, mockStore.retrieveAll().size());
 		assertEquals(result, get(mockStore.retrieveAll(), 0));
 	}
 
 	@Test
 	public void testEndBookingSecondEnd() {
-		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, COMMENT1);
-		Booking endedBooking = testee.endBooking(booking, TIME2);
-		Booking testBooking = testee.endBooking(endedBooking, TIME3);
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
+		Booking endedBooking = testee.changeBooking(booking, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TIME2), Optional.empty());
+		Booking testBooking = testee.changeBooking(endedBooking, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TIME3), Optional.empty());
 		assertTrue(testBooking.hasEndtime());
 		assertEquals(TIME3, testBooking.getEndtime());
 	}
@@ -139,10 +139,37 @@ public class BookingServiceTest {
 	@Test(expected = IllegalStateException.class)
 	public void testEndBookingWrongBookingTime() {
 		try {
-			Booking testBooking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME2, COMMENT2);
-			testee.endBooking(testBooking, TIME1);
+			Booking testBooking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME2, Optional.empty(), Optional.of(COMMENT2));
+			testee.changeBooking(testBooking, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TIME1), Optional.empty());
 		} finally {
 			assertFalse(mockStore.retrieveAll().isEmpty());
 		}
 	}
+
+	@Test
+    public void testCreatBookingWithEndtime() {
+        Booking result = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME2), Optional.of(COMMENT1));
+        assertEquals(1, mockStore.retrieveAll().size());
+        assertEquals(result, get(mockStore.retrieveAll(), 0));
+    }
+
+    @Test
+    public void testChangeBooking() {
+        Booking first = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME2), Optional.of(COMMENT1));
+	    Booking second = testee.changeBooking(first, Optional.of(DATE1.plusDays(2)), Optional.of(ACTIVITY2),
+                Optional.of(TIME2), Optional.of(TIME3), Optional.empty());
+        assertEquals(1, mockStore.retrieveAll().size());
+        assertEquals(second, get(mockStore.retrieveAll(), 0));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testChangeBookingWrongBookingTime() {
+        try {
+            Booking first = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME2), Optional.of(COMMENT1));
+            testee.changeBooking(first, Optional.of(DATE1.plusDays(2)), Optional.of(ACTIVITY2),
+                    Optional.of(TIME3), Optional.of(TIME2), Optional.empty());
+        } finally {
+            assertFalse(mockStore.retrieveAll().isEmpty());
+        }
+    }
 }

@@ -109,6 +109,7 @@ public class BookingControllerTest {
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
+		booking.starttime = LocalTime.of(15, 30).format(ISO_LOCAL_TIME);
 		booking.endtime = LocalTime.of(16, 30).format(ISO_LOCAL_TIME);
 		mockMvc.perform(post("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isOk());

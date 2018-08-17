@@ -32,6 +32,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 	@Test
 	public void testAddBookingFourParamEndtime() {
         commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", TIME1.toString(), "-e", TIME2.toString());
+        assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), restutils.apiNameGiven);
 		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
         assertEquals(USER, restutils.bodyDataGiven.get("user"));
         assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
