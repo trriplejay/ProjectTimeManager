@@ -17,11 +17,6 @@ import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
-import java.io.File;
-
-import static java.lang.System.getProperty;
-import static java.lang.System.setProperty;
-
 /**
  * The configuration object that creates the application structure
  */

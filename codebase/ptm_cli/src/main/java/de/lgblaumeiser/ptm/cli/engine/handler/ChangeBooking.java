@@ -7,7 +7,6 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.apache.commons.lang3.StringUtils;
@@ -15,11 +14,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * End a booking that has been started with start booking command
  */
 @Parameters(commandDescription="Add an end time to an existing booking")
-public class ChangeBooking extends AbstractCommandHandler {
+public class ChangeBooking extends AbstractBookingChange {
 	@Parameter(names = { "-b", "--booking" }, description="Booking id of the booking to end", required=true)
 	private Long id;
 
@@ -39,22 +40,11 @@ public class ChangeBooking extends AbstractCommandHandler {
 	public void handleCommand() {
 		getLogger().log("Change booking ...");
 		getServices().getBookingsStore().retrieveById(id).ifPresent(b -> {
+			Optional<Activity> activity = getActivityById(activityId);
+			checkState(activityId >= 0 && activity.isPresent());
 			Booking changed = getServices().getBookingService().changeBooking(b, Optional.empty(), getActivityById(activityId),
 					starttime, endtime, StringUtils.isNotBlank(comment) ? Optional.of(comment) : Optional.empty());
 			getLogger().log("... new booking data: " + changed.toString());
 		});
-	}
-
-	private Optional<Activity> getActivityById(final Long id) {
-		if (id >= 0) {
-		    Optional<Activity> returnValue = getServices().getActivityStore().retrieveById(id);
-		    if (returnValue.isPresent()) {
-		        return returnValue;
-            }
-            throw new IllegalStateException("Activity not known");
-		}
-		else {
-			return Optional.empty();
-		}
 	}
 }

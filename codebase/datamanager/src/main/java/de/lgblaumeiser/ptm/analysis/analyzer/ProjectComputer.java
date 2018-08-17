@@ -5,17 +5,13 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -28,7 +24,7 @@ import java.util.stream.Collectors;
  * percentages to the amount of 8 hours per booking day. This way, this fulfills
  * the requirements of the author concerning his time keeping.
  */
-public class ProjectComputer implements Analysis {
+public class ProjectComputer extends AbstractBaseComputer {
 	private ObjectStore<Booking> store;
 
 	@Override
@@ -37,7 +33,7 @@ public class ProjectComputer implements Analysis {
 		result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
 		Duration totalMinutes = Duration.ZERO;
 		Map<Activity, Duration> activityToMinutesMap = Maps.newHashMap();
-		for (Booking current : getRelevantBookings(parameter)) {
+		for (Booking current : getBookingsForPeriod(getCalculationPeriod(parameter))) {
 			if (current.hasEndtime()) {
 				Activity currentActivity = current.getActivity();
 				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity);
@@ -62,25 +58,8 @@ public class ProjectComputer implements Analysis {
 		return result;
 	}
 
-	private Collection<Booking> getRelevantBookings(final Collection<String> dayOrMonthParameter) {
-		if (dayOrMonthParameter.size() > 0) {
-			String dayOrMonthString = Iterables.get(dayOrMonthParameter, 0);
-			if (dayOrMonthString.length() == 10) {
-				return getBookingsForDay(LocalDate.parse(dayOrMonthString));
-			}
-			if (dayOrMonthString.length() == 7) {
-				return getBookingsForMonth(YearMonth.parse(dayOrMonthString));
-			}
-		}
-		return getBookingsForMonth(YearMonth.now());
-	}
-
-	private Collection<Booking> getBookingsForMonth(final YearMonth month) {
-		return store.retrieveAll().stream().filter(b -> month.equals(YearMonth.from(b.getBookingday()))).collect(Collectors.toList());
-	}
-
-	private Collection<Booking> getBookingsForDay(final LocalDate day) {
-		return store.retrieveAll().stream().filter(b -> day.equals(b.getBookingday())).collect(Collectors.toList());
+	private Collection<Booking> getBookingsForPeriod(final CalculationPeriod period) {
+		return store.retrieveAll().stream().filter(b -> isInPeriod(period, b.getBookingday())).collect(Collectors.toList());
 	}
 
 	private String formatDuration(final Duration duration) {

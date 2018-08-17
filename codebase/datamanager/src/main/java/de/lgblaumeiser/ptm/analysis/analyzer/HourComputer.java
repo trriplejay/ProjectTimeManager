@@ -7,9 +7,7 @@ package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import de.lgblaumeiser.ptm.analysis.Analysis;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.*;
@@ -21,23 +19,22 @@ import java.util.stream.Collectors;
 /**
  * An analysis that counts all hours in the month given as parameter
  */
-public class HourComputer implements Analysis {
+public class HourComputer extends AbstractBaseComputer {
 	private static final String BREAKTIME_COMMENT = "Break too short!";
 	private static final String WORKTIME_COMMENT = "> 10 hours worktime!";
-	private ObjectStore<Booking> store;
 
-	@Override
+    @Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		YearMonth requestedMonth = YearMonth.now();
-		if (parameter.size() > 0) {
-			requestedMonth = YearMonth.parse(Iterables.get(parameter, 0));
+	    CalculationPeriod requestedPeriod = getMonthPeriod(YearMonth.now());
+		if (parameter.size() > 1) {
+			requestedPeriod = getCalculationPeriod(parameter);
 		}
 		Collection<Collection<Object>> result = Lists.newArrayList();
 		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Total", "Overtime", "Comment"));
 		Duration overtime = Duration.ZERO;
 		Duration totaltime = Duration.ZERO;
-		LocalDate currentday = requestedMonth.atDay(1);
-		while (!currentday.isAfter(requestedMonth.atEndOfMonth())) {
+		LocalDate currentday = requestedPeriod.firstDay;
+		while (currentday.isBefore(requestedPeriod.firstDayAfter)) {
 			Collection<Booking> currentBookings = getBookingsForDay(currentday);
 			if (hasCompleteBookings(currentBookings)) {
 				String day = currentday.format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -59,7 +56,7 @@ public class HourComputer implements Analysis {
 		return result;
 	}
 
-	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
+    private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
 		return store.retrieveAll().stream().filter(b -> b.getBookingday().equals(currentday))
 				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(Collectors.toList());
 	}
@@ -126,7 +123,4 @@ public class HourComputer implements Analysis {
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
-	public void setStore(final ObjectStore<Booking> store) {
-		this.store = store;
-	}
 }
