@@ -82,7 +82,7 @@ public class AnalysisControllerTest {
 		mockMvc.perform(post("/bookings/day/" + dateString).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
-		mockMvc.perform(get("/analysis/hours/" + dateString.substring(0, 7))
+		mockMvc.perform(get("/analysis/hours/month/" + dateString.substring(0, 7))
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print()).andExpect(status().isOk())
 				.andExpect(content().string(containsString(dateString)))
 				.andExpect(content().string(containsString("08:15")))
@@ -90,7 +90,7 @@ public class AnalysisControllerTest {
 				.andExpect(content().string(containsString("08:30")))
 				.andExpect(content().string(containsString("00:00")));
 
-		mockMvc.perform(get("/analysis/projects/" + dateString.substring(0, 7))
+		mockMvc.perform(get("/analysis/projects/month/" + dateString.substring(0, 7))
 				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
 				.andExpect(status().isOk()).andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("08:30"))).andExpect(content().string(containsString("100")))
