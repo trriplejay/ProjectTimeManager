@@ -20,7 +20,7 @@ public class RestAnalysisService extends RestBaseService implements DataAnalysis
 	@Override
 	public Collection<Collection<Object>> analyze(String analyzerId, Collection<String> parameter) {
 		Object[][] result = getRestUtils().get(
-				"/analysis/" + analyzerId + "/" + get(parameter, 0), Object[][].class);
+				"/analysis/" + analyzerId + "/" + get(parameter, 0) + "/" + get(parameter, 1), Object[][].class);
 		return convertToCollection(result);
 	}
 

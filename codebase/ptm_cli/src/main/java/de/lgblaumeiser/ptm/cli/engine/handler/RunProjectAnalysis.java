@@ -26,17 +26,26 @@ public class RunProjectAnalysis extends AbstractCommandHandler {
 	@Parameter(names = { "-m", "--month" }, description="Month for the hour analysis", converter= YearMonthConverter.class)
 	private YearMonth bookingMonth = YearMonth.now();
 
+	@Parameter(names = { "-w", "--week" }, description="Day in week for project analysis", converter= LocalDateConverter.class)
+	private LocalDate bookingDayInWeek = null;
+
 	@Parameter(names = { "-d", "--day" }, description="Day for project analysis", converter= LocalDateConverter.class)
 	private LocalDate bookingDay = null;
 
 	@Override
 	public void handleCommand() {
-		String parameter = bookingMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+		String date = bookingMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+		String timeframe = "month";
 		if (bookingDay != null) {
-			parameter = bookingDay.format(DateTimeFormatter.ISO_LOCAL_DATE);
+			date = bookingDay.format(DateTimeFormatter.ISO_LOCAL_DATE);
+			timeframe = "day";
 		}
-		getLogger().log("Run analysis project analysis for " + parameter + " ...");
-		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(ANALYSIS_PROJECTS_ID, Arrays.asList(parameter));
+		if (bookingDayInWeek != null) {
+			date = bookingDayInWeek.format(DateTimeFormatter.ISO_LOCAL_DATE);
+			timeframe = "week";
+		}
+		getLogger().log("Run analysis project analysis for " + date + " ...");
+		Collection<Collection<Object>> result = getServices().getAnalysisService().analyze(ANALYSIS_PROJECTS_ID, Arrays.asList(timeframe, date));
 		getPrinter().tablePrint(result);
 		getLogger().log("... analysis done");
 	}

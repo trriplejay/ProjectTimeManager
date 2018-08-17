@@ -24,30 +24,42 @@ public class RunAnalysisTest extends AbstractHandlerTest {
     @Test
 	public void testRunHoursAnalysisThisMonth() {
         commandline.runCommand(HOURS_ANALYSIS_COMMAND);
-        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
+        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/month/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
 	}
 
     @Test
     public void testRunHoursAnalysisGivenMonth() {
         commandline.runCommand(HOURS_ANALYSIS_COMMAND, "-m", MONTH_FOR_ANALYSIS);
-        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
+        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/month/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
+    }
+
+    @Test
+    public void testRunHoursAnalysisGivenWeekday() {
+        commandline.runCommand(HOURS_ANALYSIS_COMMAND, "-w", DATE_FOR_ANALYSIS);
+        assertEquals("/analysis/" + ANALYSIS_HOURS_ID + "/week/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
     }
 
     @Test
     public void testRunProjectsAnalysisThisMonth() {
         commandline.runCommand(PROJECTS_ANALYSIS_COMMAND);
-        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/month/" + YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM")), restutils.apiNameGiven);
     }
 
     @Test
     public void testRunProjectsAnalysisGivenMonth() {
         commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-m", MONTH_FOR_ANALYSIS);
-        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/month/" + MONTH_FOR_ANALYSIS, restutils.apiNameGiven);
     }
 
     @Test
     public void testRunProjectsAnalysisGivenDay() {
         commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-d", DATE_FOR_ANALYSIS);
-        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/day/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
+    }
+
+    @Test
+    public void testRunProjectsAnalysisGivenWeek() {
+        commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-w", DATE_FOR_ANALYSIS);
+        assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/week/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
     }
 }
