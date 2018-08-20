@@ -26,6 +26,7 @@ import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -84,12 +85,15 @@ public class ActivityControllerTest {
 				.andExpect(content().string(containsString("0815")));
 
 		data.hidden = true;
-		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+		data.activityName = "MyOtherTestActivity";
+		data.bookingNumber = "4711";
+		mockMvc.perform(put("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isOk());
 
 		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("true")));
-
+				.andExpect(content().string(containsString("true")))
+				.andExpect(content().string(containsString("MyOtherTestActivity")))
+				.andExpect(content().string(containsString("4711")));
 	}
 }
