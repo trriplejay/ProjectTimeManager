@@ -20,13 +20,13 @@ public class AddActivity extends AbstractCommandHandler {
 	@Parameter(names = { "-n", "--name" }, description="Name of the new activity", required=true)
 	private String name;
 
-	@Parameter(names = { "-i", "--identifier" }, description="Unique identifier of the activity (e.g. project number)", required=true)
+	@Parameter(names = { "-i", "--identifier" }, description="Project identifier of the activity", required=true)
 	private String identifier;
 
 	@Override
 	public void handleCommand() {
 		getLogger().log("Add activity " + name + " with id " + identifier);
 		Activity newAct = getServices().getActivityStore().store(newActivity().setActivityName(name).setBookingNumber(identifier).build());
-		getLogger().log("Activity added with id " + newAct.getId() + "\n");
+		getLogger().log("Activity added: " + newAct.toString() + "\n");
 	}
 }

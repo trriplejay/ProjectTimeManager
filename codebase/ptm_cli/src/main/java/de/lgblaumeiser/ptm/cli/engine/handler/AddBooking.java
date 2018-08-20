@@ -18,7 +18,7 @@ import java.util.Optional;
  * Add a booking for the day
  */
 @Parameters(commandDescription="Add a new booking")
-public class AddBooking extends AbstractBookingChange {
+public class AddBooking extends AbstractHandlerWithActivityRequest {
 	@Parameter(names = { "-d", "--day" }, description="Optional day for booking", converter= LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 

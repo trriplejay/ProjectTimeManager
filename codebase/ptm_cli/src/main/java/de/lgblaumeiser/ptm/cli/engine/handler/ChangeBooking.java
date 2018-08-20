@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
  * End a booking that has been started with start booking command
  */
 @Parameters(commandDescription="Add an end time to an existing booking")
-public class ChangeBooking extends AbstractBookingChange {
+public class ChangeBooking extends AbstractHandlerWithActivityRequest {
 	@Parameter(names = { "-b", "--booking" }, description="Booking id of the booking to end", required=true)
 	private Long id;
 

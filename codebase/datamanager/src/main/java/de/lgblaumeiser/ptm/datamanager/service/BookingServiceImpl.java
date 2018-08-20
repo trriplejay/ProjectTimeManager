@@ -30,6 +30,7 @@ public class BookingServiceImpl implements BookingService {
 			Booking changed = b.changeBooking().setEndtime(starttime).build();
 			bookingStore.store(changed);
 		});
+		checkState(!activity.isHidden());
 		Booking.BookingBuilder newBookingBuilder = newBooking().setBookingday(bookingday).setUser(user).setStarttime(starttime)
 				.setActivity(activity);
 		endtime.ifPresent(newBookingBuilder::setEndtime);
@@ -50,6 +51,7 @@ public class BookingServiceImpl implements BookingService {
 		checkState(booking != null);
 		Booking.BookingBuilder bookingBuilder = booking.changeBooking();
 		bookingday.ifPresent(bookingBuilder::setBookingday);
+		activity.ifPresent(a -> checkState(!a.isHidden()));
 		activity.ifPresent(bookingBuilder::setActivity);
 		starttime.ifPresent(bookingBuilder::setStarttime);
 		endtime.ifPresent(bookingBuilder::setEndtime);

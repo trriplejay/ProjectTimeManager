@@ -5,7 +5,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 
 import java.util.Optional;
 
-abstract class AbstractBookingChange extends AbstractCommandHandler {
+abstract class AbstractHandlerWithActivityRequest extends AbstractCommandHandler {
     protected Optional<Activity> getActivityById(final Long id) {
         if (id >= 0) {
             return getServices().getActivityStore().retrieveById(id);

@@ -23,6 +23,8 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
 public class PTMCLIConfigurator {
 	private static final String ADD_ACTIVITY_COMMAND = "add_activity";
 	private static final String ADD_ACTIVITY_COMMAND_ABBRV = "aa";
+	private static final String CHANGE_ACTIVITY_COMMAND = "change_activity";
+	private static final String CHANGE_ACTIVITY_COMMAND_ABBRV = "ca";
 	private static final String LIST_ACTIVITY_COMMAND = "list_activities";
 	private static final String LIST_ACTIVITY_COMMAND_ABBRV = "la";
 	private static final String ADD_BOOKING_COMMAND = "add_booking";
@@ -69,6 +71,7 @@ public class PTMCLIConfigurator {
         JCommander jc = JCommander.newBuilder()
                 .addObject(new MainParameters())
 				.addCommand(ADD_ACTIVITY_COMMAND, new AddActivity(), ADD_ACTIVITY_COMMAND_ABBRV)
+				.addCommand(CHANGE_ACTIVITY_COMMAND, new ChangeActivity(), CHANGE_ACTIVITY_COMMAND_ABBRV)
 				.addCommand(LIST_ACTIVITY_COMMAND, new ListActivity(), LIST_ACTIVITY_COMMAND_ABBRV)
 				.addCommand(ADD_BOOKING_COMMAND, new AddBooking(), ADD_BOOKING_COMMAND_ABBRV)
 				.addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking(), DELETE_BOOKING_COMMAND_ABBRV)

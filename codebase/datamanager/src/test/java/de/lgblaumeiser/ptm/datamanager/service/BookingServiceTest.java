@@ -172,4 +172,16 @@ public class BookingServiceTest {
             assertFalse(mockStore.retrieveAll().isEmpty());
         }
     }
+
+    @Test(expected = IllegalStateException.class)
+	public void testAddBookingWithHiddenActivity() {
+		testee.addBooking(DATE1, USER, ACTIVITY2.changeActivity().setHidden(true).build(), TIME1, Optional.empty(), Optional.of(COMMENT1));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testChangeBookingWithHiddenActivity() {
+		Booking first = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME2), Optional.of(COMMENT1));
+		testee.changeBooking(first, Optional.of(DATE1.plusDays(2)), Optional.of(ACTIVITY2.changeActivity().setHidden(true).build()),
+				Optional.of(TIME3), Optional.of(TIME2), Optional.empty());
+	}
 }
