@@ -26,8 +26,8 @@ public class AnalysisRestController {
 	private ServiceMapper services;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{analyzerId}/{timeframe}/{param}",
-			consumes= MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Collection<Collection<Object>> runAnalysis(@PathVariable String analyzerId, @PathVariable String timeframe, @PathVariable String param) {
 		return services.analysisService().analyze(analyzerId.toUpperCase(), asList(timeframe, param));
 	}

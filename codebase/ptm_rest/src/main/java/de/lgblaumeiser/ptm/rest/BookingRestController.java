@@ -42,8 +42,8 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}",
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
@@ -59,8 +59,8 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}",
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
@@ -73,8 +73,8 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}",
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Booking getBooking(@PathVariable String booking) {
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}

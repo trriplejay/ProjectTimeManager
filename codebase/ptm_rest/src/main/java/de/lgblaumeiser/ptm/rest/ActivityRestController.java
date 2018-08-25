@@ -29,8 +29,8 @@ public class ActivityRestController {
 	private ServiceMapper services;
 
 	@RequestMapping(method = RequestMethod.GET,
-			consumes= MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Collection<Activity> getActivities() {
 		return services.activityStore().retrieveAll();
 	}
@@ -42,8 +42,8 @@ public class ActivityRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST,
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseEntity<?> addActivity(@RequestBody ActivityBody activityData) {
 		Activity newActivity = services.activityStore().store(
 				newActivity().setActivityName(activityData.activityName)
@@ -54,15 +54,15 @@ public class ActivityRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}",
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Activity getActivity(@PathVariable String activityId) {
 		return services.activityStore().retrieveById(valueOf(activityId)).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{activityId}",
-			consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseEntity<?> changeActivity(@PathVariable String activityId, @RequestBody ActivityBody activityData) {
 		services.activityStore().retrieveById(valueOf(activityId)).ifPresent(a ->
 			services.activityStore().store(
