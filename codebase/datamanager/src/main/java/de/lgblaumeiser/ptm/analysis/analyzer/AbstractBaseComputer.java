@@ -1,3 +1,8 @@
+/*
+ * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
+ *
+ * Licensed under MIT license
+ */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
 import com.google.common.collect.Iterables;

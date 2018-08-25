@@ -1,3 +1,8 @@
+/*
+ * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
+ *
+ * Licensed under MIT license
+ */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
