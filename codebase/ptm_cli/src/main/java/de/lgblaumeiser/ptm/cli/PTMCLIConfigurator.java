@@ -40,6 +40,7 @@ public class PTMCLIConfigurator {
 	private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
 	private static final String PROJECTS_ANALYSIS_COMMAND_ABBRV = "pa";
 	private static final String BACKEND_COMMAND = "ptm";
+	private static final String BACKUP_COMMAND = "backup";
 
 	public CLI configure() {
 		RestBookingStore bookingStore = new RestBookingStore();
@@ -80,6 +81,7 @@ public class PTMCLIConfigurator {
 				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis(), HOURS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis(), PROJECTS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(BACKEND_COMMAND, new ControlBackend())
+				.addCommand(BACKUP_COMMAND, new Backup())
                 .build();
 		return jc;
 	}

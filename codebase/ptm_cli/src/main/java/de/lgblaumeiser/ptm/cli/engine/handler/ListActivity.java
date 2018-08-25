@@ -13,7 +13,6 @@ import java.util.Collection;
 
 /**
  * Command to list all the activities
- *
  */
 @Parameters(commandDescription="List all activities available")
 public class ListActivity extends AbstractCommandHandler {

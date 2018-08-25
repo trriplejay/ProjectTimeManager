@@ -27,22 +27,22 @@ import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 public abstract class AbstractHandlerTest {
 	private static final String ID = "id";
 
-	protected static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
-	protected static final LocalTime TIME1 = LocalTime.of(12, 34);
-	protected static final LocalTime TIME2 = LocalTime.of(13, 57);
-	protected static final String ACTIVITY1NAME = "Act1";
-	protected static final String ACTIVITY1NUMBER = "0815";
-	protected static final String ACTIVITY2NAME = "NewAct2";
-	protected static final String ACTIVITY2NUMBER = "4711";
-	protected static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).setId(1L).build();
-	protected static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setHidden(true).setId(2L).build();
-	protected static final String USER = "TestUser";
-	protected static final String COMMENT = "TestComment";
-	protected static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
+	static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
+	static final LocalTime TIME1 = LocalTime.of(12, 34);
+	static final LocalTime TIME2 = LocalTime.of(13, 57);
+	static final String ACTIVITY1NAME = "Act1";
+	static final String ACTIVITY1NUMBER = "0815";
+	static final String ACTIVITY2NAME = "NewAct2";
+	static final String ACTIVITY2NUMBER = "4711";
+	static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).setId(1L).build();
+	static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setHidden(true).setId(2L).build();
+	static final String USER = "TestUser";
+	static final String COMMENT = "TestComment";
+	static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
             .setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
 
 	protected static class TestCommandLogger implements CommandLogger {
-		protected StringBuffer logMessages = new StringBuffer();
+	    StringBuffer logMessages = new StringBuffer();
 
 		@Override
 		public void log(String message) {
@@ -52,8 +52,8 @@ public abstract class AbstractHandlerTest {
 	}
 
 	protected static class TestRestUtils extends RestUtils {
-	    protected String apiNameGiven;
-	    protected Map<String, String> bodyDataGiven;
+	    String apiNameGiven;
+	    Map<String, String> bodyDataGiven;
 
         @Override
         public Long post(String apiName, Map<String, String> bodyData) {
@@ -77,6 +77,11 @@ public abstract class AbstractHandlerTest {
                 return returnClass.cast(BOOKING1);
 			}
 			if (returnClass.isArray()) {
+				if (returnClass.getComponentType().getName().contains("Booking")) {
+					return (T) new Booking[] { BOOKING1 };
+				} else if (returnClass.getComponentType().getName().contains("Activity")) {
+					return (T) new Activity[] { ACTIVITY1, ACTIVITY2 };
+				}
 				return returnClass.cast(Array.newInstance(returnClass.getComponentType(), 0));
 			}
 			return null;
@@ -93,9 +98,9 @@ public abstract class AbstractHandlerTest {
 		}
 	}
 
-	protected TestCommandLogger logger = new TestCommandLogger();
-	protected TestRestUtils restutils = new TestRestUtils().configure();
-	protected CLI commandline = new PTMCLIConfigurator().configure();
+	TestCommandLogger logger = new TestCommandLogger();
+	TestRestUtils restutils = new TestRestUtils().configure();
+	CLI commandline = new PTMCLIConfigurator().configure();
 
 	@Before
 	public void before() {
