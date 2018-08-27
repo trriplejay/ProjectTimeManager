@@ -3,7 +3,7 @@
  *
  * Licensed under MIT license
  */
-package de.lgblaumeiser.store.filesystem;
+package de.lgblaumeiser.ptm.store.filesystem;
 
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;

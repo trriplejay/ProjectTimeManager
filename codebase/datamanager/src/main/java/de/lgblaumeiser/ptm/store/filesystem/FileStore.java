@@ -5,33 +5,39 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
+import static com.google.common.base.Preconditions.checkState;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.reflect.TypeToken;
+
 import de.lgblaumeiser.ptm.store.ObjectStore;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkState;
+import de.lgblaumeiser.ptm.store.StoreBackupRestore;
 
 /**
  * A file base store for random objects
  */
-public class FileStore<T> implements ObjectStore<T> {
+public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	private static final String ID = "id";
 
 	private final ObjectMapper jsonUtil = new ObjectMapper();
 	private FilesystemAbstraction filesystemAccess;
 
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "unchecked" })
 	public final Class<T> type = (Class<T>)new TypeToken<T>(getClass()) {
 	}.getRawType();
 
@@ -89,6 +95,35 @@ public class FileStore<T> implements ObjectStore<T> {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	@Override
+	public void backup(StoreBackupStreamHandler backupTarget) {
+		getAllFiles().stream().forEach(f -> {
+	        try (InputStream inputStream = new FileInputStream(f)) {
+	        	backupTarget.streamForBackup(f.getName(), inputStream);
+	        } catch (IOException e) {
+	            throw new IllegalStateException();
+	        }
+		});
+	}
+
+	@Override
+	public void restore(Map<String, String> filenameToContentMap) {
+		checkState(getAllFiles().size() == 0);
+		filenameToContentMap.keySet().stream().forEach(k -> {
+			File targetFile = new File(getStore(), k);
+			try {
+				filesystemAccess.storeToFile(targetFile, filenameToContentMap.get(k));				
+			} catch (IOException e) {
+				throw new IllegalStateException();
+			}
+		});
+	}
+
+	@Override
+	public void delete() {
+		getAllFiles().stream().forEach(f -> f.delete());
 	}
 
 	private T extractFileContent(final String content) {
