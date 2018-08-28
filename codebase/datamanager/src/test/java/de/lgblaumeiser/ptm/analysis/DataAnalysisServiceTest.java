@@ -29,7 +29,7 @@ public class DataAnalysisServiceTest {
 	public void before() {
 		DataAnalysisServiceImpl testSetup = new DataAnalysisServiceImpl().addAnalysis(ANALYSISID, new Analysis() {
 			@Override
-			public Collection<Collection<Object>> analyze(Collection<String> parameter) {
+			public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
 				Collection<Object> returnParam = newArrayList(parameter);
 				return asList(returnParam);
 			}

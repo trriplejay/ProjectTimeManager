@@ -62,7 +62,7 @@ public class Booking {
 		 *            Day for the booking
 		 * @return The booking build as fluent api, non null
 		 */
-		public BookingBuilder setBookingday(LocalDate bookingDay) {
+		public BookingBuilder setBookingday(final LocalDate bookingDay) {
 			this.bookingday = bookingDay;
 			return this;
 		}
@@ -102,7 +102,7 @@ public class Booking {
 		 *            The user of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
-		public BookingBuilder setUser(String user) {
+		public BookingBuilder setUser(final String user) {
 			this.user = user;
 			return this;
 		}
@@ -112,7 +112,7 @@ public class Booking {
 		 *            A comment of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
-		public BookingBuilder setComment(String comment) {
+		public BookingBuilder setComment(final String comment) {
 			this.comment = comment;
 			return this;
 		}
@@ -208,12 +208,16 @@ public class Booking {
 	/**
 	 * @return User for whom booking was made, never null
 	 */
-	public String getUser() { return user; }
+	public String getUser() {
+		return user;
+	}
 
 	/**
 	 * @return A comment if available, an empty string of not, never null
 	 */
-	public String getComment() { return comment; }
+	public String getComment() {
+		return comment;
+	}
 
 	/**
 	 * @return The internal id of the booking. Automatically created by storage

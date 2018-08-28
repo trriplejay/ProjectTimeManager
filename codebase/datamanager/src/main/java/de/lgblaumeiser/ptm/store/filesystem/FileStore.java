@@ -34,10 +34,10 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	private static final String ID = "id";
 
 	private final ObjectMapper jsonUtil = new ObjectMapper();
-	private FilesystemAbstraction filesystemAccess;
+	private final FilesystemAbstraction filesystemAccess;
 
 	@SuppressWarnings({ "serial", "unchecked" })
-	public final Class<T> type = (Class<T>)new TypeToken<T>(getClass()) {
+	public final Class<T> type = (Class<T>) new TypeToken<T>(getClass()) {
 	}.getRawType();
 
 	public FileStore(final FilesystemAbstraction filesystemAccess) {
@@ -57,7 +57,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	}
 
 	@Override
-	public Optional<T> retrieveById(Long id) {
+	public Optional<T> retrieveById(final Long id) {
 		checkState(id != null);
 		File searchedFile = getFileInformation(id);
 		if (!filesystemAccess.dataAvailable(searchedFile)) {
@@ -86,7 +86,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public void deleteById(final Long id) {
 		checkState(id != null);
 		File deleteFile = getFileInformation(id);
 		checkState(filesystemAccess.dataAvailable(deleteFile));
@@ -111,7 +111,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	}
 
 	@Override
-	public void restore(Map<String, String> filenameToContentMap) {
+	public void restore(final Map<String, String> filenameToContentMap) {
 		checkState(getAllFiles().size() == 0);
 		filenameToContentMap.keySet().stream().forEach(k -> {
 			File targetFile = new File(getStore(), k);

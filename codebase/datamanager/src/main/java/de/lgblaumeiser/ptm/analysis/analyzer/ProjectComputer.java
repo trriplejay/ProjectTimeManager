@@ -67,7 +67,7 @@ public class ProjectComputer extends AbstractBaseComputer {
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 	
-	public ProjectComputer(ObjectStore<Booking> store) {
+	public ProjectComputer(final ObjectStore<Booking> store) {
 		super(store);
 	}
 }

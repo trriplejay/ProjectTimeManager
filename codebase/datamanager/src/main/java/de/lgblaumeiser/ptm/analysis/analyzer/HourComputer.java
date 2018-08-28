@@ -110,7 +110,7 @@ public class HourComputer extends AbstractBaseComputer {
 		return Duration.between(starttime, endtime);
 	}
 
-	private Duration calculateWorktime(Collection<Booking> bookings) {
+	private Duration calculateWorktime(final Collection<Booking> bookings) {
 		Duration minutes = Duration.ZERO;
 		for (Booking current : bookings) {
 			minutes = minutes.plus(current.calculateTimeSpan().getLengthInMinutes());
@@ -125,7 +125,7 @@ public class HourComputer extends AbstractBaseComputer {
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
-	public HourComputer(ObjectStore<Booking> store) {
+	public HourComputer(final ObjectStore<Booking> store) {
 		super(store);
 	}
 }

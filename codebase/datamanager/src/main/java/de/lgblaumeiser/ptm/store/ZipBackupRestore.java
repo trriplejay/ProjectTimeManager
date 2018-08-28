@@ -31,7 +31,7 @@ public class ZipBackupRestore {
 	 * 
 	 * @param outputStream The output stream to which the backup is provided
 	 */
-	public void backup (OutputStream outputStream) {
+	public void backup (final OutputStream outputStream) {
 		try (ZipOutputStream zipstream = new ZipOutputStream(outputStream)) {
 			Map<String, String> filemap = activityStorage.backup();
 			filemap.putAll(bookingStorage.backup());
@@ -41,7 +41,7 @@ public class ZipBackupRestore {
 		}
 	}
 
-	private void createZipEntry(ZipOutputStream zipstream, String name, String content) {
+	private void createZipEntry(final ZipOutputStream zipstream, final String name, final String content) {
 		try {
 			zipstream.putNextEntry(new ZipEntry(name));
 			zipstream.write(content.getBytes("UTF-8"));
@@ -56,7 +56,7 @@ public class ZipBackupRestore {
 	 * 
 	 * @param inputStream The input stream in which the zipped backup is provided
 	 */
-	public void restore(InputStream inputStream) {
+	public void restore(final InputStream inputStream) {
 		Map<String, String> activityMap = Maps.newHashMap();
 		Map<String, String> bookingMap = Maps.newHashMap();
 		try (ZipInputStream zipstream = new ZipInputStream(inputStream)) {
@@ -79,7 +79,7 @@ public class ZipBackupRestore {
 		bookingStorage.restore(bookingMap);
 	}
 	
-	private String extractFromZip(ZipInputStream inputStream) {
+	private String extractFromZip(final ZipInputStream inputStream) {
 		try (ByteArrayOutputStream stringOutputSink = new ByteArrayOutputStream()) {
 			byte[] buffer = new byte[1024];
 			int read = 0;
@@ -106,7 +106,7 @@ public class ZipBackupRestore {
 	 * @param activityStorage
 	 * @param bookingStorage
 	 */
-	public ZipBackupRestore(StoreBackupRestore<Activity> activityStorage, StoreBackupRestore<Booking> bookingStorage) {
+	public ZipBackupRestore(final StoreBackupRestore<Activity> activityStorage, final StoreBackupRestore<Booking> bookingStorage) {
 		this.activityStorage = activityStorage;
 		this.bookingStorage = bookingStorage;
 	}

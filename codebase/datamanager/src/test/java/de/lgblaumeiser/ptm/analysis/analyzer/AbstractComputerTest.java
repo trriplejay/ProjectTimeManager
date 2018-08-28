@@ -72,7 +72,7 @@ public abstract class AbstractComputerTest {
 	public void before() {
 		ObjectStore<Booking> testdata = new ObjectStore<Booking>() {
 			@Override
-			public Booking store(Booking object) {
+			public Booking store(final Booking object) {
 				// Not needed for test
 				return object;
 			}
@@ -83,13 +83,13 @@ public abstract class AbstractComputerTest {
 			}
 
 			@Override
-			public Optional<Booking> retrieveById(Long id) {
+			public Optional<Booking> retrieveById(final Long id) {
 				// Not needed here
 				return Optional.empty();
 			}
 
 			@Override
-			public void deleteById(Long id) {
+			public void deleteById(final Long id) {
 				// Not needed here
 			}
 		};

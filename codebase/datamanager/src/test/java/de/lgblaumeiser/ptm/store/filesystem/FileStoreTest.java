@@ -52,12 +52,12 @@ public class FileStoreTest {
 		}
 
 		@Override
-		public Collection<File> getAllFiles(File folder, String extension) {
+		public Collection<File> getAllFiles(final File folder, final String extension) {
 			return storageFile != null ? asList(storageFile) : emptyList();
 		}
 
 		@Override
-		public void deleteFile(File target) throws IOException {
+		public void deleteFile(final File target) throws IOException {
 			if (!target.equals(storageFile)) {
 				throw new IOException();
 			}
@@ -69,7 +69,7 @@ public class FileStoreTest {
 		}
 
 		@Override
-		public boolean folderAvailable(File store, boolean createIfNot) {
+		public boolean folderAvailable(final File store, final boolean createIfNot) {
 			return true;
 		}
 	};

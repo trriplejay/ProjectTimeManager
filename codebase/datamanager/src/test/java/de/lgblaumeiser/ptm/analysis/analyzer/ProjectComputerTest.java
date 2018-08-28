@@ -19,7 +19,7 @@ public class ProjectComputerTest extends AbstractComputerTest {
 	private ProjectComputer testee;
 
 	@Override
-	protected void createTestee(ObjectStore<Booking> store) {
+	protected void createTestee(final ObjectStore<Booking> store) {
 		testee = new ProjectComputer(store);
 	}
 

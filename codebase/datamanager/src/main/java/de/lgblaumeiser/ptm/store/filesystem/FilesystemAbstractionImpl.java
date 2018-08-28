@@ -20,7 +20,7 @@ public class FilesystemAbstractionImpl implements FilesystemAbstraction {
 	private static final String TEMP_FILE_ENDING = ".tmpstore";
 
 	@Override
-	public Collection<File> getAllFiles(File folder, String extension) {
+	public Collection<File> getAllFiles(final File folder, final String extension) {
 		return listFiles(folder, new String[] { extension }, false);
 	}
 
@@ -50,7 +50,7 @@ public class FilesystemAbstractionImpl implements FilesystemAbstraction {
 	}
 
 	@Override
-	public void deleteFile(File target) throws IOException {
+	public void deleteFile(final File target) throws IOException {
 		forceDelete(target);
 	}
 
@@ -61,7 +61,7 @@ public class FilesystemAbstractionImpl implements FilesystemAbstraction {
 	}
 
 	@Override
-	public boolean folderAvailable(File folder, boolean createIfNot) {
+	public boolean folderAvailable(final File folder, final boolean createIfNot) {
 		checkState(folder != null);
 		if (folder.isDirectory() && folder.exists()) {
 			return true;
