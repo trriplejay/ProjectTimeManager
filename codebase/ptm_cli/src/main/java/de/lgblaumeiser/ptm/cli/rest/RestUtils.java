@@ -5,17 +5,7 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +13,20 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.google.common.base.Preconditions.checkState;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * Utils to do rest calls on the rest api
@@ -39,14 +42,12 @@ public class RestUtils {
 	private Properties applicationProps;
 
 	/**
-	 * Post a call to the rest api. Expects that a numerical id is returned as
-	 * part of the creation call.
+	 * Post a call to the rest api. Expects that a numerical id is returned as part
+	 * of the creation call.
 	 * 
-	 * @param apiName
-	 *            Name of the api
-	 * @param bodyData
-	 *            Body of the post data, this is a flat map that is converted
-	 *            into a flat json
+	 * @param apiName  Name of the api
+	 * @param bodyData Body of the post data, this is a flat map that is converted
+	 *                 into a flat json
 	 * @return The Id of the created or manipulated object
 	 */
 	public Long post(String apiName, Map<String, String> bodyData) {
@@ -58,7 +59,9 @@ public class RestUtils {
 			request.setEntity(bodyJson);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200, response);
+			checkState(
+					response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200,
+					response);
 			String uri = apiName;
 			if (response.getStatusLine().getStatusCode() == 201) {
 				uri = response.getHeaders("Location")[0].getValue();
@@ -71,12 +74,30 @@ public class RestUtils {
 	}
 
 	/**
+	 * A put call to send a zipped data stream to the server
+	 * 
+	 * @param apiName Name of the api
+	 * @param sendData The data to be send to the server
+	 */
+	public void put(String apiName, byte[] sendData) {
+		try {
+			final HttpPut request = new HttpPut(baseUrl + apiName);
+			ByteArrayEntity bodyData = new ByteArrayEntity(sendData);
+			bodyData.setContentType("application/zip");
+			request.setEntity(bodyData);
+			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
+			HttpResponse response = clientConnector.execute(request);
+			checkState(response.getStatusLine().getStatusCode() == 200, response);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	/**
 	 * Returns an element or an array of elements depending on the returnClass
 	 * 
-	 * @param apiName
-	 *            The api name of the get call
-	 * @param returnClass
-	 *            The class object of a result type
+	 * @param apiName     The api name of the get call
+	 * @param returnClass The class object of a result type
 	 * @return The found element or array of elements
 	 */
 	public <T> T get(String apiName, Class<T> returnClass) {
@@ -93,10 +114,27 @@ public class RestUtils {
 	}
 
 	/**
+	 * Return access to the input stream for a get call with a stream return value
+	 * 
+	 * @param apiName The api name of the get call
+	 * @return The input stream delivered by the server
+	 */
+	public InputStream get(String apiName) {
+		try {
+			final HttpGet request = new HttpGet(baseUrl + apiName);
+			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
+			HttpResponse response = clientConnector.execute(request);
+			checkState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
+			return response.getEntity().getContent();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	/**
 	 * Delete an entity via a rest call
 	 * 
-	 * @param apiName
-	 *            The api name for the deletion
+	 * @param apiName The api name for the deletion
 	 */
 	public void delete(String apiName) {
 		try {

@@ -7,10 +7,8 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
 
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
 
 /**
  * Command to add an activity

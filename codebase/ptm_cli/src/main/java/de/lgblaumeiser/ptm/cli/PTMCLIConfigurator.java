@@ -47,7 +47,8 @@ public class PTMCLIConfigurator {
 		ObjectStore<Activity> activityStore = new RestActivityStore();
 		BookingService bookingService = new BookingServiceImpl(bookingStore);
 		DataAnalysisService analysisService = new RestAnalysisService();
-		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService);
+		RestInfrastructureServices infrastructureServices = new RestInfrastructureServices();
+		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService, infrastructureServices);
 		RestBaseService.setRestUtils(new RestUtils().configure());
 		RestBaseService.setServices(manager);
 		return createCLI(createCommandInterpreter(manager));
@@ -55,12 +56,13 @@ public class PTMCLIConfigurator {
 
 	private ServiceManager createServiceManager(final RestBookingStore bookingStore,
 			final ObjectStore<Activity> activityStore, final BookingService bookingService,
-			final DataAnalysisService analysisService) {
+			final DataAnalysisService analysisService, RestInfrastructureServices infrastructureServices) {
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setActivityStore(activityStore);
 		serviceManager.setBookingService(bookingService);
 		serviceManager.setBookingsStore(bookingStore);
 		serviceManager.setAnalysisService(analysisService);
+		serviceManager.setInfrastructureServices(infrastructureServices);
 		return serviceManager;
 	}
 

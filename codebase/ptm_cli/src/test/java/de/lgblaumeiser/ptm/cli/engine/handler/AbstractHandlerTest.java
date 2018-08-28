@@ -16,6 +16,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.junit.Before;
 
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -62,7 +63,26 @@ public abstract class AbstractHandlerTest {
             return 2L;
         }
 
-        @Override
+		/* (non-Javadoc)
+		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#put(java.lang.String, byte[])
+		 */
+		@Override
+		public void put(String apiName, byte[] sendData) {
+			// TODO Auto-generated method stub
+			super.put(apiName, sendData);
+		}
+
+		/* (non-Javadoc)
+		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#get(java.lang.String)
+		 */
+		@Override
+		public InputStream get(String apiName) {
+			// TODO Auto-generated method stub
+			return super.get(apiName);
+		}
+
+        @SuppressWarnings("unchecked")
+		@Override
         public <T> T get(String apiName, Class<T> returnClass) {
         	apiNameGiven = apiName;
         	if (apiName.contains("activities")) {

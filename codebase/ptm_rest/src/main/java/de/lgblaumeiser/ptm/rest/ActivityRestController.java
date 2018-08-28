@@ -60,7 +60,7 @@ public class ActivityRestController {
 		return services.activityStore().retrieveById(valueOf(activityId)).orElseThrow(IllegalStateException::new);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{activityId}",
+	@RequestMapping(method = RequestMethod.POST, value = "/{activityId}",
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseEntity<?> changeActivity(@PathVariable String activityId, @RequestBody ActivityBody activityData) {
