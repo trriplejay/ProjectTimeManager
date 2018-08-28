@@ -40,8 +40,9 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	public final Class<T> type = (Class<T>)new TypeToken<T>(getClass()) {
 	}.getRawType();
 
-	public FileStore() {
+	public FileStore(final FilesystemAbstraction filesystemAccess) {
 		jsonUtil.registerModule(new JavaTimeModule());
+		this.filesystemAccess = filesystemAccess;
 	}
 
 	@Override
@@ -174,11 +175,6 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 		File homepath = new File(System.getProperty("user.home"));
 		checkState(filesystemAccess.folderAvailable(homepath, false));
 		return new File(homepath, ".ptm");
-	}
-
-	public FileStore<T> setFilesystemAccess(final FilesystemAbstraction filesystemAccess) {
-		this.filesystemAccess = filesystemAccess;
-		return this;
 	}
 
 	private Long getIndexObject(final T object) {

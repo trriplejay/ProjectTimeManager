@@ -46,8 +46,8 @@ public class ZipBackupRestoreTest {
 	public void setUp() throws IOException {
 		createTestFiles();
 		fileact = new FilesystemAbstractionImpl();
-		FileStore<Activity> actStore = new FileStore<Activity>() {}.setFilesystemAccess(fileact);
-		FileStore<Booking> bookStore = new FileStore<Booking>() {}.setFilesystemAccess(fileact);
+		FileStore<Activity> actStore = new FileStore<Activity>(fileact) {};
+		FileStore<Booking> bookStore = new FileStore<Booking>(fileact) {};
 		testee = new ZipBackupRestore(actStore, bookStore); 
 	}
 	

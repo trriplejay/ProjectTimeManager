@@ -93,8 +93,8 @@ public abstract class AbstractComputerTest {
 				// Not needed here
 			}
 		};
-		setTesteeStore(testdata);
+		createTestee(testdata);
 	}
 
-	protected abstract void setTesteeStore(ObjectStore<Booking> store);
+	protected abstract void createTestee(ObjectStore<Booking> store);
 }

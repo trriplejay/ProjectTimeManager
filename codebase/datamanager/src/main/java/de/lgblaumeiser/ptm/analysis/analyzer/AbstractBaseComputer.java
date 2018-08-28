@@ -63,7 +63,10 @@ public abstract class AbstractBaseComputer implements Analysis {
         return period.firstDay.minusDays(1L).isBefore(current) && period.firstDayAfter.isAfter(current);
     }
 
-    public void setStore(final ObjectStore<Booking> store) {
-        this.store = store;
-    }
+	/**
+	 * @param store The store with bookings used for analysis
+	 */
+	public AbstractBaseComputer(ObjectStore<Booking> store) {
+		this.store = store;
+	}
 }

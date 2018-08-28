@@ -16,11 +16,11 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 
 public class ProjectComputerTest extends AbstractComputerTest {
-	private ProjectComputer testee = new ProjectComputer();
+	private ProjectComputer testee;
 
 	@Override
-	protected void setTesteeStore(ObjectStore<Booking> store) {
-		testee.setStore(store);
+	protected void createTestee(ObjectStore<Booking> store) {
+		testee = new ProjectComputer(store);
 	}
 
 	@Test

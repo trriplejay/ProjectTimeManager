@@ -65,8 +65,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param bookingStore
 	 *            Set the booking store
 	 */
-	public BookingServiceImpl setBookingStore(ObjectStore<Booking> bookingStore) {
+	public BookingServiceImpl(ObjectStore<Booking> bookingStore) {
 		this.bookingStore = bookingStore;
-		return this;
 	}
 }

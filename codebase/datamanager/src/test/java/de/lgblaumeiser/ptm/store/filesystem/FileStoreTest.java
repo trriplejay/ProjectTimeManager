@@ -79,9 +79,8 @@ public class FileStoreTest {
 
 	@Before
 	public void setUp() {
-		testee = new FileStore<TestStoreObject>() {
+		testee = new FileStore<TestStoreObject>(stubAccess) {
 		};
-		testee.setFilesystemAccess(stubAccess);
 	}
 
 	private static final TestStoreObject testData = new TestStoreObject(TESTINDEX, TESTCONTENT);

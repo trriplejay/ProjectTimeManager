@@ -8,6 +8,8 @@ package de.lgblaumeiser.ptm.analysis.analyzer;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.*;
@@ -123,4 +125,7 @@ public class HourComputer extends AbstractBaseComputer {
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
+	public HourComputer(ObjectStore<Booking> store) {
+		super(store);
+	}
 }

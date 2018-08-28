@@ -83,7 +83,7 @@ public class BookingServiceTest {
 				storedBookings.stream().filter(b -> id == b.getId()).findFirst().ifPresent(storedBookings::remove);
 			}
 		};
-		testee = new BookingServiceImpl().setBookingStore(mockStore);
+		testee = new BookingServiceImpl(mockStore);
 	}
 
 	@Test

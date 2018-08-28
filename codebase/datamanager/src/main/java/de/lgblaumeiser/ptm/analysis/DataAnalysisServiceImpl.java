@@ -27,7 +27,8 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
 		return analysis.analyze(parameter);
 	}
 
-	public void addAnalysis(final String id, final Analysis analysis) {
+	public DataAnalysisServiceImpl addAnalysis(final String id, final Analysis analysis) {
 		analysisStore.put(id, analysis);
+		return this;
 	}
 }
