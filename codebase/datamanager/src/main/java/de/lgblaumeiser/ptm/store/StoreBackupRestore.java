@@ -5,8 +5,6 @@
  */
 package de.lgblaumeiser.ptm.store;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -14,20 +12,11 @@ import java.util.Map;
  */
 public interface StoreBackupRestore<T> {
 	/**
-	 * Handler interface, sending each file to be handled as input stream
-	 */
-	public interface StoreBackupStreamHandler {
-		void streamForBackup(String filename, InputStream contentStream) throws IOException;
-	}
-
-	/**
-	 * Make a backup of all existing objects of the type, let a handler do the transfer to the
-	 * backup medium. The caller has to transfer the input stream into the backup target by providing
-	 * the backupTarget implementation
+	 * Make a backup of all existing objects of the type. Returns all file contents as a Map of key filename to file content
 	 * 
-	 * @param backupTarget The handler that transfers the content into the backup target
+	 * @return A map of filename to file contents
 	 */
-	void backup(StoreBackupStreamHandler backupTarget);
+	Map<String, String> backup();
 	
 	/**
 	 * Restore the objects from the map, works only if no objects of the type exist

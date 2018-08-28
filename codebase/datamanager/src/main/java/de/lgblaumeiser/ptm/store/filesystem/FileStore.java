@@ -8,9 +8,7 @@ package de.lgblaumeiser.ptm.store.filesystem;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -23,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 
 import de.lgblaumeiser.ptm.store.ObjectStore;
@@ -98,14 +97,16 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	}
 
 	@Override
-	public void backup(StoreBackupStreamHandler backupTarget) {
+	public Map<String, String> backup() {
+		Map<String, String> backupResult = Maps.newHashMap();
 		getAllFiles().stream().forEach(f -> {
-	        try (InputStream inputStream = new FileInputStream(f)) {
-	        	backupTarget.streamForBackup(f.getName(), inputStream);
-	        } catch (IOException e) {
-	            throw new IllegalStateException();
-	        }
+			try {
+				backupResult.put(f.getName(), filesystemAccess.retrieveFromFile(f));
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
 		});
+		return backupResult;
 	}
 
 	@Override
@@ -123,7 +124,13 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public void delete() {
-		getAllFiles().stream().forEach(f -> f.delete());
+		getAllFiles().stream().forEach(f -> {
+			try {
+				filesystemAccess.deleteFile(f);
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		});
 	}
 
 	private T extractFileContent(final String content) {

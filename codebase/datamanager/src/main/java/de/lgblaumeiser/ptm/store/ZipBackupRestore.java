@@ -14,8 +14,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.collect.Maps;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
@@ -35,17 +33,22 @@ public class ZipBackupRestore {
 	 */
 	public void backup (OutputStream outputStream) {
 		try (ZipOutputStream zipstream = new ZipOutputStream(outputStream)) {
-			activityStorage.backup((name, stream) -> createZipEntry(zipstream, name, stream));
-			bookingStorage.backup((name, stream) -> createZipEntry(zipstream, name, stream));
+			Map<String, String> filemap = activityStorage.backup();
+			filemap.putAll(bookingStorage.backup());
+			filemap.keySet().stream().forEach(k -> createZipEntry(zipstream, k, filemap.get(k)));
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private void createZipEntry(ZipOutputStream zipstream, String name, InputStream stream) throws IOException {
-		zipstream.putNextEntry(new ZipEntry(name));
-		IOUtils.copy(stream, zipstream);
-		zipstream.closeEntry();
+	private void createZipEntry(ZipOutputStream zipstream, String name, String content) {
+		try {
+			zipstream.putNextEntry(new ZipEntry(name));
+			zipstream.write(content.getBytes("UTF-8"));
+			zipstream.closeEntry();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 	
 	/**
