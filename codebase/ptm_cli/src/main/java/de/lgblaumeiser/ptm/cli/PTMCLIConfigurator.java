@@ -45,7 +45,7 @@ public class PTMCLIConfigurator {
 	public CLI configure() {
 		RestBookingStore bookingStore = new RestBookingStore();
 		ObjectStore<Activity> activityStore = new RestActivityStore();
-		BookingService bookingService = new BookingServiceImpl().setBookingStore(bookingStore);
+		BookingService bookingService = new BookingServiceImpl(bookingStore);
 		DataAnalysisService analysisService = new RestAnalysisService();
 		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService);
 		RestBaseService.setRestUtils(new RestUtils().configure());

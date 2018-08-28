@@ -100,6 +100,6 @@ public class BookingRestController {
 
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<?> handleException(IllegalStateException e) {
-		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+		return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
 	}
 }

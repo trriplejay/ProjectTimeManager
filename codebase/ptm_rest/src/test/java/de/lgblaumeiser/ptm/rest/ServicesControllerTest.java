@@ -3,6 +3,7 @@
  *
  * Licensed under MIT license
  */
+
 package de.lgblaumeiser.ptm.rest;
 
 import static com.google.common.io.Files.createTempDir;
@@ -13,6 +14,7 @@ import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,16 +34,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Test analysis test controller
+ * Test class for the services rest controller
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnalysisControllerTest {
+public class ServicesControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -69,8 +72,7 @@ public class AnalysisControllerTest {
 		data.activityName = "MyTestActivity";
 		data.bookingNumber = "0815";
 		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(objectMapper.writeValueAsString(data)))
-				.andDo(print()).andExpect(status().isCreated());
+				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
 		LocalDate date = LocalDate.now();
 		String dateString = date.format(ISO_LOCAL_DATE);
@@ -83,20 +85,23 @@ public class AnalysisControllerTest {
 		mockMvc.perform(post("/bookings/day/" + dateString).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
-		mockMvc.perform(get("/analysis/hours/month/" + dateString.substring(0, 7))
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString(dateString)))
-				.andExpect(content().string(containsString("08:15")))
-				.andExpect(content().string(containsString("16:45")))
-				.andExpect(content().string(containsString("08:30")))
-				.andExpect(content().string(containsString("00:00")));
+		MvcResult result = mockMvc.perform(get("/services/backup").contentType("application/zip")).andDo(print())
+				.andExpect(status().isOk()).andReturn();
+		byte[] zipdata = result.getResponse().getContentAsByteArray();
 
-		mockMvc.perform(get("/analysis/projects/month/" + dateString.substring(0, 7))
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().string(containsString("0815")))
-				.andExpect(content().string(containsString("08:30"))).andExpect(content().string(containsString("100")))
-				.andExpect(content().string(containsString("8")));
+		mockMvc.perform(put("/services/restore").contentType("application/zip").content(zipdata)).andDo(print())
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
+				.andExpect(content().string(containsString("0815")));
+
+		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
+				.andExpect(content().string(containsString("0815")))
+				.andExpect(content().string(containsString("TestUser")))
+				.andExpect(content().string(containsString("starttime")))
+				.andExpect(content().string(containsString("endtime")));
 
 	}
-
 }
