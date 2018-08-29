@@ -3,7 +3,6 @@
  *
  * Licensed under MIT license
  */
-
 package de.lgblaumeiser.ptm.rest;
 
 import static com.google.common.io.Files.createTempDir;
