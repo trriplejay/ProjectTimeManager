@@ -5,19 +5,20 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
-import org.junit.Before;
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import org.junit.Before;
+
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public abstract class AbstractComputerTest {
 
@@ -29,9 +30,12 @@ public abstract class AbstractComputerTest {
 	private static final String BOOKINGNUMBER1 = "d";
 	private static final String BOOKINGNUMBER2 = "e";
 
-	private static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITYNAME1).setBookingNumber(BOOKINGNUMBER1).build();
-	private static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITYNAME2).setBookingNumber(BOOKINGNUMBER2).build();
-	private static final Activity ACTIVITY3 = newActivity().setActivityName(ACTIVITYNAME3).setBookingNumber(BOOKINGNUMBER1).build();
+	private static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITYNAME1)
+			.setBookingNumber(BOOKINGNUMBER1).build();
+	private static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITYNAME2)
+			.setBookingNumber(BOOKINGNUMBER2).build();
+	private static final Activity ACTIVITY3 = newActivity().setActivityName(ACTIVITYNAME3)
+			.setBookingNumber(BOOKINGNUMBER1).build();
 
 	private static final LocalTime TIME1 = LocalTime.of(12, 34);
 	private static final LocalTime TIME2 = LocalTime.of(13, 57);
@@ -65,7 +69,7 @@ public abstract class AbstractComputerTest {
 	private static final Booking BOOKING10 = newBooking().setBookingday(LocalDate.of(2017, 3, 28)).setStarttime(TIME6)
 			.setEndtime(TIME8).setActivity(ACTIVITY1).setUser(USER).build();
 
-	private static Collection<Booking> testDataStore = newArrayList(BOOKING1, BOOKING2, BOOKING3, BOOKING4, BOOKING5,
+	private static Collection<Booking> testDataStore = Arrays.asList(BOOKING1, BOOKING2, BOOKING3, BOOKING4, BOOKING5,
 			BOOKING6, BOOKING7, BOOKING8, BOOKING9, BOOKING10);
 
 	@Before

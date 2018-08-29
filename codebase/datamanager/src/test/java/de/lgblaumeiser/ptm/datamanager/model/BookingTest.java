@@ -5,7 +5,6 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -13,6 +12,7 @@ import java.time.LocalTime;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
+import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static java.time.LocalDate.now;
 import static java.time.LocalTime.of;
 import static org.junit.Assert.*;
@@ -91,7 +91,7 @@ public class BookingTest {
 	@Test
 	public final void testNoComment() {
 		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
-		assertEquals(StringUtils.EMPTY, booking.getComment());
+		assertEquals(emptyString(), booking.getComment());
 	}
 
 	@Test

@@ -5,7 +5,7 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ public class Restore extends AbstractCommandHandler {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Upload Backup ...");
-		checkState(zipfile.exists());
+		assertState(zipfile.exists());
 		getServices().getInfrastructureServices().restore(zipfile);
 		getLogger().log("... done");
 	}

@@ -5,13 +5,13 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
+import static de.lgblaumeiser.ptm.util.Utils.getIndexFromCollection;
+import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Arrays.asList;
+import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 
 /**
  * Rest Proxy Implementation for accessing analysis results over rest api.
@@ -19,13 +19,13 @@ import static java.util.Arrays.asList;
 public class RestAnalysisService extends RestBaseService implements DataAnalysisService {
 	@Override
 	public Collection<Collection<Object>> analyze(String analyzerId, Collection<String> parameter) {
-		Object[][] result = getRestUtils().get(
-				"/analysis/" + analyzerId + "/" + get(parameter, 0) + "/" + get(parameter, 1), Object[][].class);
+		Object[][] result = getRestUtils().get("/analysis/" + analyzerId + "/" + getIndexFromCollection(parameter, 0)
+				+ "/" + getIndexFromCollection(parameter, 1), Object[][].class);
 		return convertToCollection(result);
 	}
 
 	private Collection<Collection<Object>> convertToCollection(Object[][] resultData) {
-		Collection<Collection<Object>> converted = newArrayList();
+		Collection<Collection<Object>> converted = new ArrayList<>();
 		for (Object[] currentLine : resultData) {
 			converted.add(asList(currentLine));
 		}

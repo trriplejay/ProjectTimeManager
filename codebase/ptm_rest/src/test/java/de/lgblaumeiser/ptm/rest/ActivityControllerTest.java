@@ -5,7 +5,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static com.google.common.io.Files.createTempDir;
 import static java.lang.System.setProperty;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.hamcrest.Matchers.containsString;
@@ -17,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,8 +47,8 @@ public class ActivityControllerTest {
 	private File tempFolder;
 
 	@Before
-	public void before() {
-		tempFolder = createTempDir();
+	public void before() throws IOException {
+		tempFolder = Files.createTempDirectory("ptm").toFile();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
 		setProperty("ptm.filestore", tempStorage);
 	}
@@ -60,9 +60,8 @@ public class ActivityControllerTest {
 
 	@Test
 	public void testWithInitialSetupNoActivities() throws Exception {
-		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("[]")));
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("[]")));
 	}
 
 	@Test
@@ -74,14 +73,12 @@ public class ActivityControllerTest {
 		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
-		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
 
-		mockMvc.perform(get("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+		mockMvc.perform(get("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")));
 
 		data.hidden = true;
@@ -90,9 +87,8 @@ public class ActivityControllerTest {
 		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isOk());
 
-		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("true")))
+		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("true")))
 				.andExpect(content().string(containsString("MyOtherTestActivity")))
 				.andExpect(content().string(containsString("4711")));
 	}

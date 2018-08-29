@@ -5,6 +5,15 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
+import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
+
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
 import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
@@ -18,15 +27,6 @@ import de.lgblaumeiser.ptm.store.ZipBackupRestore;
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.io.File;
-
-import static java.lang.System.getProperty;
-import static java.lang.System.setProperty;
 
 /**
  * Small bean that creates and configures the services needed by the Rest
@@ -43,7 +43,7 @@ public class ServiceMapper {
 
 	private final FileStore<Booking> bookingStore;
 	private final BookingService bookingService;
-	
+
 	private final ZipBackupRestore backupService;
 
 	private final DataAnalysisService analysisService;
@@ -51,8 +51,18 @@ public class ServiceMapper {
 	public ServiceMapper() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
 		FilesystemAbstraction filesystemAbstraction = new FilesystemAbstractionImpl();
-		activityStore = new FileStore<Activity>(filesystemAbstraction) {};
-		bookingStore = new FileStore<Booking>(filesystemAbstraction) {};
+		activityStore = new FileStore<Activity>(filesystemAbstraction) {
+			@Override
+			protected Class<Activity> getType() {
+				return Activity.class;
+			}
+		};
+		bookingStore = new FileStore<Booking>(filesystemAbstraction) {
+			@Override
+			protected Class<Booking> getType() {
+				return Booking.class;
+			}
+		};
 		bookingService = new BookingServiceImpl(bookingStore);
 		backupService = new ZipBackupRestore(activityStore, bookingStore);
 		analysisService = createAnalysisService(bookingStore);
@@ -62,8 +72,7 @@ public class ServiceMapper {
 	private DataAnalysisService createAnalysisService(final ObjectStore<Booking> store) {
 		HourComputer hourComputer = new HourComputer(store);
 		ProjectComputer projectComputer = new ProjectComputer(store);
-		return new DataAnalysisServiceImpl()
-				.addAnalysis(ANALYSIS_HOURS_ID, hourComputer)
+		return new DataAnalysisServiceImpl().addAnalysis(ANALYSIS_HOURS_ID, hourComputer)
 				.addAnalysis(ANALYSIS_PROJECTS_ID, projectComputer);
 	}
 
@@ -82,7 +91,7 @@ public class ServiceMapper {
 	public ZipBackupRestore backupService() {
 		return backupService;
 	}
-	
+
 	public DataAnalysisService analysisService() {
 		return analysisService;
 	}

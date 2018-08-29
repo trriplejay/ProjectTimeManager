@@ -5,25 +5,25 @@
  */
 package de.lgblaumeiser.ptm.analysis;
 
-import java.util.Collection;
-import java.util.Map;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Maps.newHashMap;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Service implementation
  */
 public class DataAnalysisServiceImpl implements DataAnalysisService {
-	private final Map<String, Analysis> analysisStore = newHashMap();
+	private final Map<String, Analysis> analysisStore = new HashMap<>();
 
 	@Override
 	public Collection<Collection<Object>> analyze(final String analyzerId, final Collection<String> parameter) {
-		checkState(isNotBlank(analyzerId));
-		checkState(parameter != null);
+		assertState(stringHasContent(analyzerId));
+		assertState(parameter != null);
 		Analysis analysis = analysisStore.get(analyzerId);
-		checkState(analysis != null);
+		assertState(analysis != null);
 		return analysis.analyze(parameter);
 	}
 

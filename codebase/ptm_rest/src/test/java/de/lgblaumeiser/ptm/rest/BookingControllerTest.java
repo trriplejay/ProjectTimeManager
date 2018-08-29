@@ -5,7 +5,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static com.google.common.io.Files.createTempDir;
 import static java.lang.System.setProperty;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
@@ -22,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -55,8 +55,8 @@ public class BookingControllerTest {
 	private File tempFolder;
 
 	@Before
-	public void before() {
-		tempFolder = createTempDir();
+	public void before() throws IOException {
+		tempFolder = Files.createTempDirectory("ptm").toFile();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
 		setProperty("ptm.filestore", tempStorage);
 	}
@@ -77,8 +77,8 @@ public class BookingControllerTest {
 		ActivityRestController.ActivityBody data = new ActivityRestController.ActivityBody();
 		data.activityName = "MyTestActivity";
 		data.bookingNumber = "0815";
-		mockMvc.perform(post("/activities").contentType(APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(data)))
+		mockMvc.perform(
+				post("/activities").contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(data)))
 				.andDo(print()).andExpect(status().isCreated());
 
 		LocalDate date = LocalDate.now();
@@ -88,26 +88,23 @@ public class BookingControllerTest {
 		booking.user = "TestUser";
 		booking.starttime = LocalTime.of(8, 15).format(ISO_LOCAL_TIME);
 		booking.comment = "";
-		MvcResult result = mockMvc.perform(post("/bookings/day/" + dateString)
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(objectMapper.writeValueAsString(booking)))
+		MvcResult result = mockMvc
+				.perform(post("/bookings/day/" + dateString).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(objectMapper.writeValueAsString(booking)))
 				.andDo(print()).andExpect(status().isCreated()).andReturn();
 		assertTrue(result.getResponse().getRedirectedUrl().contains("/bookings/id/1"));
 
-		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString(dateString)));
+		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString(dateString)));
 
 		mockMvc.perform(get("/bookings/day/" + dateString).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+				.andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
-		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
@@ -117,9 +114,8 @@ public class BookingControllerTest {
 		mockMvc.perform(post("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isOk());
 
-		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")))
@@ -137,25 +133,22 @@ public class BookingControllerTest {
 		mockMvc.perform(post("/bookings/day/" + dateString2).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
-		mockMvc.perform(get("/bookings/id/2").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("MyTestActivity")))
+		mockMvc.perform(get("/bookings/id/2").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
 				.andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("Test Comment")))
 				.andExpect(content().string(containsString("starttime")))
 				.andExpect(content().string(containsString("endtime")));
 
-		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString(dateString)))
+		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString(dateString)))
 				.andExpect(content().string(containsString(dateString2)));
 
 		mockMvc.perform(delete("/bookings/id/1")).andDo(print()).andExpect(status().isOk());
 		mockMvc.perform(delete("/bookings/id/2")).andDo(print()).andExpect(status().isOk());
 
-		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("[]")));
+		mockMvc.perform(get("/bookings").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().string(containsString("[]")));
 	}
 }

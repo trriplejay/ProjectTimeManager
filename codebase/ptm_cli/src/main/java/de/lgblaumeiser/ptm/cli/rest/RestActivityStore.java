@@ -5,16 +5,16 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Arrays.asList;
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * Store that uses the rest utils to access the server, i.e., a proxy
@@ -34,7 +34,7 @@ public class RestActivityStore extends RestBaseService implements ObjectStore<Ac
 	@Override
 	public Activity store(Activity activity) {
 		try {
-			Map<String, String> bodyData = newHashMap();
+			Map<String, String> bodyData = new HashMap<>();
 			bodyData.put("activityName", activity.getActivityName());
 			bodyData.put("bookingNumber", activity.getBookingNumber());
 			bodyData.put("hidden", Boolean.toString(activity.isHidden()));

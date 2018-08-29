@@ -5,7 +5,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static com.google.common.io.Files.createTempDir;
 import static java.lang.System.setProperty;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
@@ -19,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -52,8 +52,8 @@ public class AnalysisControllerTest {
 	private File tempFolder;
 
 	@Before
-	public void before() {
-		tempFolder = createTempDir();
+	public void before() throws IOException {
+		tempFolder = Files.createTempDirectory("ptm").toFile();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
 		setProperty("ptm.filestore", tempStorage);
 	}
@@ -69,8 +69,7 @@ public class AnalysisControllerTest {
 		data.activityName = "MyTestActivity";
 		data.bookingNumber = "0815";
 		mockMvc.perform(post("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(objectMapper.writeValueAsString(data)))
-				.andDo(print()).andExpect(status().isCreated());
+				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isCreated());
 
 		LocalDate date = LocalDate.now();
 		String dateString = date.format(ISO_LOCAL_DATE);
@@ -92,8 +91,8 @@ public class AnalysisControllerTest {
 				.andExpect(content().string(containsString("00:00")));
 
 		mockMvc.perform(get("/analysis/projects/month/" + dateString.substring(0, 7))
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().string(containsString("0815")))
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("0815")))
 				.andExpect(content().string(containsString("08:30"))).andExpect(content().string(containsString("100")))
 				.andExpect(content().string(containsString("8")));
 

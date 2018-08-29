@@ -5,44 +5,50 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import org.apache.commons.lang3.StringUtils;
+import static de.lgblaumeiser.ptm.util.Utils.emptyString;
+import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
+
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+
 /**
  * Add a booking for the day
  */
-@Parameters(commandDescription="Add a new booking")
+@Parameters(commandDescription = "Add a new booking")
 public class AddBooking extends AbstractHandlerWithActivityRequest {
-	@Parameter(names = { "-d", "--day" }, description="Optional day for booking", converter= LocalDateConverter.class)
+	@Parameter(names = { "-d",
+			"--day" }, description = "Optional day for booking", converter = LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 
-	@Parameter(names = { "-a", "--activity" }, description="Activity id of the bookings activity", required=true)
+	@Parameter(names = { "-a", "--activity" }, description = "Activity id of the bookings activity", required = true)
 	private Long activityId;
 
-	@Parameter(names = { "-s", "--starttime" }, description="Start time of the booked time frame", required=true, converter= LocalTimeConverter.class)
+	@Parameter(names = { "-s",
+			"--starttime" }, description = "Start time of the booked time frame", required = true, converter = LocalTimeConverter.class)
 	private Optional<LocalTime> starttime;
 
-	@Parameter(names = { "-e", "--endtime" }, description="End time of the booked time frame", converter=LocalTimeConverter.class)
+	@Parameter(names = { "-e",
+			"--endtime" }, description = "End time of the booked time frame", converter = LocalTimeConverter.class)
 	private Optional<LocalTime> endtime = Optional.empty();
 
-	@Parameter(names = { "-u", "--user" }, description="User for which time frame is booked", required=true)
+	@Parameter(names = { "-u", "--user" }, description = "User for which time frame is booked", required = true)
 	private String user;
 
-	@Parameter(names = { "-c", "--comment" }, description="Comment on booked time frame")
-	private String comment = StringUtils.EMPTY;
+	@Parameter(names = { "-c", "--comment" }, description = "Comment on booked time frame")
+	private String comment = emptyString();
 
 	@Override
 	public void handleCommand() {
 		getLogger().log("Add new booking ...");
 		Booking addedBooking = getServices().getBookingService().addBooking(bookingDay, user,
-				getActivityById(activityId).orElseThrow(IllegalStateException::new),
-				starttime.get(), endtime, StringUtils.isNotBlank(comment) ? Optional.of(comment) : Optional.empty());
+				getActivityById(activityId).orElseThrow(IllegalStateException::new), starttime.get(), endtime,
+				stringHasContent(comment) ? Optional.of(comment) : Optional.empty());
 		getLogger().log(" ... booking added with data: " + addedBooking.toString());
 	}
 }

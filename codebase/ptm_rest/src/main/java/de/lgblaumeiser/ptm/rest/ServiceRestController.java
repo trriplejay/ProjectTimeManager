@@ -8,11 +8,15 @@ package de.lgblaumeiser.ptm.rest;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +58,19 @@ public class ServiceRestController {
 		services.backupService().restore(zipdata);
 		logger.info("Result: Data restored");
 		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="/license", produces=MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<?> license() {
+		logger.info("Request: Get all license information for PTM backend");
+		try {
+			Resource resource = new ClassPathResource("license_info.txt");
+			String licenseData = IOUtils.toString(resource.getInputStream(), "UTF-8");;
+			logger.info("Result: License data read, returning to requester");
+			return ResponseEntity.ok(licenseData);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	@ExceptionHandler(IllegalStateException.class)

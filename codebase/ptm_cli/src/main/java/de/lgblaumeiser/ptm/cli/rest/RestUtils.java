@@ -5,7 +5,7 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +59,7 @@ public class RestUtils {
 			request.setEntity(bodyJson);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(
+			assertState(
 					response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200,
 					response);
 			String uri = apiName;
@@ -76,7 +76,7 @@ public class RestUtils {
 	/**
 	 * A put call to send a zipped data stream to the server
 	 * 
-	 * @param apiName Name of the api
+	 * @param apiName  Name of the api
 	 * @param sendData The data to be send to the server
 	 */
 	public void put(String apiName, byte[] sendData) {
@@ -87,7 +87,7 @@ public class RestUtils {
 			request.setEntity(bodyData);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200, response);
+			assertState(response.getStatusLine().getStatusCode() == 200, response);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -105,7 +105,7 @@ public class RestUtils {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
+			assertState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
 			return jsonMapper.readValue(new InputStreamReader(response.getEntity().getContent()), returnClass);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -124,7 +124,7 @@ public class RestUtils {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
+			assertState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
 			return response.getEntity().getContent();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -142,7 +142,7 @@ public class RestUtils {
 			final HttpDelete request = new HttpDelete(requestString);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			checkState(response.getStatusLine().getStatusCode() == 200, response);
+			assertState(response.getStatusLine().getStatusCode() == 200, response);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -178,7 +178,7 @@ public class RestUtils {
 		String prop = System.getenv(key);
 		prop = (prop == null) ? System.getProperty(key) : prop;
 		prop = (prop == null) ? applicationProps.getProperty(key) : prop;
-		checkState(prop != null);
+		assertState(prop != null);
 		return prop;
 	}
 }

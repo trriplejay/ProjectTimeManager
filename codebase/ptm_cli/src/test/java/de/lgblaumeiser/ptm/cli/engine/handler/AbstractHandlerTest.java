@@ -8,6 +8,7 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -37,15 +38,17 @@ public abstract class AbstractHandlerTest {
 	static final String ACTIVITY1NUMBER = "0815";
 	static final String ACTIVITY2NAME = "NewAct2";
 	static final String ACTIVITY2NUMBER = "4711";
-	static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).setId(1L).build();
-	static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setHidden(true).setId(2L).build();
+	static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER)
+			.setId(1L).build();
+	static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER)
+			.setHidden(true).setId(2L).build();
 	static final String USER = "TestUser";
 	static final String COMMENT = "TestComment";
-	static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
-            .setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
+	static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1).setUser(USER)
+			.setStarttime(TIME1).setEndtime(TIME2).build();
 
 	protected static class TestCommandLogger implements CommandLogger {
-	    StringBuffer logMessages = new StringBuffer();
+		StringBuffer logMessages = new StringBuffer();
 
 		@Override
 		public void log(String message) {
@@ -55,18 +58,20 @@ public abstract class AbstractHandlerTest {
 	}
 
 	protected static class TestRestUtils extends RestUtils {
-	    String apiNameGiven;
-	    Map<String, String> bodyDataGiven;
-	    byte[] rawDataGiven;
-	    
-        @Override
-        public Long post(String apiName, Map<String, String> bodyData) {
-            apiNameGiven = apiName;
-            bodyDataGiven = bodyData;
-            return 2L;
-        }
+		String apiNameGiven;
+		Map<String, String> bodyDataGiven;
+		byte[] rawDataGiven;
 
-		/* (non-Javadoc)
+		@Override
+		public Long post(String apiName, Map<String, String> bodyData) {
+			apiNameGiven = apiName;
+			bodyDataGiven = bodyData;
+			return 2L;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#put(java.lang.String, byte[])
 		 */
 		@Override
@@ -75,7 +80,9 @@ public abstract class AbstractHandlerTest {
 			rawDataGiven = sendData;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#get(java.lang.String)
 		 */
 		@Override
@@ -84,20 +91,19 @@ public abstract class AbstractHandlerTest {
 			return new ByteArrayInputStream(rawDataGiven);
 		}
 
-        @SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		@Override
-        public <T> T get(String apiName, Class<T> returnClass) {
-        	apiNameGiven = apiName;
-        	if (apiName.contains("activities")) {
-        		if (apiName.contains("1")) {
-        			return returnClass.cast(ACTIVITY1);
-				}
-				else if (apiName.contains("2")) {
+		public <T> T get(String apiName, Class<T> returnClass) {
+			apiNameGiven = apiName;
+			if (apiName.contains("activities")) {
+				if (apiName.contains("1")) {
+					return returnClass.cast(ACTIVITY1);
+				} else if (apiName.contains("2")) {
 					return returnClass.cast(ACTIVITY2);
 				}
 			}
 			if (apiName.contains("bookings/id/10")) {
-                return returnClass.cast(BOOKING1);
+				return returnClass.cast(BOOKING1);
 			}
 			if (returnClass.isArray()) {
 				if (returnClass.getComponentType().getName().contains("Booking")) {
@@ -108,12 +114,12 @@ public abstract class AbstractHandlerTest {
 				return returnClass.cast(Array.newInstance(returnClass.getComponentType(), 0));
 			}
 			return null;
-        }
+		}
 
-        @Override
-        public void delete(String apiName) {
-        	apiNameGiven = apiName;
-        }
+		@Override
+		public void delete(String apiName) {
+			apiNameGiven = apiName;
+		}
 
 		@Override
 		public TestRestUtils configure() {
@@ -126,17 +132,17 @@ public abstract class AbstractHandlerTest {
 	CLI commandline = new PTMCLIConfigurator().configure();
 
 	@Before
-	public void before() {
-        AbstractCommandHandler.setLogger(logger);
-        AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
-        RestBaseService.setRestUtils(restutils);
+	public void before() throws IOException {
+		AbstractCommandHandler.setLogger(logger);
+		AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
+		RestBaseService.setRestUtils(restutils);
 		try {
 			Field f = BOOKING1.getClass().getDeclaredField(ID);
 			f.setAccessible(true);
 			f.set(BOOKING1, 10L);
 			f.setAccessible(false);
-		} catch (IllegalAccessException | IllegalArgumentException | ClassCastException
-				| NoSuchFieldException | SecurityException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | ClassCastException | NoSuchFieldException
+				| SecurityException e) {
 			throw new IllegalStateException(e);
 		}
 

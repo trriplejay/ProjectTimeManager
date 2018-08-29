@@ -5,7 +5,7 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class FileConverter implements IStringConverter<File> {
 		File file = new File(pathAsString);
 		File parent = file.getParentFile();
 		if (parent != null) {
-			checkState(parent.exists());
+			assertState(parent.exists());
 		}
 		return file;
 	}

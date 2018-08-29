@@ -9,29 +9,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.google.common.collect.Maps;
-
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 /**
- * A implementation of a backup/restore mechanism using StoreBackupRestore. The implementation is using zip streams for input and output. 
+ * A implementation of a backup/restore mechanism using StoreBackupRestore. The
+ * implementation is using zip streams for input and output.
  */
 public class ZipBackupRestore {
 	private final StoreBackupRestore<Activity> activityStorage;
 	private final StoreBackupRestore<Booking> bookingStorage;
-	
+
 	/**
 	 * Make a backup to the provided output stream as a zip file content
 	 * 
 	 * @param outputStream The output stream to which the backup is provided
 	 */
-	public void backup (final OutputStream outputStream) {
+	public void backup(final OutputStream outputStream) {
 		try (ZipOutputStream zipstream = new ZipOutputStream(outputStream)) {
 			Map<String, String> filemap = activityStorage.backup();
 			filemap.putAll(bookingStorage.backup());
@@ -50,15 +50,15 @@ public class ZipBackupRestore {
 			throw new IllegalStateException(e);
 		}
 	}
-	
+
 	/**
 	 * Restore from a backup provided as a zip file content
 	 * 
 	 * @param inputStream The input stream in which the zipped backup is provided
 	 */
 	public void restore(final InputStream inputStream) {
-		Map<String, String> activityMap = Maps.newHashMap();
-		Map<String, String> bookingMap = Maps.newHashMap();
+		Map<String, String> activityMap = new HashMap<>();
+		Map<String, String> bookingMap = new HashMap<>();
 		try (ZipInputStream zipstream = new ZipInputStream(inputStream)) {
 			ZipEntry currentEntry;
 			while ((currentEntry = zipstream.getNextEntry()) != null) {
@@ -67,8 +67,7 @@ public class ZipBackupRestore {
 				zipstream.closeEntry();
 				if (key.endsWith("activity")) {
 					activityMap.put(key, data);
-				}
-				else if (key.endsWith("booking")) {
+				} else if (key.endsWith("booking")) {
 					bookingMap.put(key, data);
 				}
 			}
@@ -78,7 +77,7 @@ public class ZipBackupRestore {
 		activityStorage.restore(activityMap);
 		bookingStorage.restore(bookingMap);
 	}
-	
+
 	private String extractFromZip(final ZipInputStream inputStream) {
 		try (ByteArrayOutputStream stringOutputSink = new ByteArrayOutputStream()) {
 			byte[] buffer = new byte[1024];
@@ -99,14 +98,15 @@ public class ZipBackupRestore {
 		activityStorage.delete();
 		bookingStorage.delete();
 	}
-	
+
 	/**
 	 * Standard constructor used to provide dependencies
 	 * 
 	 * @param activityStorage
 	 * @param bookingStorage
 	 */
-	public ZipBackupRestore(final StoreBackupRestore<Activity> activityStorage, final StoreBackupRestore<Booking> bookingStorage) {
+	public ZipBackupRestore(final StoreBackupRestore<Activity> activityStorage,
+			final StoreBackupRestore<Booking> bookingStorage) {
 		this.activityStorage = activityStorage;
 		this.bookingStorage = bookingStorage;
 	}

@@ -5,16 +5,17 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import org.apache.commons.lang3.StringUtils;
+import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static de.lgblaumeiser.ptm.util.Utils.emptyString;
+import static java.lang.Long.valueOf;
+import static java.lang.String.format;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
+import static java.util.Objects.hash;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkState;
-import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
-import static java.lang.Long.valueOf;
-import static java.util.Objects.hash;
 
 /**
  * This class represents a booking on a day. It is represented by a starting
@@ -39,7 +40,7 @@ public class Booking {
 		private LocalTime endtime = null;
 		private Activity activity;
 		private String user;
-		private String comment = StringUtils.EMPTY;
+		private String comment = emptyString();
 
 		private BookingBuilder(final Booking booking) {
 			id = booking.getId();
@@ -58,8 +59,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param bookingDay
-		 *            Day for the booking
+		 * @param bookingDay Day for the booking
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setBookingday(final LocalDate bookingDay) {
@@ -68,8 +68,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param starttime
-		 *            Start time for the booking to build
+		 * @param starttime Start time for the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setStarttime(final LocalTime starttime) {
@@ -78,8 +77,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param endtime
-		 *            End time for the booking to build
+		 * @param endtime End time for the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setEndtime(final LocalTime endtime) {
@@ -88,8 +86,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param activity
-		 *            The activity of the booking to build
+		 * @param activity The activity of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setActivity(final Activity activity) {
@@ -98,8 +95,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param user
-		 *            The user of the booking to build
+		 * @param user The user of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setUser(final String user) {
@@ -108,8 +104,7 @@ public class Booking {
 		}
 
 		/**
-		 * @param comment
-		 *            A comment of the booking to build
+		 * @param comment A comment of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
 		public BookingBuilder setComment(final String comment) {
@@ -118,9 +113,8 @@ public class Booking {
 		}
 
 		/**
-		 * @return An unmodifiable booking representing the data given to the
-		 *         builder, Non null, returns with exception if the data is
-		 *         invalid
+		 * @return An unmodifiable booking representing the data given to the builder,
+		 *         Non null, returns with exception if the data is invalid
 		 */
 		public Booking build() {
 			checkData();
@@ -128,14 +122,14 @@ public class Booking {
 		}
 
 		private void checkData() {
-			checkState(bookingday != null);
-			checkState(starttime != null);
-			checkState(activity != null);
-			checkState(user != null);
-			checkState(comment != null);
+			assertState(bookingday != null);
+			assertState(starttime != null);
+			assertState(activity != null);
+			assertState(user != null);
+			assertState(comment != null);
 
 			if (endtime != null) {
-				checkState(endtime.isAfter(starttime));
+				assertState(endtime.isAfter(starttime));
 			}
 		}
 	}
@@ -150,7 +144,8 @@ public class Booking {
 	}
 
 	/**
-	 * Change an existing booking by providing a builder preset with the booking data
+	 * Change an existing booking by providing a builder preset with the booking
+	 * data
 	 *
 	 * @return A new booking builder, never null
 	 */
@@ -159,7 +154,7 @@ public class Booking {
 	}
 
 	private Booking(final Long id, final LocalDate bookingday, final String user, final LocalTime starttime,
-					final LocalTime endtime, final Activity activity, final String comment) {
+			final LocalTime endtime, final Activity activity, final String comment) {
 		this.id = id;
 		this.bookingday = bookingday;
 		this.user = user;
@@ -173,6 +168,10 @@ public class Booking {
 		// Only needed for deserialization
 	}
 
+	/**
+	 * 
+	 * @return Bookingday of the booking, never null
+	 */
 	public LocalDate getBookingday() {
 		return bookingday;
 	}
@@ -228,13 +227,12 @@ public class Booking {
 	}
 
 	/**
-	 * @return Calculates the duration of the booking. Is only allowed if end
-	 *         time is given
-	 * @throws IllegalStateException
-	 *             If no end time is given
+	 * @return Calculates the duration of the booking. Is only allowed if end time
+	 *         is given
+	 * @throws IllegalStateException If no end time is given
 	 */
 	public TimeSpan calculateTimeSpan() {
-		checkState(hasEndtime());
+		assertState(hasEndtime());
 		return newTimeSpan(starttime, endtime);
 	}
 
@@ -249,16 +247,16 @@ public class Booking {
 			Booking bkg = (Booking) obj;
 			return id == bkg.id && bookingday.equals(bkg.bookingday) && starttime.equals(bkg.starttime)
 					&& activity.equals(bkg.activity) && user.equals(bkg.user) && comment.equals(bkg.comment)
-					&& endtime != null ? endtime.equals(bkg.endtime)
-							: bkg.endtime == null;
+					&& endtime != null ? endtime.equals(bkg.endtime) : bkg.endtime == null;
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).omitNullValues().add("Bookingday", bookingday).add( "User", user)
-				.add("Starttime", starttime).add("Endtime", endtime).add("Activity", activity)
-				.add("Comment", comment).add("Id", id).toString();
+		return format("Booking: Bookingday: %s, User: %s, Starttime: %s, %sActivity: %d, Comment: %s, Id: %d",
+				bookingday.format(ISO_LOCAL_DATE), user, starttime.format(ISO_LOCAL_TIME),
+				endtime != null ? "Endtime: " + endtime.format(ISO_LOCAL_TIME) + ", " : emptyString(), activity.getId(),
+				comment, id);
 	}
 }

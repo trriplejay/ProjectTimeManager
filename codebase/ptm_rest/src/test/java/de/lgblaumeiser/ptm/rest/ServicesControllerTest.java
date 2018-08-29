@@ -5,7 +5,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static com.google.common.io.Files.createTempDir;
 import static java.lang.System.setProperty;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
@@ -20,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -54,8 +54,8 @@ public class ServicesControllerTest {
 	private File tempFolder;
 
 	@Before
-	public void before() {
-		tempFolder = createTempDir();
+	public void before() throws IOException {
+		tempFolder = Files.createTempDirectory("ptm").toFile();
 		String tempStorage = new File(tempFolder, ".ptm").getAbsolutePath();
 		setProperty("ptm.filestore", tempStorage);
 	}
