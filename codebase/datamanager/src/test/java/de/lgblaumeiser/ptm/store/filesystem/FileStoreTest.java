@@ -5,10 +5,14 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import de.lgblaumeiser.ptm.store.filesystem.FileStore;
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
-import org.junit.Before;
-import org.junit.Test;
+import static de.lgblaumeiser.ptm.util.Utils.getOnlyFromCollection;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.apache.commons.io.FilenameUtils.getExtension;
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FileStoreTest {
 	private static final String TESTINDEX = "TestIndex";
@@ -80,6 +81,10 @@ public class FileStoreTest {
 	@Before
 	public void setUp() {
 		testee = new FileStore<TestStoreObject>(stubAccess) {
+			@Override
+			protected Class<TestStoreObject> getType() {
+				return TestStoreObject.class;
+			}
 		};
 	}
 
@@ -101,7 +106,7 @@ public class FileStoreTest {
 		testee.store(testData);
 		Collection<TestStoreObject> foundObjs = testee.retrieveAll();
 		assertEquals(1, foundObjs.size());
-		TestStoreObject foundObj = getOnlyElement(foundObjs);
+		TestStoreObject foundObj = getOnlyFromCollection(foundObjs);
 		assertEquals(TESTINDEX, foundObj.getIndex());
 		assertEquals(TESTCONTENT, foundObj.getData());
 	}
@@ -130,9 +135,9 @@ public class FileStoreTest {
 	public void testStorepathByEnv() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
 		System.setProperty("ptm.filestore", "somedummystring");
 		Class<?> myClass = testee.getClass().getSuperclass();
-        Method method = myClass.getDeclaredMethod("getStore");
+		Method method = myClass.getDeclaredMethod("getStore");
 		method.setAccessible(true);
-		assertEquals(new File("somedummystring"), (File)method.invoke(testee));
+		assertEquals(new File("somedummystring"), (File) method.invoke(testee));
 	}
 }
 

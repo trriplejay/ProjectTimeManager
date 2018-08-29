@@ -5,18 +5,23 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static de.lgblaumeiser.ptm.util.Utils.emptyString;
+import static de.lgblaumeiser.ptm.util.Utils.getFirstFromCollection;
+import static de.lgblaumeiser.ptm.util.Utils.getLastFromCollection;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * An analysis that counts all hours in the month given as parameter
@@ -25,14 +30,15 @@ public class HourComputer extends AbstractBaseComputer {
 	private static final String BREAKTIME_COMMENT = "Break too short!";
 	private static final String WORKTIME_COMMENT = "> 10 hours worktime!";
 
-    @Override
+	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-	    CalculationPeriod requestedPeriod = getMonthPeriod(YearMonth.now());
+		CalculationPeriod requestedPeriod = getMonthPeriod(YearMonth.now());
 		if (parameter.size() > 1) {
 			requestedPeriod = getCalculationPeriod(parameter);
 		}
-		Collection<Collection<Object>> result = Lists.newArrayList();
-		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Total", "Overtime", "Comment"));
+		Collection<Collection<Object>> result = new ArrayList<>();
+		result.add(Arrays.asList("Work Day", "Starttime", "Endtime", "Presence", "Worktime", "Breaktime", "Total",
+				"Overtime", "Comment"));
 		Duration overtime = Duration.ZERO;
 		Duration totaltime = Duration.ZERO;
 		LocalDate currentday = requestedPeriod.firstDay;
@@ -40,8 +46,8 @@ public class HourComputer extends AbstractBaseComputer {
 			Collection<Booking> currentBookings = getBookingsForDay(currentday);
 			if (hasCompleteBookings(currentBookings)) {
 				String day = currentday.format(DateTimeFormatter.ISO_LOCAL_DATE);
-				LocalTime starttime = Iterables.getFirst(currentBookings, null).getStarttime();
-				LocalTime endtime = Iterables.getLast(currentBookings).getEndtime();
+				LocalTime starttime = getFirstFromCollection(currentBookings).getStarttime();
+				LocalTime endtime = getLastFromCollection(currentBookings).getEndtime();
 				Duration presence = calculatePresence(starttime, endtime);
 				Duration worktime = calculateWorktime(currentBookings);
 				Duration breaktime = calculateBreaktime(presence, worktime);
@@ -49,16 +55,16 @@ public class HourComputer extends AbstractBaseComputer {
 				Duration currentOvertime = calculateOvertime(worktime, currentday);
 				overtime = overtime.plus(currentOvertime);
 				result.add(Arrays.asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
-						endtime.format(DateTimeFormatter.ofPattern("HH:mm")),
-						formatDuration(presence), formatDuration(worktime), formatDuration(breaktime),
-						formatDuration(totaltime), formatDuration(overtime), validate(worktime, breaktime)));
+						endtime.format(DateTimeFormatter.ofPattern("HH:mm")), formatDuration(presence),
+						formatDuration(worktime), formatDuration(breaktime), formatDuration(totaltime),
+						formatDuration(overtime), validate(worktime, breaktime)));
 			}
 			currentday = currentday.plusDays(1);
 		}
 		return result;
 	}
 
-    private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
+	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {
 		return store.retrieveAll().stream().filter(b -> b.getBookingday().equals(currentday))
 				.sorted((b1, b2) -> b1.getStarttime().compareTo(b2.getStarttime())).collect(Collectors.toList());
 	}
@@ -103,7 +109,7 @@ public class HourComputer extends AbstractBaseComputer {
 		if (worktimeMinutes > 360 && breaktimeMinutes < 30) { // longer than 6 hours => 30 minutes break
 			return BREAKTIME_COMMENT;
 		}
-		return StringUtils.EMPTY;
+		return emptyString();
 	}
 
 	private Duration calculatePresence(final LocalTime starttime, final LocalTime endtime) {

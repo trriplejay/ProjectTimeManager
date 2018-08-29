@@ -5,18 +5,18 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
+import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Arrays.asList;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * Store that uses the rest utils to access the server, i.e., a proxy
@@ -29,21 +29,19 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 	}
 
 	public Collection<Booking> retrieveForDay(LocalDate day) {
-		return asList(getRestUtils().<Booking[]>get(
-				"/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE), Booking[].class));
+		return asList(getRestUtils().<Booking[]>get("/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE),
+				Booking[].class));
 	}
 
 	@Override
 	public Optional<Booking> retrieveById(Long id) {
-		return Optional.ofNullable(getRestUtils().<Booking>get(
-				"/bookings/id/" + id.toString(),
-				Booking.class));
+		return Optional.ofNullable(getRestUtils().<Booking>get("/bookings/id/" + id.toString(), Booking.class));
 	}
 
 	@Override
 	public Booking store(Booking booking) {
 		try {
-			Map<String, String> bodyData = newHashMap();
+			Map<String, String> bodyData = new HashMap<>();
 			bodyData.put("activityId", booking.getActivity().getId().toString());
 			bodyData.put("user", booking.getUser());
 			bodyData.put("comment", booking.getComment());

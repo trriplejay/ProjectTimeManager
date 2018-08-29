@@ -6,12 +6,30 @@
 package de.lgblaumeiser.ptm.cli;
 
 import com.beust.jcommander.JCommander;
+
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
-import de.lgblaumeiser.ptm.cli.engine.handler.*;
-import de.lgblaumeiser.ptm.cli.rest.*;
+import de.lgblaumeiser.ptm.cli.engine.handler.AddActivity;
+import de.lgblaumeiser.ptm.cli.engine.handler.AddBooking;
+import de.lgblaumeiser.ptm.cli.engine.handler.Backup;
+import de.lgblaumeiser.ptm.cli.engine.handler.ChangeActivity;
+import de.lgblaumeiser.ptm.cli.engine.handler.ChangeBooking;
+import de.lgblaumeiser.ptm.cli.engine.handler.ControlBackend;
+import de.lgblaumeiser.ptm.cli.engine.handler.DeleteBooking;
+import de.lgblaumeiser.ptm.cli.engine.handler.License;
+import de.lgblaumeiser.ptm.cli.engine.handler.ListActivity;
+import de.lgblaumeiser.ptm.cli.engine.handler.ListBookings;
+import de.lgblaumeiser.ptm.cli.engine.handler.Restore;
+import de.lgblaumeiser.ptm.cli.engine.handler.RunHourAnalysis;
+import de.lgblaumeiser.ptm.cli.engine.handler.RunProjectAnalysis;
+import de.lgblaumeiser.ptm.cli.rest.RestActivityStore;
+import de.lgblaumeiser.ptm.cli.rest.RestAnalysisService;
+import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
+import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
+import de.lgblaumeiser.ptm.cli.rest.RestInfrastructureServices;
+import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
@@ -42,6 +60,7 @@ public class PTMCLIConfigurator {
 	private static final String BACKEND_COMMAND = "ptm";
 	private static final String BACKUP_COMMAND = "backup";
 	private static final String RESTORE_COMMAND = "restore";
+	private static final String LICENSE_COMMAND = "licenses";
 
 	public CLI configure() {
 		RestBookingStore bookingStore = new RestBookingStore();
@@ -49,7 +68,8 @@ public class PTMCLIConfigurator {
 		BookingService bookingService = new BookingServiceImpl(bookingStore);
 		DataAnalysisService analysisService = new RestAnalysisService();
 		RestInfrastructureServices infrastructureServices = new RestInfrastructureServices();
-		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService, infrastructureServices);
+		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService,
+				infrastructureServices);
 		RestBaseService.setRestUtils(new RestUtils().configure());
 		RestBaseService.setServices(manager);
 		return createCLI(createCommandInterpreter(manager));
@@ -68,12 +88,11 @@ public class PTMCLIConfigurator {
 	}
 
 	private JCommander createCommandInterpreter(final ServiceManager serviceManager) {
-        StdoutLogger logger = new StdoutLogger();
-        AbstractCommandHandler.setLogger(logger);
-        AbstractCommandHandler.setServices(serviceManager);
-        AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
-        JCommander jc = JCommander.newBuilder()
-                .addObject(new MainParameters())
+		StdoutLogger logger = new StdoutLogger();
+		AbstractCommandHandler.setLogger(logger);
+		AbstractCommandHandler.setServices(serviceManager);
+		AbstractCommandHandler.setPrinter(new PrettyPrinter().setLogger(logger));
+		JCommander jc = JCommander.newBuilder().addObject(new MainParameters())
 				.addCommand(ADD_ACTIVITY_COMMAND, new AddActivity(), ADD_ACTIVITY_COMMAND_ABBRV)
 				.addCommand(CHANGE_ACTIVITY_COMMAND, new ChangeActivity(), CHANGE_ACTIVITY_COMMAND_ABBRV)
 				.addCommand(LIST_ACTIVITY_COMMAND, new ListActivity(), LIST_ACTIVITY_COMMAND_ABBRV)
@@ -83,10 +102,8 @@ public class PTMCLIConfigurator {
 				.addCommand(LIST_BOOKING_COMMAND, new ListBookings(), LIST_BOOKING_COMMAND_ABBRV)
 				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis(), HOURS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis(), PROJECTS_ANALYSIS_COMMAND_ABBRV)
-				.addCommand(BACKEND_COMMAND, new ControlBackend())
-				.addCommand(BACKUP_COMMAND, new Backup())
-				.addCommand(RESTORE_COMMAND, new Restore())
-                .build();
+				.addCommand(BACKEND_COMMAND, new ControlBackend()).addCommand(BACKUP_COMMAND, new Backup())
+				.addCommand(RESTORE_COMMAND, new Restore()).addCommand(LICENSE_COMMAND, new License()).build();
 		return jc;
 	}
 

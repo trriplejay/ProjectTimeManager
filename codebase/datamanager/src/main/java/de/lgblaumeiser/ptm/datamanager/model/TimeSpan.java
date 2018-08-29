@@ -5,14 +5,15 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import java.time.Duration;
-import java.time.LocalTime;
-
-import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static java.lang.String.format;
 import static java.time.Duration.ofMinutes;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Objects.hash;
+
+import java.time.Duration;
+import java.time.LocalTime;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time
@@ -26,19 +27,16 @@ public final class TimeSpan {
 	/**
 	 * Create a new time span object after a consistency check.
 	 *
-	 * @param starttime
-	 *            Start time of the time span
-	 * @param endtime
-	 *            End time of the time span
+	 * @param starttime Start time of the time span
+	 * @param endtime   End time of the time span
 	 * @return The time span representation for the given data never null
-	 * @throws IllegalArgumentException
-	 *             If the start time is after the end time. Time spans can only
-	 *             be defined within a day.
+	 * @throws IllegalArgumentException If the start time is after the end time.
+	 *                                  Time spans can only be defined within a day.
 	 */
 	static TimeSpan newTimeSpan(final LocalTime starttime, final LocalTime endtime) {
-		checkState(starttime != null);
-		checkState(endtime != null);
-		checkState(endtime.isAfter(starttime));
+		assertState(starttime != null);
+		assertState(endtime != null);
+		assertState(endtime.isAfter(starttime));
 		return new TimeSpan(starttime, endtime);
 	}
 
@@ -67,6 +65,7 @@ public final class TimeSpan {
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).add("Start time", starttime).add("End time", endtime).toString();
+		return format("TimeSpan: Starttime: %s, Endtime %s", starttime.format(ISO_LOCAL_TIME),
+				endtime.format(ISO_LOCAL_TIME));
 	}
 }

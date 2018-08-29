@@ -8,7 +8,7 @@ package de.lgblaumeiser.ptm.datamanager.model;
 import org.junit.Test;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static org.junit.Assert.*;
 
 /**
@@ -33,12 +33,12 @@ public class ActivityTest {
 
 	@Test(expected = IllegalStateException.class)
 	public final void testWithBlankName() {
-		newActivity().setActivityName(EMPTY).setBookingNumber(LINE_BOOKING_1).build();
+		newActivity().setActivityName(emptyString()).setBookingNumber(LINE_BOOKING_1).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testWithBlankNumber() {
-		newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(EMPTY).build();
+		newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(emptyString()).build();
 	}
 
 	/**

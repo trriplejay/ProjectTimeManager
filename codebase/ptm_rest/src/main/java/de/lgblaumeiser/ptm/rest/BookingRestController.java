@@ -5,16 +5,12 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
+import static java.lang.Long.valueOf;
+import static java.time.LocalTime.parse;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -22,11 +18,21 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
 
-import static java.lang.Long.valueOf;
-import static java.time.LocalTime.parse;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 /**
  * Rest Controller for Booking Management
@@ -46,9 +52,7 @@ public class BookingRestController {
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}",
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
 		logger.info("Request: Get Bookings for Day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
@@ -64,9 +68,7 @@ public class BookingRestController {
 		public String comment;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}",
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
 		logger.info("Request: Post new Booking for day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
@@ -74,31 +76,28 @@ public class BookingRestController {
 				.orElseThrow(IllegalStateException::new);
 		Booking newBooking = services.bookingService().addBooking(day, newData.user, activity, parse(newData.starttime),
 				newData.endtime != null ? Optional.of(parse(newData.endtime)) : Optional.empty(),
-				StringUtils.isNotBlank(newData.comment) ? Optional.of(newData.comment) : Optional.empty());
-		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/bookings/id/" + newBooking.getId());
+				stringHasContent(newData.comment) ? Optional.of(newData.comment) : Optional.empty());
+		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()
+				+ "/bookings/id/" + newBooking.getId());
 		logger.info("Result: Booking created with Id " + newBooking.getId());
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}",
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Booking getBooking(@PathVariable String booking) {
 		logger.info("Request: Get booking with Id " + booking);
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/id/{booking}")
-	public ResponseEntity<?> changeBooking(@PathVariable String booking,
-			@RequestBody BookingBody changeData) {
+	public ResponseEntity<?> changeBooking(@PathVariable String booking, @RequestBody BookingBody changeData) {
 		logger.info("Request: Post changes for Booking with Id " + booking);
 		Optional<Activity> activity = services.activityStore().retrieveById(valueOf(changeData.activityId));
 		services.bookingStore().retrieveById(valueOf(booking))
-				.ifPresent(b -> services.bookingService().changeBooking(b,
-						Optional.empty(),activity,
+				.ifPresent(b -> services.bookingService().changeBooking(b, Optional.empty(), activity,
 						changeData.starttime != null ? Optional.of(parse(changeData.starttime)) : Optional.empty(),
-                        changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
-                        StringUtils.isNotBlank(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
+						changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
+						stringHasContent(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
 		logger.info("Result: Booking changed with Id " + booking);
 		return ResponseEntity.ok().build();
 	}

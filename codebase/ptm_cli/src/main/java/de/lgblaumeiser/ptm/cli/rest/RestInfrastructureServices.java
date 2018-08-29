@@ -35,7 +35,8 @@ public class RestInfrastructureServices extends RestBaseService {
 	}
 
 	/**
-	 * Restore method which sends the back up data as zipped output stream to the server
+	 * Restore method which sends the back up data as zipped output stream to the
+	 * server
 	 * 
 	 * @param backupFile The file which stores the data
 	 */
@@ -44,6 +45,19 @@ public class RestInfrastructureServices extends RestBaseService {
 				ByteArrayOutputStream sendData = new ByteArrayOutputStream()) {
 			IOUtils.copy(dataSource, sendData);
 			getRestUtils().put("/services/restore", sendData.toByteArray());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	/**
+	 * Access license service of ptm backend
+	 * 
+	 * @return License texts of the backend
+	 */
+	public String licenses() {
+		try {
+			return IOUtils.toString(getRestUtils().get("/services/license"), "UTF-8");
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

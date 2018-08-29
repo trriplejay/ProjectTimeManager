@@ -12,13 +12,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.io.Files;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
@@ -34,33 +33,43 @@ public class ZipBackupRestoreTest {
 	private static final String CONTENT2 = "Booking1_content";
 	private static final String FILENAME3 = "2.booking";
 	private static final String CONTENT3 = "Booking2_content";
-	
+
 	private ZipBackupRestore testee;
 	private FilesystemAbstraction fileact;
 	private File tempfolder;
 	private File file1;
 	private File file2;
 	private File file3;
-	
+
 	@Before
 	public void setUp() throws IOException {
 		createTestFiles();
 		fileact = new FilesystemAbstractionImpl();
-		FileStore<Activity> actStore = new FileStore<Activity>(fileact) {};
-		FileStore<Booking> bookStore = new FileStore<Booking>(fileact) {};
-		testee = new ZipBackupRestore(actStore, bookStore); 
+		FileStore<Activity> actStore = new FileStore<Activity>(fileact) {
+			@Override
+			protected Class<Activity> getType() {
+				return Activity.class;
+			}
+		};
+		FileStore<Booking> bookStore = new FileStore<Booking>(fileact) {
+			@Override
+			protected Class<Booking> getType() {
+				return Booking.class;
+			}
+		};
+		testee = new ZipBackupRestore(actStore, bookStore);
 	}
-	
+
 	private void createTestFiles() throws IOException {
-		tempfolder = Files.createTempDir();
+		tempfolder = Files.createTempDirectory("ptm").toFile();
 		System.setProperty("ptm.filestore", tempfolder.getAbsolutePath());
 		file1 = new File(tempfolder, FILENAME1);
 		file2 = new File(tempfolder, FILENAME2);
 		file3 = new File(tempfolder, FILENAME3);
-		FileUtils.write(file1, CONTENT1,"UTF-8");
-		FileUtils.write(file2, CONTENT2,"UTF-8");
-		FileUtils.write(file3, CONTENT3,"UTF-8");	
-	}	
+		FileUtils.write(file1, CONTENT1, "UTF-8");
+		FileUtils.write(file2, CONTENT2, "UTF-8");
+		FileUtils.write(file3, CONTENT3, "UTF-8");
+	}
 
 	@After
 	public void teardown() throws IOException {

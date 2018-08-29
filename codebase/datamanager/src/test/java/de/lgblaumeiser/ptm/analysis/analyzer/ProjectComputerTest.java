@@ -5,15 +5,17 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import com.google.common.collect.Iterables;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
-import org.junit.Test;
+import static de.lgblaumeiser.ptm.util.Utils.getIndexFromCollection;
+import static java.lang.Double.parseDouble;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 public class ProjectComputerTest extends AbstractComputerTest {
 	private ProjectComputer testee;
@@ -28,14 +30,14 @@ public class ProjectComputerTest extends AbstractComputerTest {
 		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("month", "2017-03"));
 		assertEquals(5, analysisResults.size());
 		assertEquals(200.0,
-				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
+				parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 1), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 4), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", "")),
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 2), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", ""))
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 3), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", ""))
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 4), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", "")),
 				0.1);
 	}
 
@@ -44,12 +46,12 @@ public class ProjectComputerTest extends AbstractComputerTest {
 		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("day", "2017-03-15"));
 		assertEquals(4, analysisResults.size());
 		assertEquals(200.0,
-				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
+				parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 1), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", "")),
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 2), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", ""))
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 3), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", "")),
 				0.1);
 	}
 
@@ -58,14 +60,14 @@ public class ProjectComputerTest extends AbstractComputerTest {
 		Collection<Collection<Object>> analysisResults = testee.analyze(Arrays.asList("week", "2017-03-09"));
 		assertEquals(5, analysisResults.size());
 		assertEquals(200.0,
-				Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 1), 3).toString()
+				parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 1), 3).toString()
 						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 2), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 3), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", ""))
-				+ Double.parseDouble(Iterables.get(Iterables.get(analysisResults, 4), 3).toString()
-						.replaceAll(",", ".").replaceAll("%", "")),
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 2), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", ""))
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 3), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", ""))
+						+ parseDouble(getIndexFromCollection(getIndexFromCollection(analysisResults, 4), 3).toString()
+								.replaceAll(",", ".").replaceAll("%", "")),
 				0.15);
 	}
 }

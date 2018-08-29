@@ -5,18 +5,18 @@
  */
 package de.lgblaumeiser.ptm.analysis.analyzer;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.store.ObjectStore;
-
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
  * An analysis to compute the amount of hours per a activity. The computer
@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 public class ProjectComputer extends AbstractBaseComputer {
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
-		Collection<Collection<Object>> result = Lists.newArrayList();
+		Collection<Collection<Object>> result = new ArrayList<>();
 		result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
 		Duration totalMinutes = Duration.ZERO;
-		Map<Activity, Duration> activityToMinutesMap = Maps.newHashMap();
+		Map<Activity, Duration> activityToMinutesMap = new HashMap<>();
 		for (Booking current : getBookingsForPeriod(getCalculationPeriod(parameter))) {
 			if (current.hasEndtime()) {
 				Activity currentActivity = current.getActivity();
@@ -52,12 +52,13 @@ public class ProjectComputer extends AbstractBaseComputer {
 			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
 					formatDuration(totalMinutesId), percentageString));
 		}
-		result.add(Arrays.asList("Total","",formatDuration(totalMinutes),"100%"));
+		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100%"));
 		return result;
 	}
 
 	private Collection<Booking> getBookingsForPeriod(final CalculationPeriod period) {
-		return store.retrieveAll().stream().filter(b -> isInPeriod(period, b.getBookingday())).collect(Collectors.toList());
+		return store.retrieveAll().stream().filter(b -> isInPeriod(period, b.getBookingday()))
+				.collect(Collectors.toList());
 	}
 
 	private String formatDuration(final Duration duration) {
@@ -66,7 +67,7 @@ public class ProjectComputer extends AbstractBaseComputer {
 		minutes = Math.abs(minutes);
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
-	
+
 	public ProjectComputer(final ObjectStore<Booking> store) {
 		super(store);
 	}

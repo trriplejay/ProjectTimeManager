@@ -5,24 +5,23 @@
  */
 package de.lgblaumeiser.ptm.store.filesystem;
 
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.Maps;
-import com.google.common.reflect.TypeToken;
 
 import de.lgblaumeiser.ptm.store.ObjectStore;
 import de.lgblaumeiser.ptm.store.StoreBackupRestore;
@@ -30,15 +29,11 @@ import de.lgblaumeiser.ptm.store.StoreBackupRestore;
 /**
  * A file base store for random objects
  */
-public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
+public abstract class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	private static final String ID = "id";
 
 	private final ObjectMapper jsonUtil = new ObjectMapper();
 	private final FilesystemAbstraction filesystemAccess;
-
-	@SuppressWarnings({ "serial", "unchecked" })
-	public final Class<T> type = (Class<T>) new TypeToken<T>(getClass()) {
-	}.getRawType();
 
 	public FileStore(final FilesystemAbstraction filesystemAccess) {
 		jsonUtil.registerModule(new JavaTimeModule());
@@ -58,7 +53,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public Optional<T> retrieveById(final Long id) {
-		checkState(id != null);
+		assertState(id != null);
 		File searchedFile = getFileInformation(id);
 		if (!filesystemAccess.dataAvailable(searchedFile)) {
 			return Optional.empty();
@@ -72,7 +67,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public T store(final T object) {
-		checkState(object != null);
+		assertState(object != null);
 		Long index = getIndexObject(object);
 		File targetFile = getFileInformation(index);
 		String content = createFileContent(object);
@@ -87,9 +82,9 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public void deleteById(final Long id) {
-		checkState(id != null);
+		assertState(id != null);
 		File deleteFile = getFileInformation(id);
-		checkState(filesystemAccess.dataAvailable(deleteFile));
+		assertState(filesystemAccess.dataAvailable(deleteFile));
 		try {
 			filesystemAccess.deleteFile(deleteFile);
 		} catch (IOException e) {
@@ -99,7 +94,7 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public Map<String, String> backup() {
-		Map<String, String> backupResult = Maps.newHashMap();
+		Map<String, String> backupResult = new HashMap<>();
 		getAllFiles().stream().forEach(f -> {
 			try {
 				backupResult.put(f.getName(), filesystemAccess.retrieveFromFile(f));
@@ -112,11 +107,11 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	@Override
 	public void restore(final Map<String, String> filenameToContentMap) {
-		checkState(getAllFiles().size() == 0);
+		assertState(getAllFiles().size() == 0);
 		filenameToContentMap.keySet().stream().forEach(k -> {
 			File targetFile = new File(getStore(), k);
 			try {
-				filesystemAccess.storeToFile(targetFile, filenameToContentMap.get(k));				
+				filesystemAccess.storeToFile(targetFile, filenameToContentMap.get(k));
 			} catch (IOException e) {
 				throw new IllegalStateException();
 			}
@@ -136,11 +131,13 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 
 	private T extractFileContent(final String content) {
 		try {
-			return jsonUtil.readValue(content, this.type);
+			return jsonUtil.readValue(content, getType());
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}
+
+	protected abstract Class<T> getType();
 
 	private String createFileContent(final T object) {
 		try {
@@ -161,24 +158,24 @@ public class FileStore<T> implements ObjectStore<T>, StoreBackupRestore<T> {
 	}
 
 	private String getExtension() {
-		return type.getTypeName().substring(type.getTypeName().lastIndexOf('.') + 1).toLowerCase();
+		return getType().getSimpleName().toLowerCase();
 	}
 
 	private File getStore() {
 		String storepath = System.getProperty("ptm.filestore");
-		File applicationPath = StringUtils.isNotBlank(storepath) ? new File(storepath) : getDefaultStore();
-		checkState(filesystemAccess.folderAvailable(applicationPath, true));
+		File applicationPath = stringHasContent(storepath) ? new File(storepath) : getDefaultStore();
+		assertState(filesystemAccess.folderAvailable(applicationPath, true));
 		return applicationPath;
 	}
 
 	private File getDefaultStore() {
 		File homepath = new File(System.getProperty("user.home"));
-		checkState(filesystemAccess.folderAvailable(homepath, false));
+		assertState(filesystemAccess.folderAvailable(homepath, false));
 		return new File(homepath, ".ptm");
 	}
 
 	private Long getIndexObject(final T object) {
-		checkState(object != null);
+		assertState(object != null);
 		try {
 			Field f = object.getClass().getDeclaredField(ID);
 			f.setAccessible(true);

@@ -5,8 +5,10 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
+import static de.lgblaumeiser.ptm.util.Utils.getFirstFromCollection;
+
 import com.beust.jcommander.JCommander;
-import com.google.common.collect.Iterables;
+
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
 /**
@@ -15,28 +17,28 @@ import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 public class CLI {
 	private JCommander interpreter;
 
-	public void runCommand(final String ... args) {
+	public void runCommand(final String... args) {
 		interpreter.parse(args);
-        if (isHelpTextedRequested()) {
-            interpreter.usage();
-        } else {
-            getParsedCommand().handleCommand();
-        }
+		if (isHelpTextedRequested()) {
+			interpreter.usage();
+		} else {
+			getParsedCommand().handleCommand();
+		}
 	}
 
-    private AbstractCommandHandler getParsedCommand() {
-        return (AbstractCommandHandler)(Iterables.get(getParsedCommandWrapper().getObjects(), 0));
-    }
+	private AbstractCommandHandler getParsedCommand() {
+		return (AbstractCommandHandler) (getFirstFromCollection(getParsedCommandWrapper().getObjects()));
+	}
 
-    private JCommander getParsedCommandWrapper() {
-        return interpreter.getCommands().get(interpreter.getParsedCommand());
-    }
+	private JCommander getParsedCommandWrapper() {
+		return interpreter.getCommands().get(interpreter.getParsedCommand());
+	}
 
-    private boolean isHelpTextedRequested() {
-        return ((MainParameters) Iterables.get(interpreter.getObjects(), 0)).helpNeeded();
-    }
+	private boolean isHelpTextedRequested() {
+		return ((MainParameters) getFirstFromCollection(interpreter.getObjects())).helpNeeded();
+	}
 
-    void setInterpreter(final JCommander interpreter) {
+	void setInterpreter(final JCommander interpreter) {
 		this.interpreter = interpreter;
 	}
 }

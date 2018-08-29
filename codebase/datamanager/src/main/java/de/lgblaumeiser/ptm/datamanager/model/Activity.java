@@ -5,11 +5,11 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkState;
+import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 import static java.lang.Long.valueOf;
+import static java.lang.String.format;
 import static java.util.Objects.hash;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Data structure for representation of an activity. An activity represents a
@@ -60,9 +60,8 @@ public class Activity {
 		}
 
 		/**
-		 * @return An unmodifiable activity representing the data given to the
-		 *         builder, Non null, returns with exception if the data is
-		 *         invalid
+		 * @return An unmodifiable activity representing the data given to the builder,
+		 *         Non null, returns with exception if the data is invalid
 		 */
 		public Activity build() {
 			checkData();
@@ -70,8 +69,8 @@ public class Activity {
 		}
 
 		private void checkData() {
-			checkState(isNotBlank(activityName));
-			checkState(isNotBlank(bookingNumber));
+			assertState(stringHasContent(activityName));
+			assertState(stringHasContent(bookingNumber));
 		}
 	}
 
@@ -85,7 +84,8 @@ public class Activity {
 	}
 
 	/**
-	 * Change an existing activity by providing a builder preset with the activity data
+	 * Change an existing activity by providing a builder preset with the activity
+	 * data
 	 *
 	 * @return A new activity builder, never null
 	 */
@@ -135,15 +135,16 @@ public class Activity {
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).add("Booking Number", bookingNumber).add("Activity", activityName)
-				.add("Hidden", hidden).add("Id", id).toString();
+		return format("Activity: Booking Number: %s, Name: %s, Hidden: %b, Id: %d", bookingNumber, activityName, hidden,
+				id);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Activity) {
 			Activity act = (Activity) obj;
-			return id == act.id && hidden == act.isHidden() && activityName.equals(act.activityName) && bookingNumber.equals(act.bookingNumber);
+			return id == act.id && hidden == act.isHidden() && activityName.equals(act.activityName)
+					&& bookingNumber.equals(act.bookingNumber);
 		}
 		return false;
 	}
