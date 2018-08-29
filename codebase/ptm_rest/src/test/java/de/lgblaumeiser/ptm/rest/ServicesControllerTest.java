@@ -66,7 +66,7 @@ public class ServicesControllerTest {
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void testBackupRestore() throws Exception {
 		ActivityRestController.ActivityBody data = new ActivityRestController.ActivityBody();
 		data.activityName = "MyTestActivity";
 		data.bookingNumber = "0815";
@@ -102,5 +102,16 @@ public class ServicesControllerTest {
 				.andExpect(content().string(containsString("starttime")))
 				.andExpect(content().string(containsString("endtime")));
 
+	}
+
+	@Test
+	public void testLicense() throws Exception {
+		mockMvc.perform(get("/services/license")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().string(containsString("Apache-2.0")))
+				.andExpect(content().string(containsString("EPL-1.0")))
+				.andExpect(content().string(containsString("MIT")))
+				.andExpect(content().string(containsString("CDDL-1.1")))
+				.andExpect(content().string(containsString("BSD-2-Clause")))
+				.andExpect(content().string(containsString("BSD-3-Clause")));
 	}
 }
