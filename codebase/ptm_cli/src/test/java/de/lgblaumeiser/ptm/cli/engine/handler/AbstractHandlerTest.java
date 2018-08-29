@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import de.lgblaumeiser.ptm.cli.CLI;
@@ -88,6 +89,13 @@ public abstract class AbstractHandlerTest {
 		@Override
 		public InputStream get(String apiName) {
 			apiNameGiven = apiName;
+			if (apiName.contains("services/license")) {
+				try {
+					return IOUtils.toInputStream("BackendLicenseText", "UTF-8");
+				} catch (IOException e) {
+					throw new IllegalStateException(e);
+				}
+			}
 			return new ByteArrayInputStream(rawDataGiven);
 		}
 
