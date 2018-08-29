@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
@@ -52,7 +54,7 @@ public abstract class AbstractHandlerTest {
 		StringBuffer logMessages = new StringBuffer();
 
 		@Override
-		public void log(String message) {
+		public void log(final String message) {
 			logMessages.append(message);
 			logMessages.append("xxxnewlinexxx");
 		}
@@ -64,7 +66,7 @@ public abstract class AbstractHandlerTest {
 		byte[] rawDataGiven;
 
 		@Override
-		public Long post(String apiName, Map<String, String> bodyData) {
+		public Long post(final String apiName, final Map<String, String> bodyData) {
 			apiNameGiven = apiName;
 			bodyDataGiven = bodyData;
 			return 2L;
@@ -76,7 +78,7 @@ public abstract class AbstractHandlerTest {
 		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#put(java.lang.String, byte[])
 		 */
 		@Override
-		public void put(String apiName, byte[] sendData) {
+		public void put(final String apiName, final byte[] sendData) {
 			apiNameGiven = apiName;
 			rawDataGiven = sendData;
 		}
@@ -87,7 +89,7 @@ public abstract class AbstractHandlerTest {
 		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#get(java.lang.String)
 		 */
 		@Override
-		public InputStream get(String apiName) {
+		public InputStream get(final String apiName) {
 			apiNameGiven = apiName;
 			if (apiName.contains("services/license")) {
 				try {
@@ -101,7 +103,7 @@ public abstract class AbstractHandlerTest {
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public <T> T get(String apiName, Class<T> returnClass) {
+		public <T> T get(final String apiName, final Class<T> returnClass) {
 			apiNameGiven = apiName;
 			if (apiName.contains("activities")) {
 				if (apiName.contains("1")) {
@@ -125,7 +127,7 @@ public abstract class AbstractHandlerTest {
 		}
 
 		@Override
-		public void delete(String apiName) {
+		public void delete(final String apiName) {
 			apiNameGiven = apiName;
 		}
 

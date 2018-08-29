@@ -2,8 +2,15 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.rest;
+
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-
-import static java.util.Arrays.asList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 /**
- * Restcontroller for running analysis
+ * Rest controller for running analysis
  */
 @RestController
 @RequestMapping("/analysis")
@@ -32,16 +34,15 @@ public class AnalysisRestController {
 	@Autowired
 	private ServiceMapper services;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{analyzerId}/{timeframe}/{param}",
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	Collection<Collection<Object>> runAnalysis(@PathVariable String analyzerId, @PathVariable String timeframe, @PathVariable String param) {
+	@RequestMapping(method = RequestMethod.GET, value = "/{analyzerId}/{timeframe}/{param}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	Collection<Collection<Object>> runAnalysis(@PathVariable final String analyzerId,
+			@PathVariable final String timeframe, @PathVariable final String param) {
 		logger.info("Request: Get Analysis Data for " + analyzerId + " for time frame " + timeframe + " " + param);
 		return services.analysisService().analyze(analyzerId.toUpperCase(), asList(timeframe, param));
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<?> handleException(IllegalStateException e) {
+	public ResponseEntity<?> handleException(final IllegalStateException e) {
 		logger.error("Exception in Request", e);
 		return ResponseEntity.status(BAD_REQUEST).body(e.toString());
 	}

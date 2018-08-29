@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.engine;
 
@@ -18,12 +20,12 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
 public class PrettyPrinter {
 	private CommandLogger logger;
 
-	public PrettyPrinter setLogger(CommandLogger logger) {
+	public PrettyPrinter setLogger(final CommandLogger logger) {
 		this.logger = logger;
 		return this;
 	}
 
-	public void tablePrint(Collection<Collection<Object>> data) {
+	public void tablePrint(final Collection<Collection<Object>> data) {
 		List<Integer> sizelist = new ArrayList<>();
 		for (Collection<Object> line : data) {
 			int index = 0;
@@ -38,7 +40,7 @@ public class PrettyPrinter {
 		}
 	}
 
-	private void setMaxToList(List<Integer> list, int index, int currentLength) {
+	private void setMaxToList(final List<Integer> list, final int index, final int currentLength) {
 		if (index < list.size()) {
 			list.set(index, Math.max(list.get(index), currentLength));
 		} else {
@@ -46,7 +48,7 @@ public class PrettyPrinter {
 		}
 	}
 
-	public void bookingPrint(Collection<Booking> data) {
+	public void bookingPrint(final Collection<Booking> data) {
 		Collection<Collection<Object>> table = new ArrayList<>();
 		table.add(asList("Activity", "Number", "Activity Id", "Starttime", "Endtime", "Id", "Comment"));
 		for (Booking booking : data) {
@@ -55,7 +57,7 @@ public class PrettyPrinter {
 		tablePrint(table);
 	}
 
-	public void activityPrint(Collection<Activity> data) {
+	public void activityPrint(final Collection<Activity> data) {
 		Collection<Collection<Object>> table = new ArrayList<>();
 		table.add(asList("Activity", "Number", "Activity Id"));
 		for (Activity activity : data) {
@@ -64,7 +66,7 @@ public class PrettyPrinter {
 		tablePrint(table);
 	}
 
-	private Collection<Object> flattenBooking(Booking booking) {
+	private Collection<Object> flattenBooking(final Booking booking) {
 		List<Object> line = new ArrayList<>();
 		line.addAll(flattenActivity(booking.getActivity()));
 		line.add(booking.getStarttime().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -74,7 +76,7 @@ public class PrettyPrinter {
 		return line;
 	}
 
-	private Collection<Object> flattenActivity(Activity activity) {
+	private Collection<Object> flattenActivity(final Activity activity) {
 		return asList(activity.getActivityName(), activity.getBookingNumber(), activity.getId().toString());
 	}
 
@@ -90,7 +92,7 @@ public class PrettyPrinter {
 		return resultString.toString();
 	}
 
-	private String rightPad(String source, int size) {
+	private String rightPad(final String source, final int size) {
 		int missing = size - source.length();
 		StringBuffer result = new StringBuffer();
 		result.append(source);

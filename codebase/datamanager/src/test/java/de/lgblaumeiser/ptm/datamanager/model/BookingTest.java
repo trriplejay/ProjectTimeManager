@@ -2,20 +2,24 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.datamanager.model;
-
-import org.junit.Test;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static java.time.LocalDate.now;
 import static java.time.LocalTime.of;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import org.junit.Test;
 
 /**
  * Test of the Booking class
@@ -57,7 +61,8 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testEndBooking() {
-		Booking startBooking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
+		Booking startBooking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1)
+				.build();
 		Booking testee = startBooking.changeBooking().setEndtime(TIME2).build();
 		assertEquals(ACT1, testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
@@ -86,7 +91,9 @@ public class BookingTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public final void testNoUser() { newBooking().setBookingday(DATE).setStarttime(TIME1).setEndtime(TIME2).build(); }
+	public final void testNoUser() {
+		newBooking().setBookingday(DATE).setStarttime(TIME1).setEndtime(TIME2).build();
+	}
 
 	@Test
 	public final void testNoComment() {
@@ -96,7 +103,8 @@ public class BookingTest {
 
 	@Test
 	public final void testComment() {
-		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).setComment(COMMENT).build();
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1)
+				.setComment(COMMENT).build();
 		assertEquals(COMMENT, booking.getComment());
 	}
 
@@ -105,8 +113,8 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testCalculateTimeSpan() {
-		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2).setActivity(ACT1)
-				.build();
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2)
+				.setActivity(ACT1).build();
 		TimeSpan testee = booking.calculateTimeSpan();
 		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
 	}

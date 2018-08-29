@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.analysis;
 
@@ -14,10 +16,8 @@ public interface DataAnalysisService {
 	/**
 	 * Run an analysis with id analyzerId and the given parameters
 	 *
-	 * @param analyzerId
-	 *            The id of the analyzer to run
-	 * @param parameter
-	 *            Parameters given to the analyzer
+	 * @param analyzerId The id of the analyzer to run
+	 * @param parameter  Parameters given to the analyzer
 	 * @return The result as an implemented analysis result interface
 	 */
 	Collection<Collection<Object>> analyze(String analyzerId, Collection<String> parameter);

@@ -2,12 +2,14 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli;
 
-import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
-
 import static java.lang.System.out;
+
+import de.lgblaumeiser.ptm.cli.engine.CommandLogger;
 
 /**
  * Logs the output to stdio

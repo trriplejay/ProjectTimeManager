@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
@@ -27,12 +29,12 @@ public class RestActivityStore extends RestBaseService implements ObjectStore<Ac
 	}
 
 	@Override
-	public Optional<Activity> retrieveById(Long id) {
+	public Optional<Activity> retrieveById(final Long id) {
 		return Optional.ofNullable(getRestUtils().<Activity>get("/activities/" + id.toString(), Activity.class));
 	}
 
 	@Override
-	public Activity store(Activity activity) {
+	public Activity store(final Activity activity) {
 		try {
 			Map<String, String> bodyData = new HashMap<>();
 			bodyData.put("activityName", activity.getActivityName());
@@ -50,7 +52,7 @@ public class RestActivityStore extends RestBaseService implements ObjectStore<Ac
 	}
 
 	@Override
-	public void deleteById(Long id) {
-		// Currently not supported operation for activities
+	public void deleteById(final Long id) {
+		throw new UnsupportedOperationException();
 	}
 }

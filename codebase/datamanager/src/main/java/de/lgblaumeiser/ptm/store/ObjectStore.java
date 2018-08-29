@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.store;
 
@@ -22,8 +24,7 @@ public interface ObjectStore<T> {
 	/**
 	 * Retrieve object by the id
 	 * 
-	 * @param id
-	 *            Id of the searched object
+	 * @param id Id of the searched object
 	 * @return The object with the given id as potentially empty optional
 	 */
 	Optional<T> retrieveById(Long id);
@@ -31,8 +32,7 @@ public interface ObjectStore<T> {
 	/**
 	 * Store an object in the store
 	 *
-	 * @param object
-	 *            The Object to store
+	 * @param object The Object to store
 	 * @return The stored object
 	 */
 	T store(T object);
@@ -40,8 +40,7 @@ public interface ObjectStore<T> {
 	/**
 	 * Delete an object identified by its id
 	 * 
-	 * @param id
-	 *            The id of the object to be deleted
+	 * @param id The id of the object to be deleted
 	 */
 	void deleteById(Long id);
 }

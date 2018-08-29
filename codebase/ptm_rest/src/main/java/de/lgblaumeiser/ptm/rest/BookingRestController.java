@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.rest;
 
@@ -53,7 +55,7 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
+	public Collection<Booking> getBookingsForDay(@PathVariable final String dayString) {
 		logger.info("Request: Get Bookings for Day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
@@ -69,7 +71,7 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
+	public ResponseEntity<?> addBooking(@PathVariable final String dayString, @RequestBody final BookingBody newData) {
 		logger.info("Request: Post new Booking for day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
@@ -84,13 +86,14 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Booking getBooking(@PathVariable String booking) {
+	public Booking getBooking(@PathVariable final String booking) {
 		logger.info("Request: Get booking with Id " + booking);
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/id/{booking}")
-	public ResponseEntity<?> changeBooking(@PathVariable String booking, @RequestBody BookingBody changeData) {
+	public ResponseEntity<?> changeBooking(@PathVariable final String booking,
+			@RequestBody final BookingBody changeData) {
 		logger.info("Request: Post changes for Booking with Id " + booking);
 		Optional<Activity> activity = services.activityStore().retrieveById(valueOf(changeData.activityId));
 		services.bookingStore().retrieveById(valueOf(booking))
@@ -103,7 +106,7 @@ public class BookingRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/id/{booking}")
-	public ResponseEntity<?> deleteBooking(@PathVariable String booking) {
+	public ResponseEntity<?> deleteBooking(@PathVariable final String booking) {
 		logger.info("Request: Delete Booking with Id " + booking);
 		services.bookingStore().deleteById(valueOf(booking));
 		logger.info("Result: Booking deleted");
@@ -111,7 +114,7 @@ public class BookingRestController {
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<?> handleException(IllegalStateException e) {
+	public ResponseEntity<?> handleException(final IllegalStateException e) {
 		logger.error("Exception in Request", e);
 		return ResponseEntity.status(BAD_REQUEST).body(e.toString());
 	}

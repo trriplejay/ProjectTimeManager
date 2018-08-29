@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
@@ -18,7 +20,7 @@ public class RestBaseService {
 		return utils;
 	}
 
-	public static void setRestUtils(RestUtils restUtils) {
+	public static void setRestUtils(final RestUtils restUtils) {
 		utils = restUtils;
 	}
 

@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
@@ -50,7 +52,7 @@ public class RestUtils {
 	 *                 into a flat json
 	 * @return The Id of the created or manipulated object
 	 */
-	public Long post(String apiName, Map<String, String> bodyData) {
+	public Long post(final String apiName, final Map<String, String> bodyData) {
 		try {
 			final HttpPost request = new HttpPost(baseUrl + apiName);
 			StringEntity bodyJson = new StringEntity(jsonMapper.writeValueAsString(bodyData), "UTF-8");
@@ -79,7 +81,7 @@ public class RestUtils {
 	 * @param apiName  Name of the api
 	 * @param sendData The data to be send to the server
 	 */
-	public void put(String apiName, byte[] sendData) {
+	public void put(final String apiName, final byte[] sendData) {
 		try {
 			final HttpPut request = new HttpPut(baseUrl + apiName);
 			ByteArrayEntity bodyData = new ByteArrayEntity(sendData);
@@ -100,7 +102,7 @@ public class RestUtils {
 	 * @param returnClass The class object of a result type
 	 * @return The found element or array of elements
 	 */
-	public <T> T get(String apiName, Class<T> returnClass) {
+	public <T> T get(final String apiName, final Class<T> returnClass) {
 		try {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
@@ -119,7 +121,7 @@ public class RestUtils {
 	 * @param apiName The api name of the get call
 	 * @return The input stream delivered by the server
 	 */
-	public InputStream get(String apiName) {
+	public InputStream get(final String apiName) {
 		try {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
@@ -136,7 +138,7 @@ public class RestUtils {
 	 * 
 	 * @param apiName The api name for the deletion
 	 */
-	public void delete(String apiName) {
+	public void delete(final String apiName) {
 		try {
 			final String requestString = baseUrl + apiName;
 			final HttpDelete request = new HttpDelete(requestString);
@@ -174,7 +176,7 @@ public class RestUtils {
 		return applicationProps;
 	}
 
-	private String getProperty(String key) {
+	private String getProperty(final String key) {
 		String prop = System.getenv(key);
 		prop = (prop == null) ? System.getProperty(key) : prop;
 		prop = (prop == null) ? applicationProps.getProperty(key) : prop;

@@ -2,14 +2,18 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import org.junit.Test;
-
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.util.Utils.emptyString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * Tests for the activity class
@@ -26,7 +30,8 @@ public class ActivityTest {
 	 */
 	@Test
 	public final void testNewActivityPositive() {
-		Activity newActivity = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
+		Activity newActivity = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1)
+				.build();
 		assertEquals(LINE_ACTIVITY_1_1, newActivity.getActivityName());
 		assertEquals(LINE_BOOKING_1, newActivity.getBookingNumber());
 	}
@@ -46,10 +51,14 @@ public class ActivityTest {
 	 */
 	@Test
 	public final void testEquals() {
-		Activity newActivity1 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
-		Activity newActivity2 = newActivity().setActivityName(LINE_ACTIVITY_1_2).setBookingNumber(LINE_BOOKING_1).build();
-		Activity newActivity3 = newActivity().setActivityName(PROJECT_ACTIVITY_1_1).setBookingNumber(PROJECT_BOOKING_1).build();
-		Activity newActivity4 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1).build();
+		Activity newActivity1 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1)
+				.build();
+		Activity newActivity2 = newActivity().setActivityName(LINE_ACTIVITY_1_2).setBookingNumber(LINE_BOOKING_1)
+				.build();
+		Activity newActivity3 = newActivity().setActivityName(PROJECT_ACTIVITY_1_1).setBookingNumber(PROJECT_BOOKING_1)
+				.build();
+		Activity newActivity4 = newActivity().setActivityName(LINE_ACTIVITY_1_1).setBookingNumber(LINE_BOOKING_1)
+				.build();
 
 		assertTrue(newActivity1.equals(newActivity4));
 		assertTrue(newActivity1.hashCode() == newActivity4.hashCode());

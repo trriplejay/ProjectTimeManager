@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
@@ -28,18 +30,18 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 		return retrieveForDay(LocalDate.now());
 	}
 
-	public Collection<Booking> retrieveForDay(LocalDate day) {
+	public Collection<Booking> retrieveForDay(final LocalDate day) {
 		return asList(getRestUtils().<Booking[]>get("/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE),
 				Booking[].class));
 	}
 
 	@Override
-	public Optional<Booking> retrieveById(Long id) {
+	public Optional<Booking> retrieveById(final Long id) {
 		return Optional.ofNullable(getRestUtils().<Booking>get("/bookings/id/" + id.toString(), Booking.class));
 	}
 
 	@Override
-	public Booking store(Booking booking) {
+	public Booking store(final Booking booking) {
 		try {
 			Map<String, String> bodyData = new HashMap<>();
 			bodyData.put("activityId", booking.getActivity().getId().toString());
@@ -69,7 +71,7 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public void deleteById(final Long id) {
 		getRestUtils().delete("/bookings/id/" + id);
 	}
 }

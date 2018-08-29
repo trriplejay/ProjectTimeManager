@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.engine;
 
@@ -11,7 +13,6 @@ import de.lgblaumeiser.ptm.cli.rest.RestInfrastructureServices;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
-
 
 /**
  * Small class that allows to access the services needed by the command handler
@@ -55,11 +56,12 @@ public class ServiceManager {
 	public void setBookingsStore(final RestBookingStore bookingsStore) {
 		this.bookingsStore = bookingsStore;
 	}
+
 	public RestInfrastructureServices getInfrastructureServices() {
 		return infrastructureServices;
 	}
 
-	public void setInfrastructureServices(RestInfrastructureServices infrastructureServices) {
+	public void setInfrastructureServices(final RestInfrastructureServices infrastructureServices) {
 		this.infrastructureServices = infrastructureServices;
 	}
 }

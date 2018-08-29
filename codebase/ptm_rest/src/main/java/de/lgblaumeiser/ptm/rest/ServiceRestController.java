@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.rest;
 
@@ -52,20 +54,21 @@ public class ServiceRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/restore", consumes = "application/zip")
-	public ResponseEntity<?> restore(InputStream zipdata) {
+	public ResponseEntity<?> restore(final InputStream zipdata) {
 		logger.info("Request: Put data to restore database");
 		services.backupService().emptyDatabase();
 		services.backupService().restore(zipdata);
 		logger.info("Result: Data restored");
 		return ResponseEntity.ok().build();
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, value="/license", produces=MediaType.TEXT_PLAIN_VALUE)
+
+	@RequestMapping(method = RequestMethod.GET, value = "/license", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<?> license() {
 		logger.info("Request: Get all license information for PTM backend");
 		try {
 			Resource resource = new ClassPathResource("license_info.txt");
-			String licenseData = IOUtils.toString(resource.getInputStream(), "UTF-8");;
+			String licenseData = IOUtils.toString(resource.getInputStream(), "UTF-8");
+			;
 			logger.info("Result: License data read, returning to requester");
 			return ResponseEntity.ok(licenseData);
 		} catch (IOException e) {
@@ -74,7 +77,7 @@ public class ServiceRestController {
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<?> handleException(IllegalStateException e) {
+	public ResponseEntity<?> handleException(final IllegalStateException e) {
 		logger.error("Exception in Request", e);
 		return ResponseEntity.status(BAD_REQUEST).body(e.toString());
 	}

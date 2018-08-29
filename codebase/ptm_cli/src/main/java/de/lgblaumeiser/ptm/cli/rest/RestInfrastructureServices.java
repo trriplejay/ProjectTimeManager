@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
@@ -25,7 +27,7 @@ public class RestInfrastructureServices extends RestBaseService {
 	 * 
 	 * @param backupFile The file object to store the backup data
 	 */
-	public void backup(File backupFile) {
+	public void backup(final File backupFile) {
 		try (FileOutputStream dataSink = new FileOutputStream(backupFile)) {
 			InputStream recevicedData = getRestUtils().get("/services/backup");
 			IOUtils.copy(recevicedData, dataSink);
@@ -40,7 +42,7 @@ public class RestInfrastructureServices extends RestBaseService {
 	 * 
 	 * @param backupFile The file which stores the data
 	 */
-	public void restore(File backupFile) {
+	public void restore(final File backupFile) {
 		try (FileInputStream dataSource = new FileInputStream(backupFile);
 				ByteArrayOutputStream sendData = new ByteArrayOutputStream()) {
 			IOUtils.copy(dataSource, sendData);

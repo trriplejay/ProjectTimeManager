@@ -2,6 +2,8 @@
  * Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
  *
  * Licensed under MIT license
+ * 
+ * SPDX-License-Identifier: MIT
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
@@ -16,7 +18,7 @@ import com.beust.jcommander.IStringConverter;
  */
 public class FileConverter implements IStringConverter<File> {
 	@Override
-	public File convert(String pathAsString) {
+	public File convert(final String pathAsString) {
 		File file = new File(pathAsString);
 		File parent = file.getParentFile();
 		if (parent != null) {
