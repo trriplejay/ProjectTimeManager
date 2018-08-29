@@ -53,12 +53,12 @@ public class BookingServiceTest {
 			}
 
 			@Override
-			public Optional<Booking> retrieveById(Long id) {
+			public Optional<Booking> retrieveById(final Long id) {
 				return storedBookings.stream().filter(b -> id == b.getId()).findFirst();
 			}
 
 			@Override
-			public Booking store(Booking object) {
+			public Booking store(final Booking object) {
 				deleteById(object.getId());
 				storedBookings.stream().filter(b -> id == b.getId()).findFirst().ifPresent(storedBookings::remove);
 				storedBookings.add(object);
@@ -79,11 +79,11 @@ public class BookingServiceTest {
 			}
 
 			@Override
-			public void deleteById(Long id) {
+			public void deleteById(final Long id) {
 				storedBookings.stream().filter(b -> id == b.getId()).findFirst().ifPresent(storedBookings::remove);
 			}
 		};
-		testee = new BookingServiceImpl().setBookingStore(mockStore);
+		testee = new BookingServiceImpl(mockStore);
 	}
 
 	@Test

@@ -21,11 +21,11 @@ import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
  * The implementation of the DayBookings service
  */
 public class BookingServiceImpl implements BookingService {
-	private ObjectStore<Booking> bookingStore;
+	private final ObjectStore<Booking> bookingStore;
 
 	@Override
-	public Booking addBooking(LocalDate bookingday, String user, Activity activity, LocalTime starttime,
-							  Optional<LocalTime> endtime, Optional<String> comment) {
+	public Booking addBooking(final LocalDate bookingday, final String user, final Activity activity, final LocalTime starttime,
+			final Optional<LocalTime> endtime, final Optional<String> comment) {
 		getLastOpenBooking(bookingday).ifPresent(b -> {
 			Booking changed = b.changeBooking().setEndtime(starttime).build();
 			bookingStore.store(changed);
@@ -40,14 +40,14 @@ public class BookingServiceImpl implements BookingService {
 		return newBooking;
 	}
 
-	private Optional<Booking> getLastOpenBooking(LocalDate bookingday) {
+	private Optional<Booking> getLastOpenBooking(final LocalDate bookingday) {
 		return bookingStore.retrieveAll().stream().filter(b -> b.getBookingday().equals(bookingday) && !b.hasEndtime())
 				.findFirst();
 	}
 
 	@Override
-	public 	Booking changeBooking(Booking booking, Optional<LocalDate> bookingday, Optional<Activity> activity,
-                                    Optional<LocalTime> starttime, Optional<LocalTime> endtime, Optional<String> comment) {
+	public 	Booking changeBooking(final Booking booking, final Optional<LocalDate> bookingday, final Optional<Activity> activity,
+			final Optional<LocalTime> starttime, final Optional<LocalTime> endtime, final Optional<String> comment) {
 		checkState(booking != null);
 		Booking.BookingBuilder bookingBuilder = booking.changeBooking();
 		bookingday.ifPresent(bookingBuilder::setBookingday);
@@ -65,8 +65,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param bookingStore
 	 *            Set the booking store
 	 */
-	public BookingServiceImpl setBookingStore(ObjectStore<Booking> bookingStore) {
+	public BookingServiceImpl(final ObjectStore<Booking> bookingStore) {
 		this.bookingStore = bookingStore;
-		return this;
 	}
 }

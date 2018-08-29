@@ -40,13 +40,16 @@ public class PTMCLIConfigurator {
 	private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
 	private static final String PROJECTS_ANALYSIS_COMMAND_ABBRV = "pa";
 	private static final String BACKEND_COMMAND = "ptm";
+	private static final String BACKUP_COMMAND = "backup";
+	private static final String RESTORE_COMMAND = "restore";
 
 	public CLI configure() {
 		RestBookingStore bookingStore = new RestBookingStore();
 		ObjectStore<Activity> activityStore = new RestActivityStore();
-		BookingService bookingService = new BookingServiceImpl().setBookingStore(bookingStore);
+		BookingService bookingService = new BookingServiceImpl(bookingStore);
 		DataAnalysisService analysisService = new RestAnalysisService();
-		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService);
+		RestInfrastructureServices infrastructureServices = new RestInfrastructureServices();
+		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService, infrastructureServices);
 		RestBaseService.setRestUtils(new RestUtils().configure());
 		RestBaseService.setServices(manager);
 		return createCLI(createCommandInterpreter(manager));
@@ -54,12 +57,13 @@ public class PTMCLIConfigurator {
 
 	private ServiceManager createServiceManager(final RestBookingStore bookingStore,
 			final ObjectStore<Activity> activityStore, final BookingService bookingService,
-			final DataAnalysisService analysisService) {
+			final DataAnalysisService analysisService, RestInfrastructureServices infrastructureServices) {
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setActivityStore(activityStore);
 		serviceManager.setBookingService(bookingService);
 		serviceManager.setBookingsStore(bookingStore);
 		serviceManager.setAnalysisService(analysisService);
+		serviceManager.setInfrastructureServices(infrastructureServices);
 		return serviceManager;
 	}
 
@@ -80,6 +84,8 @@ public class PTMCLIConfigurator {
 				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis(), HOURS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis(), PROJECTS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(BACKEND_COMMAND, new ControlBackend())
+				.addCommand(BACKUP_COMMAND, new Backup())
+				.addCommand(RESTORE_COMMAND, new Restore())
                 .build();
 		return jc;
 	}

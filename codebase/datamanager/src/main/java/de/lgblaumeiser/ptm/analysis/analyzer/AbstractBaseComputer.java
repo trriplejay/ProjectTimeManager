@@ -16,19 +16,19 @@ import java.time.YearMonth;
 import java.util.Collection;
 
 public abstract class AbstractBaseComputer implements Analysis {
-    protected ObjectStore<Booking> store;
+    protected final ObjectStore<Booking> store;
 
     static class CalculationPeriod {
         LocalDate firstDay;
         LocalDate firstDayAfter;
 
-        public CalculationPeriod(LocalDate firstDay, LocalDate firstDayAfter) {
+        public CalculationPeriod(final LocalDate firstDay, final LocalDate firstDayAfter) {
             this.firstDay = firstDay;
             this.firstDayAfter = firstDayAfter;
         }
     }
 
-    protected CalculationPeriod getCalculationPeriod(Collection<String> parameter) {
+    protected CalculationPeriod getCalculationPeriod(final Collection<String> parameter) {
         String selector = Iterables.get(parameter, 0);
         String time = Iterables.get(parameter, 1);
         if ("day".equals(selector.toLowerCase())) {
@@ -43,11 +43,11 @@ public abstract class AbstractBaseComputer implements Analysis {
         return getMonthPeriod(YearMonth.now());
     }
 
-    protected CalculationPeriod getDayPeriod(LocalDate day) {
+    protected CalculationPeriod getDayPeriod(final LocalDate day) {
         return new CalculationPeriod(day, day.plusDays(1L));
     }
 
-    private CalculationPeriod getWeekPeriod(LocalDate dayInWeek) {
+    private CalculationPeriod getWeekPeriod(final LocalDate dayInWeek) {
         LocalDate current = dayInWeek;
         while (current.getDayOfWeek() != DayOfWeek.MONDAY) {
             current = current.minusDays(1L);
@@ -55,15 +55,18 @@ public abstract class AbstractBaseComputer implements Analysis {
         return new CalculationPeriod(current, current.plusDays(7L));
     }
 
-    protected CalculationPeriod getMonthPeriod(YearMonth month) {
+    protected CalculationPeriod getMonthPeriod(final YearMonth month) {
         return new CalculationPeriod(month.atDay(1), month.plusMonths(1L).atDay(1));
     }
 
-    protected boolean isInPeriod(CalculationPeriod period, LocalDate current) {
+    protected boolean isInPeriod(final CalculationPeriod period, final LocalDate current) {
         return period.firstDay.minusDays(1L).isBefore(current) && period.firstDayAfter.isAfter(current);
     }
 
-    public void setStore(final ObjectStore<Booking> store) {
-        this.store = store;
-    }
+	/**
+	 * @param store The store with bookings used for analysis
+	 */
+	public AbstractBaseComputer(final ObjectStore<Booking> store) {
+		this.store = store;
+	}
 }

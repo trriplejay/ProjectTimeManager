@@ -5,7 +5,19 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.google.common.io.Files.createTempDir;
+import static java.lang.System.setProperty;
+import static org.apache.commons.io.FileUtils.forceDelete;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,19 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
-import java.io.IOException;
-
-import static com.google.common.io.Files.createTempDir;
-import static java.lang.System.setProperty;
-import static org.apache.commons.io.FileUtils.forceDelete;
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test the activity rest controller
@@ -87,7 +87,7 @@ public class ActivityControllerTest {
 		data.hidden = true;
 		data.activityName = "MyOtherTestActivity";
 		data.bookingNumber = "4711";
-		mockMvc.perform(put("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+		mockMvc.perform(post("/activities/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(objectMapper.writeValueAsString(data))).andDo(print()).andExpect(status().isOk());
 
 		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

@@ -3,7 +3,7 @@
  *
  * Licensed under MIT license
  */
-package de.lgblaumeiser.store.filesystem;
+package de.lgblaumeiser.ptm.store.filesystem;
 
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
@@ -52,12 +52,12 @@ public class FileStoreTest {
 		}
 
 		@Override
-		public Collection<File> getAllFiles(File folder, String extension) {
+		public Collection<File> getAllFiles(final File folder, final String extension) {
 			return storageFile != null ? asList(storageFile) : emptyList();
 		}
 
 		@Override
-		public void deleteFile(File target) throws IOException {
+		public void deleteFile(final File target) throws IOException {
 			if (!target.equals(storageFile)) {
 				throw new IOException();
 			}
@@ -69,7 +69,7 @@ public class FileStoreTest {
 		}
 
 		@Override
-		public boolean folderAvailable(File store, boolean createIfNot) {
+		public boolean folderAvailable(final File store, final boolean createIfNot) {
 			return true;
 		}
 	};
@@ -79,9 +79,8 @@ public class FileStoreTest {
 
 	@Before
 	public void setUp() {
-		testee = new FileStore<TestStoreObject>() {
+		testee = new FileStore<TestStoreObject>(stubAccess) {
 		};
-		testee.setFilesystemAccess(stubAccess);
 	}
 
 	private static final TestStoreObject testData = new TestStoreObject(TESTINDEX, TESTCONTENT);

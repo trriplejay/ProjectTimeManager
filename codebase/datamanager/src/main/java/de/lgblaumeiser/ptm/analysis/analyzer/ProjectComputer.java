@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
  * the requirements of the author concerning his time keeping.
  */
 public class ProjectComputer extends AbstractBaseComputer {
-	private ObjectStore<Booking> store;
-
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
 		Collection<Collection<Object>> result = Lists.newArrayList();
@@ -68,8 +66,8 @@ public class ProjectComputer extends AbstractBaseComputer {
 		minutes = Math.abs(minutes);
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
-
-	public void setStore(final ObjectStore<Booking> store) {
-		this.store = store;
+	
+	public ProjectComputer(final ObjectStore<Booking> store) {
+		super(store);
 	}
 }

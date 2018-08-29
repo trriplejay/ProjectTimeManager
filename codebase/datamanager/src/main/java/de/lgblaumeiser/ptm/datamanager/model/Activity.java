@@ -39,22 +39,22 @@ public class Activity {
 			// Nothing to do
 		}
 
-		public ActivityBuilder setId(Long id) {
+		public ActivityBuilder setId(final Long id) {
 			this.id = id;
 			return this;
 		}
 
-		public ActivityBuilder setActivityName(String activityName) {
+		public ActivityBuilder setActivityName(final String activityName) {
 			this.activityName = activityName;
 			return this;
 		}
 
-		public ActivityBuilder setBookingNumber(String bookingNumber) {
+		public ActivityBuilder setBookingNumber(final String bookingNumber) {
 			this.bookingNumber = bookingNumber;
 			return this;
 		}
 
-		public ActivityBuilder setHidden(boolean hidden) {
+		public ActivityBuilder setHidden(final boolean hidden) {
 			this.hidden = hidden;
 			return this;
 		}

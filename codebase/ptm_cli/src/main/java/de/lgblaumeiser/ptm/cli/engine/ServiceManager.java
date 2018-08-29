@@ -7,6 +7,7 @@ package de.lgblaumeiser.ptm.cli.engine;
 
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
+import de.lgblaumeiser.ptm.cli.rest.RestInfrastructureServices;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
@@ -21,6 +22,7 @@ public class ServiceManager {
 	private DataAnalysisService analysisService;
 	private ObjectStore<Activity> activityStore;
 	private RestBookingStore bookingsStore;
+	private RestInfrastructureServices infrastructureServices;
 
 	public BookingService getBookingService() {
 		return bookingService;
@@ -52,5 +54,12 @@ public class ServiceManager {
 
 	public void setBookingsStore(final RestBookingStore bookingsStore) {
 		this.bookingsStore = bookingsStore;
+	}
+	public RestInfrastructureServices getInfrastructureServices() {
+		return infrastructureServices;
+	}
+
+	public void setInfrastructureServices(RestInfrastructureServices infrastructureServices) {
+		this.infrastructureServices = infrastructureServices;
 	}
 }

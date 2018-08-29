@@ -64,6 +64,5 @@ public class TimeSpanTest {
 		assertFalse(timeSpan1.equals(timeSpan2));
 		assertFalse(timeSpan1.equals(timeSpan4));
 		assertFalse(timeSpan2.equals(timeSpan4));
-		assertFalse(timeSpan1.equals(this));
 	}
 }

@@ -5,6 +5,18 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
+
+import org.junit.Before;
+
 import de.lgblaumeiser.ptm.cli.CLI;
 import de.lgblaumeiser.ptm.cli.PTMCLIConfigurator;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -14,35 +26,26 @@ import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
 import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import org.junit.Before;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Map;
-
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 
 public abstract class AbstractHandlerTest {
 	private static final String ID = "id";
 
-	protected static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
-	protected static final LocalTime TIME1 = LocalTime.of(12, 34);
-	protected static final LocalTime TIME2 = LocalTime.of(13, 57);
-	protected static final String ACTIVITY1NAME = "Act1";
-	protected static final String ACTIVITY1NUMBER = "0815";
-	protected static final String ACTIVITY2NAME = "NewAct2";
-	protected static final String ACTIVITY2NUMBER = "4711";
-	protected static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).setId(1L).build();
-	protected static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setHidden(true).setId(2L).build();
-	protected static final String USER = "TestUser";
-	protected static final String COMMENT = "TestComment";
-	protected static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
+	static final LocalDate DATE1 = LocalDate.of(2016, 06, 24);
+	static final LocalTime TIME1 = LocalTime.of(12, 34);
+	static final LocalTime TIME2 = LocalTime.of(13, 57);
+	static final String ACTIVITY1NAME = "Act1";
+	static final String ACTIVITY1NUMBER = "0815";
+	static final String ACTIVITY2NAME = "NewAct2";
+	static final String ACTIVITY2NUMBER = "4711";
+	static final Activity ACTIVITY1 = newActivity().setActivityName(ACTIVITY1NAME).setBookingNumber(ACTIVITY1NUMBER).setId(1L).build();
+	static final Activity ACTIVITY2 = newActivity().setActivityName(ACTIVITY2NAME).setBookingNumber(ACTIVITY2NUMBER).setHidden(true).setId(2L).build();
+	static final String USER = "TestUser";
+	static final String COMMENT = "TestComment";
+	static final Booking BOOKING1 = Booking.newBooking().setActivity(ACTIVITY1).setBookingday(DATE1)
             .setUser(USER).setStarttime(TIME1).setEndtime(TIME2).build();
 
 	protected static class TestCommandLogger implements CommandLogger {
-		protected StringBuffer logMessages = new StringBuffer();
+	    StringBuffer logMessages = new StringBuffer();
 
 		@Override
 		public void log(String message) {
@@ -52,9 +55,10 @@ public abstract class AbstractHandlerTest {
 	}
 
 	protected static class TestRestUtils extends RestUtils {
-	    protected String apiNameGiven;
-	    protected Map<String, String> bodyDataGiven;
-
+	    String apiNameGiven;
+	    Map<String, String> bodyDataGiven;
+	    byte[] rawDataGiven;
+	    
         @Override
         public Long post(String apiName, Map<String, String> bodyData) {
             apiNameGiven = apiName;
@@ -62,7 +66,26 @@ public abstract class AbstractHandlerTest {
             return 2L;
         }
 
-        @Override
+		/* (non-Javadoc)
+		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#put(java.lang.String, byte[])
+		 */
+		@Override
+		public void put(String apiName, byte[] sendData) {
+			apiNameGiven = apiName;
+			rawDataGiven = sendData;
+		}
+
+		/* (non-Javadoc)
+		 * @see de.lgblaumeiser.ptm.cli.rest.RestUtils#get(java.lang.String)
+		 */
+		@Override
+		public InputStream get(String apiName) {
+			apiNameGiven = apiName;
+			return new ByteArrayInputStream(rawDataGiven);
+		}
+
+        @SuppressWarnings("unchecked")
+		@Override
         public <T> T get(String apiName, Class<T> returnClass) {
         	apiNameGiven = apiName;
         	if (apiName.contains("activities")) {
@@ -77,6 +100,11 @@ public abstract class AbstractHandlerTest {
                 return returnClass.cast(BOOKING1);
 			}
 			if (returnClass.isArray()) {
+				if (returnClass.getComponentType().getName().contains("Booking")) {
+					return (T) new Booking[] { BOOKING1 };
+				} else if (returnClass.getComponentType().getName().contains("Activity")) {
+					return (T) new Activity[] { ACTIVITY1, ACTIVITY2 };
+				}
 				return returnClass.cast(Array.newInstance(returnClass.getComponentType(), 0));
 			}
 			return null;
@@ -93,9 +121,9 @@ public abstract class AbstractHandlerTest {
 		}
 	}
 
-	protected TestCommandLogger logger = new TestCommandLogger();
-	protected TestRestUtils restutils = new TestRestUtils().configure();
-	protected CLI commandline = new PTMCLIConfigurator().configure();
+	TestCommandLogger logger = new TestCommandLogger();
+	TestRestUtils restutils = new TestRestUtils().configure();
+	CLI commandline = new PTMCLIConfigurator().configure();
 
 	@Before
 	public void before() {

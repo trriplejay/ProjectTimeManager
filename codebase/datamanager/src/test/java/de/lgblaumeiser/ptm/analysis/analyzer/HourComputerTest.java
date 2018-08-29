@@ -16,11 +16,11 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class HourComputerTest extends AbstractComputerTest {
-	private final HourComputer testee = new HourComputer();
+	private HourComputer testee;
 
 	@Override
-	protected void setTesteeStore(final ObjectStore<Booking> store) {
-		testee.setStore(store);
+	protected void createTestee(final ObjectStore<Booking> store) {
+		testee = new HourComputer(store);
 	}
 
 	@Test
