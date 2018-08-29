@@ -18,6 +18,9 @@ import de.lgblaumeiser.ptm.store.ZipBackupRestore;
 import de.lgblaumeiser.ptm.store.filesystem.FileStore;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
 import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -31,6 +34,8 @@ import static java.lang.System.setProperty;
  */
 @Component
 public class ServiceMapper {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	private static final String ANALYSIS_HOURS_ID = "HOURS";
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
@@ -51,6 +56,7 @@ public class ServiceMapper {
 		bookingService = new BookingServiceImpl(bookingStore);
 		backupService = new ZipBackupRestore(activityStore, bookingStore);
 		analysisService = createAnalysisService(bookingStore);
+		logger.info("PTM services initialized");
 	}
 
 	private DataAnalysisService createAnalysisService(final ObjectStore<Booking> store) {

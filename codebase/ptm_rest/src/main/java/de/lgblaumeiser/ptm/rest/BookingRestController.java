@@ -8,6 +8,8 @@ package de.lgblaumeiser.ptm.rest;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +34,14 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 @RequestMapping("/bookings")
 public class BookingRestController {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private ServiceMapper services;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public Collection<String> getDaysForWhichBookingsExist() {
+		logger.info("Request: Get all days for which bookings exist");
 		return services.bookingStore().retrieveAll().stream().map(Booking::getBookingday).distinct()
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
@@ -45,6 +50,7 @@ public class BookingRestController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Collection<Booking> getBookingsForDay(@PathVariable String dayString) {
+		logger.info("Request: Get Bookings for Day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
 		return services.bookingStore().retrieveAll().stream().filter(b -> b.getBookingday().equals(day))
 				.sorted(Comparator.comparing(Booking::getStarttime)).collect(toList());
@@ -62,6 +68,7 @@ public class BookingRestController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> addBooking(@PathVariable String dayString, @RequestBody BookingBody newData) {
+		logger.info("Request: Post new Booking for day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
 		Activity activity = services.activityStore().retrieveById(valueOf(newData.activityId))
 				.orElseThrow(IllegalStateException::new);
@@ -69,6 +76,7 @@ public class BookingRestController {
 				newData.endtime != null ? Optional.of(parse(newData.endtime)) : Optional.empty(),
 				StringUtils.isNotBlank(newData.comment) ? Optional.of(newData.comment) : Optional.empty());
 		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/bookings/id/" + newBooking.getId());
+		logger.info("Result: Booking created with Id " + newBooking.getId());
 		return ResponseEntity.created(location).build();
 	}
 
@@ -76,12 +84,14 @@ public class BookingRestController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Booking getBooking(@PathVariable String booking) {
+		logger.info("Request: Get booking with Id " + booking);
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/id/{booking}")
 	public ResponseEntity<?> changeBooking(@PathVariable String booking,
 			@RequestBody BookingBody changeData) {
+		logger.info("Request: Post changes for Booking with Id " + booking);
 		Optional<Activity> activity = services.activityStore().retrieveById(valueOf(changeData.activityId));
 		services.bookingStore().retrieveById(valueOf(booking))
 				.ifPresent(b -> services.bookingService().changeBooking(b,
@@ -89,17 +99,21 @@ public class BookingRestController {
 						changeData.starttime != null ? Optional.of(parse(changeData.starttime)) : Optional.empty(),
                         changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
                         StringUtils.isNotBlank(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
+		logger.info("Result: Booking changed with Id " + booking);
 		return ResponseEntity.ok().build();
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/id/{booking}")
 	public ResponseEntity<?> deleteBooking(@PathVariable String booking) {
+		logger.info("Request: Delete Booking with Id " + booking);
 		services.bookingStore().deleteById(valueOf(booking));
+		logger.info("Result: Booking deleted");
 		return ResponseEntity.ok().build();
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<?> handleException(IllegalStateException e) {
-		return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
+		logger.error("Exception in Request", e);
+		return ResponseEntity.status(BAD_REQUEST).body(e.toString());
 	}
 }
