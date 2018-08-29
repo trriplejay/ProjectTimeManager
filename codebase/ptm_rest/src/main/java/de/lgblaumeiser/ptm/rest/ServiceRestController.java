@@ -47,7 +47,7 @@ public class ServiceRestController {
 		return ResponseEntity.ok().headers(headers).body(byteOutputStream.toByteArray());
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/restore", headers = "content-type=multipart/*", consumes = "application/zip")
+	@RequestMapping(method = RequestMethod.PUT, value = "/restore", consumes = "application/zip")
 	public ResponseEntity<?> restore(InputStream zipdata) {
 		logger.info("Request: Put data to restore database");
 		services.backupService().emptyDatabase();
