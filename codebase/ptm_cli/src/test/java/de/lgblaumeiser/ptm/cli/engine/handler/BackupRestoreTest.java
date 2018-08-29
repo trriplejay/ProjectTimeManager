@@ -5,54 +5,61 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import com.beust.jcommander.ParameterException;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.beust.jcommander.ParameterException;
+import com.google.common.io.Files;
 
 public class BackupRestoreTest extends AbstractHandlerTest {
     private static final String BACKUP_COMMAND = "backup";
-    private static final String RESTORE_COMMAND = "backup";
-
-    @Test
-    public void testBackup() throws IOException {
-        File tempfile = File.createTempFile("test_backup", ".zip");
-//        commandline.runCommand(BACKUP_COMMAND, "-z", tempfile.toString());
-//        ZipInputStream inputs = new ZipInputStream(new FileInputStream(tempfile));
-//        String content1 = getContentForNextZipEntry(inputs);
-//        assertTrue(content1.contains(ACTIVITY1NAME));
-//        assertTrue(content1.contains(ACTIVITY1NUMBER));
-//        String content2 = getContentForNextZipEntry(inputs);
-//        assertTrue(content2.contains(ACTIVITY2NAME));
-//        assertTrue(content2.contains(ACTIVITY2NUMBER));
-//        String content3 = getContentForNextZipEntry(inputs);
-//        assertTrue(content3.contains(USER));
-//        assertTrue(content3.contains(ACTIVITY1NAME));
-//        assertTrue(content3.contains(ACTIVITY1NUMBER));
-//        FileUtils.forceDelete(tempfile);
+    private static final String RESTORE_COMMAND = "restore";
+    
+    private static final String TESTDATACONTENT = "This is some crazy test data that should be returned properly";
+    
+    private File tempfolder;
+    
+    @Before
+    public void before() {
+    	super.before();
+    	tempfolder = Files.createTempDir();
+    }
+    
+    @After
+    public void after() throws IOException {
+    	FileUtils.forceDelete(tempfolder);
     }
 
-    private String getContentForNextZipEntry(ZipInputStream inputs) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read = 0;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipEntry current = inputs.getNextEntry();
-        while ((read = inputs.read(buffer, 0, buffer.length)) > 0) {
-            baos.write(buffer, 0, read);
-        }
-        return baos.toString("UTF-8");
+    @Test
+    public void testBackupRestore() throws IOException {
+        File tempfile = createDataFile();
+        File targetfile = new File(tempfolder, "ptm_target.zip");
+        commandline.runCommand(RESTORE_COMMAND, "-z", tempfile.getAbsolutePath());
+        commandline.runCommand(BACKUP_COMMAND, "-z", targetfile.getAbsolutePath());
+        String result = FileUtils.readFileToString(targetfile, "UTF-8");
+        assertEquals(TESTDATACONTENT, result);
+    }
+
+	private File createDataFile() throws IOException {
+		File datafile = new File(tempfolder, "ptm_backup.zip");
+		FileUtils.write(datafile, TESTDATACONTENT, "UTF-8");
+		return datafile;
+	}
+
+    @Test(expected = ParameterException.class)
+    public void testBackupWithoutZipfile() {
+        commandline.runCommand(BACKUP_COMMAND);
     }
 
     @Test(expected = ParameterException.class)
-    public void testWithoutZipfile() {
-        commandline.runCommand(BACKUP_COMMAND);
+    public void testRestoreWithoutZipfile() {
+        commandline.runCommand(RESTORE_COMMAND);
     }
 }

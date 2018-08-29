@@ -5,6 +5,18 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
+
+import org.junit.Before;
+
 import de.lgblaumeiser.ptm.cli.CLI;
 import de.lgblaumeiser.ptm.cli.PTMCLIConfigurator;
 import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
@@ -14,16 +26,6 @@ import de.lgblaumeiser.ptm.cli.rest.RestBaseService;
 import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import org.junit.Before;
-
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Map;
-
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 
 public abstract class AbstractHandlerTest {
 	private static final String ID = "id";
@@ -55,7 +57,8 @@ public abstract class AbstractHandlerTest {
 	protected static class TestRestUtils extends RestUtils {
 	    String apiNameGiven;
 	    Map<String, String> bodyDataGiven;
-
+	    byte[] rawDataGiven;
+	    
         @Override
         public Long post(String apiName, Map<String, String> bodyData) {
             apiNameGiven = apiName;
@@ -68,8 +71,8 @@ public abstract class AbstractHandlerTest {
 		 */
 		@Override
 		public void put(String apiName, byte[] sendData) {
-			// TODO Auto-generated method stub
-			super.put(apiName, sendData);
+			apiNameGiven = apiName;
+			rawDataGiven = sendData;
 		}
 
 		/* (non-Javadoc)
@@ -77,8 +80,8 @@ public abstract class AbstractHandlerTest {
 		 */
 		@Override
 		public InputStream get(String apiName) {
-			// TODO Auto-generated method stub
-			return super.get(apiName);
+			apiNameGiven = apiName;
+			return new ByteArrayInputStream(rawDataGiven);
 		}
 
         @SuppressWarnings("unchecked")

@@ -16,7 +16,6 @@ import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 
 /**
  * Command to backup all activities and bookings into zip file
- *
  */
 @Parameters(commandDescription = "backup all bookings and activities into zip file")
 public class Restore extends AbstractCommandHandler {
