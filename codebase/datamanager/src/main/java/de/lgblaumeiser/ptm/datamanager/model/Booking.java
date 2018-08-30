@@ -29,7 +29,7 @@ public class Booking {
 	private LocalDate bookingday;
 	private LocalTime starttime;
 	private LocalTime endtime;
-	private Activity activity;
+	private Long activity;
 
 	private String user;
 	private String comment;
@@ -40,7 +40,7 @@ public class Booking {
 		private LocalDate bookingday;
 		private LocalTime starttime;
 		private LocalTime endtime = null;
-		private Activity activity;
+		private Long activity;
 		private String user;
 		private String comment = emptyString();
 
@@ -88,10 +88,10 @@ public class Booking {
 		}
 
 		/**
-		 * @param activity The activity of the booking to build
+		 * @param activity The if of the activity of the booking to build
 		 * @return The booking build as fluent api, non null
 		 */
-		public BookingBuilder setActivity(final Activity activity) {
+		public BookingBuilder setActivity(final Long activity) {
 			this.activity = activity;
 			return this;
 		}
@@ -156,7 +156,7 @@ public class Booking {
 	}
 
 	private Booking(final Long id, final LocalDate bookingday, final String user, final LocalTime starttime,
-			final LocalTime endtime, final Activity activity, final String comment) {
+			final LocalTime endtime, final Long activity, final String comment) {
 		this.id = id;
 		this.bookingday = bookingday;
 		this.user = user;
@@ -202,7 +202,7 @@ public class Booking {
 	/**
 	 * @return Activity of the booking, never null
 	 */
-	public Activity getActivity() {
+	public Long getActivity() {
 		return activity;
 	}
 
@@ -256,9 +256,9 @@ public class Booking {
 
 	@Override
 	public String toString() {
-		return format("Booking: Bookingday: %s, User: %s, Starttime: %s, %sActivity: %d, Comment: %s, Id: %d",
+		return format("Booking: Bookingday: %s, User: %s, Starttime: %s, %sActivity Id: %d, Comment: %s, Id: %d",
 				bookingday.format(ISO_LOCAL_DATE), user, starttime.format(ISO_LOCAL_TIME),
-				endtime != null ? "Endtime: " + endtime.format(ISO_LOCAL_TIME) + ", " : emptyString(), activity.getId(),
+				endtime != null ? "Endtime: " + endtime.format(ISO_LOCAL_TIME) + ", " : emptyString(), activity,
 				comment, id);
 	}
 }

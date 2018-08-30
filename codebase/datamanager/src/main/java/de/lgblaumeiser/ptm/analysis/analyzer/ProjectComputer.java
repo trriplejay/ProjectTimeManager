@@ -27,15 +27,17 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
  * the requirements of the author concerning his time keeping.
  */
 public class ProjectComputer extends AbstractBaseComputer {
+	private ObjectStore<Activity> activityStore;
+
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
 		Collection<Collection<Object>> result = new ArrayList<>();
 		result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
 		Duration totalMinutes = Duration.ZERO;
-		Map<Activity, Duration> activityToMinutesMap = new HashMap<>();
+		Map<Long, Duration> activityToMinutesMap = new HashMap<>();
 		for (Booking current : getBookingsForPeriod(getCalculationPeriod(parameter))) {
 			if (current.hasEndtime()) {
-				Activity currentActivity = current.getActivity();
+				Long currentActivity = current.getActivity();
 				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity);
 				if (accumulatedMinutes == null) {
 					accumulatedMinutes = Duration.ZERO;
@@ -46,11 +48,12 @@ public class ProjectComputer extends AbstractBaseComputer {
 				activityToMinutesMap.put(currentActivity, accumulatedMinutes);
 			}
 		}
-		for (Entry<Activity, Duration> currentActivity : activityToMinutesMap.entrySet()) {
-			Activity activity = currentActivity.getKey();
+		for (Entry<Long, Duration> currentActivity : activityToMinutesMap.entrySet()) {
+			Long activityId = currentActivity.getKey();
 			Duration totalMinutesId = currentActivity.getValue();
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
 			String percentageString = String.format("%2.1f", percentage * 100.0) + "%";
+			Activity activity = activityStore.retrieveById(activityId).orElseThrow(IllegalStateException::new);
 			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
 					formatDuration(totalMinutesId), percentageString));
 		}
@@ -70,7 +73,8 @@ public class ProjectComputer extends AbstractBaseComputer {
 		return String.format("%c%02d:%02d", pre, minutes / 60, minutes % 60);
 	}
 
-	public ProjectComputer(final ObjectStore<Booking> store) {
-		super(store);
+	public ProjectComputer(final ObjectStore<Booking> bStore, ObjectStore<Activity> aStore) {
+		super(bStore);
+		activityStore = aStore;
 	}
 }

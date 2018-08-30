@@ -100,14 +100,12 @@ public class BookingControllerTest {
 				.andExpect(status().isOk()).andExpect(content().string(containsString(dateString)));
 
 		mockMvc.perform(get("/bookings/day/" + dateString).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
-				.andExpect(content().string(containsString("0815")))
+				.andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("activity\":1")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
 		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
-				.andExpect(content().string(containsString("0815")))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("activity\":1")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")));
 
@@ -117,8 +115,7 @@ public class BookingControllerTest {
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isOk());
 
 		mockMvc.perform(get("/bookings/id/1").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
-				.andExpect(content().string(containsString("0815")))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("activity\":1")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("starttime")))
 				.andExpect(content().string(containsString("endtime")));
@@ -136,8 +133,7 @@ public class BookingControllerTest {
 				.content(objectMapper.writeValueAsString(booking))).andDo(print()).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/bookings/id/2").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().string(containsString("MyTestActivity")))
-				.andExpect(content().string(containsString("0815")))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("activity\":1")))
 				.andExpect(content().string(containsString("TestUser")))
 				.andExpect(content().string(containsString("Test Comment")))
 				.andExpect(content().string(containsString("starttime")))

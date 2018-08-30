@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
@@ -22,8 +23,8 @@ public class HourComputerTest extends AbstractComputerTest {
 	private HourComputer testee;
 
 	@Override
-	protected void createTestee(final ObjectStore<Booking> store) {
-		testee = new HourComputer(store);
+	protected void createTestee(final ObjectStore<Booking> bStore, final ObjectStore<Activity> aStore) {
+		testee = new HourComputer(bStore);
 	}
 
 	@Test

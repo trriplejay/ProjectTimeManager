@@ -17,13 +17,15 @@ import java.util.Optional;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.model.Booking.BookingBuilder;
 
 /**
  * Add a booking for the day
  */
 @Parameters(commandDescription = "Add a new booking")
-public class AddBooking extends AbstractHandlerWithActivityRequest {
+public class AddBooking extends AbstractCommandHandler {
 	@Parameter(names = { "-d",
 			"--day" }, description = "Optional day for booking", converter = LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
@@ -48,9 +50,13 @@ public class AddBooking extends AbstractHandlerWithActivityRequest {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Add new booking ...");
-		Booking addedBooking = getServices().getBookingService().addBooking(bookingDay, user,
-				getActivityById(activityId).orElseThrow(IllegalStateException::new), starttime.get(), endtime,
-				stringHasContent(comment) ? Optional.of(comment) : Optional.empty());
+		BookingBuilder newBooking = Booking.newBooking().setBookingday(bookingDay).setUser(user).setActivity(activityId)
+				.setStarttime(starttime.get());
+		endtime.ifPresent(newBooking::setEndtime);
+		if (stringHasContent(comment)) {
+			newBooking.setComment(comment);
+		}
+		Booking addedBooking = getServices().getBookingsStore().store(newBooking.build());
 		getLogger().log(" ... booking added with data: " + addedBooking.toString());
 	}
 }

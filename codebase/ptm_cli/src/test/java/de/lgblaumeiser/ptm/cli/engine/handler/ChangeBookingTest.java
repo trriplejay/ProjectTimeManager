@@ -67,11 +67,6 @@ public class ChangeBookingTest extends AbstractHandlerTest {
 		commandline.runCommand(CHANGE_BOOKING_COMMAND, "-a", "1");
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testChangeBookingThreeParamWrongActivity() {
-		commandline.runCommand(CHANGE_BOOKING_COMMAND, "-b", "10", "-a", "3", "-s", TIME1.toString());
-	}
-
 	@Test(expected = DateTimeParseException.class)
 	public void testChangeBookingTwoParamWrongTime() {
 		commandline.runCommand(CHANGE_BOOKING_COMMAND, "-b", "10", "-a", "1", "-s", ACTIVITY1NUMBER);
