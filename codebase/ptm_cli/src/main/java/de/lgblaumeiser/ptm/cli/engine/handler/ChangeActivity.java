@@ -10,13 +10,14 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 
 /**
  * Command to add an activity
  */
 @Parameters(commandDescription = "Change an existing activity for bookings")
-public class ChangeActivity extends AbstractHandlerWithActivityRequest {
+public class ChangeActivity extends AbstractCommandHandler {
 	@Parameter(names = { "-a", "--activity" }, description = "Id of activity to change", required = true)
 	private Long id;
 
@@ -35,7 +36,7 @@ public class ChangeActivity extends AbstractHandlerWithActivityRequest {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Change activity with id " + id);
-		Activity oldAct = getActivityById(id).orElseThrow(IllegalStateException::new);
+		Activity oldAct = getActivityById(id);
 		Activity.ActivityBuilder chgAct = oldAct.changeActivity();
 		if (name != null)
 			chgAct.setActivityName(name);
@@ -47,5 +48,9 @@ public class ChangeActivity extends AbstractHandlerWithActivityRequest {
 			chgAct.setHidden(true);
 		Activity newAct = getServices().getActivityStore().store(chgAct.build());
 		getLogger().log("Activity changed " + newAct.toString() + "\n");
+	}
+
+	private Activity getActivityById(final Long id) {
+		return getServices().getActivityStore().retrieveById(id).orElseThrow(IllegalStateException::new);
 	}
 }

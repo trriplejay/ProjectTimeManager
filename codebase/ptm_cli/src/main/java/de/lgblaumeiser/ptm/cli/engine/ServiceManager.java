@@ -11,7 +11,6 @@ import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
 import de.lgblaumeiser.ptm.cli.rest.RestInfrastructureServices;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -19,19 +18,10 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
  * implementations.
  */
 public class ServiceManager {
-	private BookingService bookingService;
 	private DataAnalysisService analysisService;
 	private ObjectStore<Activity> activityStore;
 	private RestBookingStore bookingsStore;
 	private RestInfrastructureServices infrastructureServices;
-
-	public BookingService getBookingService() {
-		return bookingService;
-	}
-
-	public void setBookingService(final BookingService bookingService) {
-		this.bookingService = bookingService;
-	}
 
 	public DataAnalysisService getAnalysisService() {
 		return analysisService;

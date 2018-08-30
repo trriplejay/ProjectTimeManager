@@ -67,13 +67,14 @@ public class ServiceMapper {
 		};
 		bookingService = new BookingServiceImpl(bookingStore);
 		backupService = new ZipBackupRestore(activityStore, bookingStore);
-		analysisService = createAnalysisService(bookingStore);
+		analysisService = createAnalysisService(activityStore, bookingStore);
 		logger.info("PTM services initialized");
 	}
 
-	private DataAnalysisService createAnalysisService(final ObjectStore<Booking> store) {
-		HourComputer hourComputer = new HourComputer(store);
-		ProjectComputer projectComputer = new ProjectComputer(store);
+	private DataAnalysisService createAnalysisService(final ObjectStore<Activity> aStore,
+			final ObjectStore<Booking> bStore) {
+		HourComputer hourComputer = new HourComputer(bStore);
+		ProjectComputer projectComputer = new ProjectComputer(bStore, aStore);
 		return new DataAnalysisServiceImpl().addAnalysis(ANALYSIS_HOURS_ID, hourComputer)
 				.addAnalysis(ANALYSIS_PROJECTS_ID, projectComputer);
 	}

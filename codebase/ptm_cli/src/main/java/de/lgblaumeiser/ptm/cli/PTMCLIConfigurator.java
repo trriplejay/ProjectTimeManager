@@ -33,8 +33,6 @@ import de.lgblaumeiser.ptm.cli.rest.RestBookingStore;
 import de.lgblaumeiser.ptm.cli.rest.RestInfrastructureServices;
 import de.lgblaumeiser.ptm.cli.rest.RestUtils;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
-import de.lgblaumeiser.ptm.datamanager.service.BookingService;
-import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -67,10 +65,9 @@ public class PTMCLIConfigurator {
 	public CLI configure() {
 		RestBookingStore bookingStore = new RestBookingStore();
 		ObjectStore<Activity> activityStore = new RestActivityStore();
-		BookingService bookingService = new BookingServiceImpl(bookingStore);
 		DataAnalysisService analysisService = new RestAnalysisService();
 		RestInfrastructureServices infrastructureServices = new RestInfrastructureServices();
-		ServiceManager manager = createServiceManager(bookingStore, activityStore, bookingService, analysisService,
+		ServiceManager manager = createServiceManager(bookingStore, activityStore, analysisService,
 				infrastructureServices);
 		RestBaseService.setRestUtils(new RestUtils().configure());
 		RestBaseService.setServices(manager);
@@ -78,11 +75,10 @@ public class PTMCLIConfigurator {
 	}
 
 	private ServiceManager createServiceManager(final RestBookingStore bookingStore,
-			final ObjectStore<Activity> activityStore, final BookingService bookingService,
-			final DataAnalysisService analysisService, RestInfrastructureServices infrastructureServices) {
+			final ObjectStore<Activity> activityStore, final DataAnalysisService analysisService,
+			RestInfrastructureServices infrastructureServices) {
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setActivityStore(activityStore);
-		serviceManager.setBookingService(bookingService);
 		serviceManager.setBookingsStore(bookingStore);
 		serviceManager.setAnalysisService(analysisService);
 		serviceManager.setInfrastructureServices(infrastructureServices);

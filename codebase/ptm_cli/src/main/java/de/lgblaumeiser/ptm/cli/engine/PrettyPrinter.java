@@ -50,7 +50,7 @@ public class PrettyPrinter {
 
 	public void bookingPrint(final Collection<Booking> data) {
 		Collection<Collection<Object>> table = new ArrayList<>();
-		table.add(asList("Activity", "Number", "Activity Id", "Starttime", "Endtime", "Id", "Comment"));
+		table.add(asList("Activity", "Starttime", "Endtime", "Id", "Comment"));
 		for (Booking booking : data) {
 			table.add(flattenBooking(booking));
 		}
@@ -68,7 +68,7 @@ public class PrettyPrinter {
 
 	private Collection<Object> flattenBooking(final Booking booking) {
 		List<Object> line = new ArrayList<>();
-		line.addAll(flattenActivity(booking.getActivity()));
+		line.add(booking.getActivity());
 		line.add(booking.getStarttime().format(DateTimeFormatter.ofPattern("HH:mm")));
 		line.add(booking.hasEndtime() ? booking.getEndtime().format(DateTimeFormatter.ofPattern("HH:mm")) : " ");
 		line.add(booking.getId().toString());

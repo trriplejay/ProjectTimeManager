@@ -7,7 +7,6 @@
  */
 package de.lgblaumeiser.ptm.datamanager.model;
 
-import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.datamanager.model.Booking.newBooking;
 import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static java.time.LocalDate.now;
@@ -32,15 +31,13 @@ public class BookingTest {
 	private static final String COMMENT = "Test Comment";
 	private static final long DIFF = 83;
 
-	private static final Activity ACT1 = newActivity().setActivityName("Act1").setBookingNumber("0815").build();
-
 	/**
 	 * Positive test method for newBooking
 	 */
 	@Test
 	public final void testNewBookingLocalTimeActivity() {
-		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
-		assertEquals(ACT1, testee.getActivity());
+		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(1L).build();
+		assertEquals(Long.valueOf(1L), testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
 		assertFalse(testee.hasEndtime());
 	}
@@ -50,8 +47,8 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testNewBookingLocalTimeActivityString() {
-		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
-		assertEquals(ACT1, testee.getActivity());
+		Booking testee = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(1L).build();
+		assertEquals(Long.valueOf(1L), testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
 		assertFalse(testee.hasEndtime());
 	}
@@ -61,10 +58,10 @@ public class BookingTest {
 	 */
 	@Test
 	public final void testEndBooking() {
-		Booking startBooking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1)
+		Booking startBooking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(1L)
 				.build();
 		Booking testee = startBooking.changeBooking().setEndtime(TIME2).build();
-		assertEquals(ACT1, testee.getActivity());
+		assertEquals(Long.valueOf(1L), testee.getActivity());
 		assertEquals(TIME1, testee.getStarttime());
 		assertTrue(testee.hasEndtime());
 		assertEquals(TIME2, testee.getEndtime());
@@ -72,12 +69,12 @@ public class BookingTest {
 
 	@Test(expected = IllegalStateException.class)
 	public final void testEndBookingNegative() {
-		newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME2).setEndtime(TIME1).setActivity(ACT1).build();
+		newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME2).setEndtime(TIME1).setActivity(1L).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public final void testNoStarttime() {
-		newBooking().setBookingday(DATE).setUser(USER).setActivity(ACT1).build();
+		newBooking().setBookingday(DATE).setUser(USER).setActivity(1L).build();
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -97,13 +94,13 @@ public class BookingTest {
 
 	@Test
 	public final void testNoComment() {
-		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1).build();
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(1L).build();
 		assertEquals(emptyString(), booking.getComment());
 	}
 
 	@Test
 	public final void testComment() {
-		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(ACT1)
+		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setActivity(1L)
 				.setComment(COMMENT).build();
 		assertEquals(COMMENT, booking.getComment());
 	}
@@ -114,7 +111,7 @@ public class BookingTest {
 	@Test
 	public final void testCalculateTimeSpan() {
 		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2)
-				.setActivity(ACT1).build();
+				.setActivity(1L).build();
 		TimeSpan testee = booking.calculateTimeSpan();
 		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
 	}

@@ -7,7 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.util.Utils.assertState;
 import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 
@@ -17,14 +16,15 @@ import java.util.Optional;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.cli.engine.AbstractCommandHandler;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.model.Booking.BookingBuilder;
 
 /**
  * End a booking that has been started with start booking command
  */
 @Parameters(commandDescription = "Add an end time to an existing booking")
-public class ChangeBooking extends AbstractHandlerWithActivityRequest {
+public class ChangeBooking extends AbstractCommandHandler {
 	@Parameter(names = { "-b", "--booking" }, description = "Booking id of the booking to end", required = true)
 	private Long id;
 
@@ -45,13 +45,17 @@ public class ChangeBooking extends AbstractHandlerWithActivityRequest {
 	@Override
 	public void handleCommand() {
 		getLogger().log("Change booking ...");
-		getServices().getBookingsStore().retrieveById(id).ifPresent(b -> {
-			Optional<Activity> activity = getActivityById(activityId);
-			assertState(activityId >= 0 && activity.isPresent());
-			Booking changed = getServices().getBookingService().changeBooking(b, Optional.empty(),
-					getActivityById(activityId), starttime, endtime,
-					stringHasContent(comment) ? Optional.of(comment) : Optional.empty());
-			getLogger().log("... new booking data: " + changed.toString());
-		});
+		BookingBuilder changedBookingBuilder = getServices().getBookingsStore().retrieveById(id)
+				.orElseThrow(IllegalStateException::new).changeBooking();
+		if (activityId > 0) {
+			changedBookingBuilder.setActivity(activityId);
+		}
+		starttime.ifPresent(changedBookingBuilder::setStarttime);
+		endtime.ifPresent(changedBookingBuilder::setEndtime);
+		if (stringHasContent(comment)) {
+			changedBookingBuilder.setComment(comment);
+		}
+		Booking changed = getServices().getBookingsStore().store(changedBookingBuilder.build());
+		getLogger().log("... new booking data: " + changed.toString());
 	}
 }

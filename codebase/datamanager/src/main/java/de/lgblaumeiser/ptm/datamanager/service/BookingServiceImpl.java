@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
 		});
 		assertState(!activity.isHidden());
 		Booking.BookingBuilder newBookingBuilder = newBooking().setBookingday(bookingday).setUser(user)
-				.setStarttime(starttime).setActivity(activity);
+				.setStarttime(starttime).setActivity(activity.getId());
 		endtime.ifPresent(newBookingBuilder::setEndtime);
 		comment.ifPresent(c -> {
 			if (stringHasContent(c))
@@ -57,8 +57,10 @@ public class BookingServiceImpl implements BookingService {
 		assertState(booking != null);
 		Booking.BookingBuilder bookingBuilder = booking.changeBooking();
 		bookingday.ifPresent(bookingBuilder::setBookingday);
-		activity.ifPresent(a -> assertState(!a.isHidden()));
-		activity.ifPresent(bookingBuilder::setActivity);
+		activity.ifPresent(a -> {
+			assertState(!a.isHidden());
+			bookingBuilder.setActivity(a.getId());
+		});
 		starttime.ifPresent(bookingBuilder::setStarttime);
 		endtime.ifPresent(bookingBuilder::setEndtime);
 		comment.ifPresent(c -> {
