@@ -4,4 +4,5 @@ A small tool to manage work time with respect to project numbers for time tracki
 Copyright 2016, 2017, 2018 by Lars Geyer-Blaumeiser
 
 Licensed under MIT license
+
 SPDX-License-Identifier: MIT
