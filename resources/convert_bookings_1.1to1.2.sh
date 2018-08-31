@@ -12,5 +12,5 @@
 for file in ./*.booking
 do
   	echo "Converting file: $file"
-  	perl -p -i -e 's/"activity":\{"activityName":"[a-zA-Z0-9 _-]+","bookingNumber":"[a-zA-Z0-9 _-]+","id":([0-9]+)\}/"activity":$1/g' $file
+  	perl -p -i -e 's/"activity":\{"activityName":"[a-zA-Z0-9 _-]+","bookingNumber":"[a-zA-Z0-9 _-]+","hidden":[a-z]+,"id":([0-9]+)\}/"activity":$1/g' $file
 done

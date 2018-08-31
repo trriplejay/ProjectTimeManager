@@ -49,7 +49,7 @@ if [  -e /etc/profile.d/ptm.sh ]
 then
 	sudo rm /etc/profile.d/ptm.sh
 fi
-echo "export PATH=$PATH:$installfolder" > ptm.sh
+echo "export PATH=\$PATH:$installfolder" > ptm.sh
 echo "export PTM_HOME=$installfolder" >> ptm.sh
 chmod 755 ptm.sh
 sudo cp ptm.sh /etc/profile.d
