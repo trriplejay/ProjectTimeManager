@@ -57,7 +57,7 @@ public class ProjectComputer extends AbstractBaseComputer {
 			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
 					formatDuration(totalMinutesId), percentageString));
 		}
-		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100%"));
+		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%"));
 		return result;
 	}
 

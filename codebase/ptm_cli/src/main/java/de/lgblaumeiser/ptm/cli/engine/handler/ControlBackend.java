@@ -11,9 +11,12 @@ import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 import static java.util.Arrays.asList;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 
@@ -61,9 +64,7 @@ public class ControlBackend extends AbstractCommandHandler {
 	}
 
 	private void startBackendProcess(String... command) throws IOException, InterruptedException {
-		List<String> commands = asList("sudo", "docker-compose");
-		commands.addAll(asList(command));
-		BufferedReader outputReader = startOutputGeneratingProcess(commands);
+		BufferedReader outputReader = prepareAndStartProcess(command);
 		String line;
 		while ((line = outputReader.readLine()) != null) {
 			getLogger().log(line);
@@ -71,7 +72,7 @@ public class ControlBackend extends AbstractCommandHandler {
 	}
 
 	private boolean isBackendRunning() throws IOException, InterruptedException {
-		BufferedReader outputReader = startOutputGeneratingProcess(asList("sudo", "docker-compose", "ps"));
+		BufferedReader outputReader = prepareAndStartProcess("ps");
 		String message = IOUtils.toString(outputReader);
 		if (stringHasContent(message)) {
 			return message.contains("_ptm");
@@ -79,7 +80,21 @@ public class ControlBackend extends AbstractCommandHandler {
 		return false;
 	}
 
-	private BufferedReader startOutputGeneratingProcess(List<String> commands)
+	private BufferedReader prepareAndStartProcess(String... command) throws IOException, InterruptedException {
+		String pathToYaml = createPathToYaml();
+		List<String> commands = new ArrayList<>();
+		commands.addAll(asList("sudo", "docker-compose", "-f", pathToYaml));
+		commands.addAll(asList(command));
+		BufferedReader outputReader = startExternalProcess(commands);
+		return outputReader;
+	}
+
+	private String createPathToYaml() {
+		String ptmHome = Optional.ofNullable(System.getenv("PTM_HOME")).orElseThrow(IllegalStateException::new);
+		return new File(ptmHome, "ptm_docker_config.yml").getAbsolutePath();
+	}
+
+	private BufferedReader startExternalProcess(List<String> commands)
 			throws IOException, InterruptedException {
 		String[] commandarray = commands.toArray(new String[commands.size()]);
 		Process process = new ProcessBuilder(commandarray).redirectErrorStream(true)
