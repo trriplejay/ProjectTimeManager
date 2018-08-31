@@ -57,7 +57,7 @@ public class PTMCLIConfigurator {
 	private static final String HOURS_ANALYSIS_COMMAND_ABBRV = "ha";
 	private static final String PROJECTS_ANALYSIS_COMMAND = "project_analysis";
 	private static final String PROJECTS_ANALYSIS_COMMAND_ABBRV = "pa";
-	private static final String BACKEND_COMMAND = "ptm";
+	private static final String BACKEND_COMMAND = "backend";
 	private static final String BACKUP_COMMAND = "backup";
 	private static final String RESTORE_COMMAND = "restore";
 	private static final String LICENSE_COMMAND = "licenses";

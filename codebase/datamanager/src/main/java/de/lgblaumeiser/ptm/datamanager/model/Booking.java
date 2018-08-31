@@ -13,11 +13,11 @@ import static de.lgblaumeiser.ptm.util.Utils.emptyString;
 import static java.lang.Long.valueOf;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.util.Objects.hash;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This class represents a booking on a day. It is represented by a starting
@@ -257,8 +257,9 @@ public class Booking {
 	@Override
 	public String toString() {
 		return format("Booking: Bookingday: %s, User: %s, Starttime: %s, %sActivity Id: %d, Comment: %s, Id: %d",
-				bookingday.format(ISO_LOCAL_DATE), user, starttime.format(ISO_LOCAL_TIME),
-				endtime != null ? "Endtime: " + endtime.format(ISO_LOCAL_TIME) + ", " : emptyString(), activity,
-				comment, id);
+				bookingday.format(ISO_LOCAL_DATE), user, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
+				endtime != null ? "Endtime: " + endtime.format(DateTimeFormatter.ofPattern("HH:mm")) + ", "
+						: emptyString(),
+				activity, comment, id);
 	}
 }

@@ -1,2 +1,9 @@
 #!/bin/bash
-java -Dptm.host=localhost -Dptm.port=27727 -jar ptm_cli-1.2.0-SNAPSHOT-jar-with-dependencies.jar "$@"
+
+# Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
+#
+# Licensed under MIT license
+#
+# SPDX-License-Identifier: MIT
+
+java -Dptm.host=localhost -Dptm.port=27727 -jar $PTM_HOME/ptm_cli-1.2.jar "$@"
