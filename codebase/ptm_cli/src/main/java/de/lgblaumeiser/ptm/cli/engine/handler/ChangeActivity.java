@@ -30,7 +30,7 @@ public class ChangeActivity extends AbstractCommandHandler {
 	@Parameter(names = { "--hidden" }, description = "Hide the activity")
 	private boolean hidden = false;
 
-	@Parameter(names = { "--visible" }, description = "Make activity visible, of hidden")
+	@Parameter(names = { "--visible" }, description = "Make activity visible, if hidden")
 	private boolean visible = false;
 
 	@Override

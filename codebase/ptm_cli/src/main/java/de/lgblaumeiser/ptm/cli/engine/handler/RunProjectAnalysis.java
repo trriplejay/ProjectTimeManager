@@ -16,7 +16,7 @@ import com.beust.jcommander.Parameters;
 /**
  * Run an analysis on the data
  */
-@Parameters(commandDescription = "Run an projects anaylsis for a monthor a day")
+@Parameters(commandDescription = "Run an projects anaylsis for a month or a day")
 public class RunProjectAnalysis extends AbstractRunAnalysis {
 	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
 
