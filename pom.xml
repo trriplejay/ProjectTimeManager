@@ -18,9 +18,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <scm>
-    <developerConnection>scm:git:ssh://git@github.com:lgblaumeiser/ProjectTimeManager.git</developerConnection>
-    <connection>scm:git:ssh://git@github.com:lgblaumeiser/ProjectTimeManager.git</connection>
-    <tag>HEAD</tag>
+    <developerConnection>scm:git:https://github.com/lgblaumeiser/ProjectTimeManager.git</developerConnection>
   </scm>
   <build>
     <plugins>
