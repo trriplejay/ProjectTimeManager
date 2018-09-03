@@ -6,7 +6,16 @@ jdk:
   - oraclejdk8
 
 build:
+  pre_ci_boot:
+    image_name: drydock/u16javall
+    image_tag: latest
+    pull: true
   ci:
+  - sudo update-alternatives --set java /usr/lib/jvm/java-10-openjdk-amd64/bin/java
+  - sudo update-alternatives --set javac /usr/lib/jvm/java-10-openjdk-amd64/bin/javac
+  - echo -e "MAVEN_OPTS='-Xms512m -Xmx4g'\nJAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64" > ~/.mavenrc
+  - java --version
+  - mvn --version
   - mvn install -DskipTests
   - mvn test
   - mvn verify -f pom-jacocomerge.xml
