@@ -7,7 +7,7 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
+import static de.lgblaumeiser.ptm.cli.Utils.stringHasContent;
 import static java.util.Arrays.asList;
 
 import java.io.BufferedReader;
@@ -94,8 +94,7 @@ public class ControlBackend extends AbstractCommandHandler {
 		return new File(ptmHome, "ptm_docker_config.yml").getAbsolutePath();
 	}
 
-	private BufferedReader startExternalProcess(List<String> commands)
-			throws IOException, InterruptedException {
+	private BufferedReader startExternalProcess(List<String> commands) throws IOException, InterruptedException {
 		String[] commandarray = commands.toArray(new String[commands.size()]);
 		Process process = new ProcessBuilder(commandarray).redirectErrorStream(true)
 				.redirectOutput(ProcessBuilder.Redirect.PIPE).start();

@@ -5,7 +5,7 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.datamanager.service;
+package de.lgblaumeiser.ptm.datamanager.service.impl;
 
 import static de.lgblaumeiser.ptm.datamanager.model.Activity.newActivity;
 import static de.lgblaumeiser.ptm.util.Utils.getFirstFromCollection;
@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.service.BookingService;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**

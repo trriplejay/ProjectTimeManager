@@ -5,9 +5,9 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.datamanager.model;
+package de.lgblaumeiser.ptm.datamanager.model.internal;
 
-import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
+import static de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan.newTimeSpan;
 import static java.time.LocalTime.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalTime;
 
 import org.junit.Test;
+
+import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
 
 /**
  * Test class for the class TimeSpan

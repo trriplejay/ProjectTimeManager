@@ -5,7 +5,7 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.datamanager.model;
+package de.lgblaumeiser.ptm.datamanager.model.internal;
 
 import static de.lgblaumeiser.ptm.util.Utils.assertState;
 import static java.lang.String.format;
@@ -16,6 +16,8 @@ import static java.util.Objects.hash;
 
 import java.time.Duration;
 import java.time.LocalTime;
+
+import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time
@@ -35,11 +37,15 @@ public final class TimeSpan {
 	 * @throws IllegalArgumentException If the start time is after the end time.
 	 *                                  Time spans can only be defined within a day.
 	 */
-	static TimeSpan newTimeSpan(final LocalTime starttime, final LocalTime endtime) {
+	public static TimeSpan newTimeSpan(final LocalTime starttime, final LocalTime endtime) {
 		assertState(starttime != null);
 		assertState(endtime != null);
 		assertState(endtime.isAfter(starttime));
 		return new TimeSpan(starttime, endtime);
+	}
+
+	public static TimeSpan newTimeSpan(final Booking booking) {
+		return newTimeSpan(booking.getStarttime(), booking.getEndtime());
 	}
 
 	private TimeSpan(final LocalTime starttime, final LocalTime endtime) {

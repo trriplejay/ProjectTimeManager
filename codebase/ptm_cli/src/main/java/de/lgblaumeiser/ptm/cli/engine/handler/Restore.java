@@ -7,7 +7,7 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.util.Utils.assertState;
+import static de.lgblaumeiser.ptm.cli.Utils.assertState;
 
 import java.io.File;
 

@@ -20,6 +20,8 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.lgblaumeiser.ptm.analysis.impl.DataAnalysisServiceImpl;
+
 public class DataAnalysisServiceTest {
 	private DataAnalysisService testee;
 

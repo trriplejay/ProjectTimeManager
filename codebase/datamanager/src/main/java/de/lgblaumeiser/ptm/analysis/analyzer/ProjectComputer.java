@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -42,7 +43,7 @@ public class ProjectComputer extends AbstractBaseComputer {
 				if (accumulatedMinutes == null) {
 					accumulatedMinutes = Duration.ZERO;
 				}
-				Duration activityLength = current.calculateTimeSpan().getLengthInMinutes();
+				Duration activityLength = TimeSpan.newTimeSpan(current).getLengthInMinutes();
 				totalMinutes = totalMinutes.plus(activityLength);
 				accumulatedMinutes = accumulatedMinutes.plus(activityLength);
 				activityToMinutesMap.put(currentActivity, accumulatedMinutes);

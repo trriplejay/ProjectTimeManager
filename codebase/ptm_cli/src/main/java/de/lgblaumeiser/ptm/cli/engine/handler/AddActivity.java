@@ -21,10 +21,10 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 @Parameters(commandDescription = "Define a new activity for bookings")
 public class AddActivity extends AbstractCommandHandler {
 	@Parameter(names = { "-n", "--name" }, description = "Name of the new activity", required = true)
-	private String name;
+	public String name;
 
 	@Parameter(names = { "-i", "--identifier" }, description = "Project identifier of the activity", required = true)
-	private String identifier;
+	public String identifier;
 
 	@Override
 	public void handleCommand() {

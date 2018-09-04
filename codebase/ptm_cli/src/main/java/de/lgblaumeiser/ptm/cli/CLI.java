@@ -7,7 +7,7 @@
  */
 package de.lgblaumeiser.ptm.cli;
 
-import static de.lgblaumeiser.ptm.util.Utils.getFirstFromCollection;
+import static de.lgblaumeiser.ptm.cli.Utils.getFirstFromCollection;
 
 import com.beust.jcommander.JCommander;
 
