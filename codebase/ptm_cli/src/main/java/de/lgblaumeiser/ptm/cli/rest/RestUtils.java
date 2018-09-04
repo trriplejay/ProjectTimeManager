@@ -7,8 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import static de.lgblaumeiser.ptm.util.Utils.assertState;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -107,7 +105,7 @@ public class RestUtils {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			HttpResponse response = clientConnector.execute(request);
-			assertState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
+			assertState(response.getStatusLine().getStatusCode() == 200, response);
 			return jsonMapper.readValue(new InputStreamReader(response.getEntity().getContent()), returnClass);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -126,7 +124,7 @@ public class RestUtils {
 			final HttpGet request = new HttpGet(baseUrl + apiName);
 			request.setHeader(HttpHeaders.CONTENT_TYPE, "application/zip");
 			HttpResponse response = clientConnector.execute(request);
-			assertState(response.getStatusLine().getStatusCode() == 200, response.getStatusLine());
+			assertState(response.getStatusLine().getStatusCode() == 200, response);
 			return response.getEntity().getContent();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
@@ -180,7 +178,13 @@ public class RestUtils {
 		String prop = System.getenv(key);
 		prop = (prop == null) ? System.getProperty(key) : prop;
 		prop = (prop == null) ? applicationProps.getProperty(key) : prop;
-		assertState(prop != null);
+		assertState(prop != null, key + " has no value given");
 		return prop;
+	}
+
+	private void assertState(boolean condition, Object message) {
+		if (!condition) {
+			throw new IllegalStateException(message.toString());
+		}
 	}
 }
