@@ -7,7 +7,6 @@
  */
 package de.lgblaumeiser.ptm.rest;
 
-import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 import static java.lang.Long.valueOf;
 import static java.time.LocalTime.parse;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
@@ -117,5 +116,9 @@ public class BookingRestController {
 	public ResponseEntity<?> handleException(final IllegalStateException e) {
 		logger.error("Exception in Request", e);
 		return ResponseEntity.status(BAD_REQUEST).body(e.toString());
+	}
+
+	private boolean stringHasContent(String string) {
+		return (string != null) && !string.isEmpty();
 	}
 }

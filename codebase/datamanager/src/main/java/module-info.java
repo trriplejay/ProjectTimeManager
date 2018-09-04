@@ -1,4 +1,4 @@
-module de.lgblaumeiser.datamanager {
+module de.lgblaumeiser.ptm.datamanager {
 	requires com.fasterxml.jackson.annotation;
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.databind;
@@ -6,7 +6,7 @@ module de.lgblaumeiser.datamanager {
 	requires org.apache.commons.io;
 
 	exports de.lgblaumeiser.ptm.datamanager.model;
-	exports de.lgblaumeiser.ptm.datamanager.service.impl;
+	exports de.lgblaumeiser.ptm.datamanager.service;
 	exports de.lgblaumeiser.ptm.analysis;
 	exports de.lgblaumeiser.ptm.store;
 

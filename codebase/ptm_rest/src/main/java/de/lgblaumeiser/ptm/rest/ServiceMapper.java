@@ -16,19 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import de.lgblaumeiser.ptm.analysis.AnalysisProvider;
 import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
-import de.lgblaumeiser.ptm.analysis.DataAnalysisServiceImpl;
-import de.lgblaumeiser.ptm.analysis.analyzer.HourComputer;
-import de.lgblaumeiser.ptm.analysis.analyzer.ProjectComputer;
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.service.BookingService;
-import de.lgblaumeiser.ptm.datamanager.service.BookingServiceImpl;
+import de.lgblaumeiser.ptm.datamanager.service.BookingServiceProvider;
+import de.lgblaumeiser.ptm.store.FileStoreProvider;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 import de.lgblaumeiser.ptm.store.ZipBackupRestore;
-import de.lgblaumeiser.ptm.store.filesystem.FileStore;
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstraction;
-import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
 
 /**
  * Small bean that creates and configures the services needed by the Rest
@@ -38,12 +34,9 @@ import de.lgblaumeiser.ptm.store.filesystem.FilesystemAbstractionImpl;
 public class ServiceMapper {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final String ANALYSIS_HOURS_ID = "HOURS";
-	private static final String ANALYSIS_PROJECTS_ID = "PROJECTS";
+	private final ObjectStore<Activity> activityStore;
 
-	private final FileStore<Activity> activityStore;
-
-	private final FileStore<Booking> bookingStore;
+	private final ObjectStore<Booking> bookingStore;
 	private final BookingService bookingService;
 
 	private final ZipBackupRestore backupService;
@@ -52,31 +45,13 @@ public class ServiceMapper {
 
 	public ServiceMapper() {
 		setProperty("filestore.folder", new File(getProperty("user.home"), ".ptm").getAbsolutePath());
-		FilesystemAbstraction filesystemAbstraction = new FilesystemAbstractionImpl();
-		activityStore = new FileStore<Activity>(filesystemAbstraction) {
-			@Override
-			protected Class<Activity> getType() {
-				return Activity.class;
-			}
-		};
-		bookingStore = new FileStore<Booking>(filesystemAbstraction) {
-			@Override
-			protected Class<Booking> getType() {
-				return Booking.class;
-			}
-		};
-		bookingService = new BookingServiceImpl(bookingStore);
-		backupService = new ZipBackupRestore(activityStore, bookingStore);
-		analysisService = createAnalysisService(activityStore, bookingStore);
+		FileStoreProvider storageProvider = new FileStoreProvider();
+		activityStore = storageProvider.getActivityFileStore();
+		bookingStore = storageProvider.getBookingFileStore();
+		bookingService = new BookingServiceProvider().getBookingService(bookingStore);
+		backupService = storageProvider.getZipBackupRestore();
+		analysisService = new AnalysisProvider().getDefaultAnalysis(activityStore, bookingStore);
 		logger.info("PTM services initialized");
-	}
-
-	private DataAnalysisService createAnalysisService(final ObjectStore<Activity> aStore,
-			final ObjectStore<Booking> bStore) {
-		HourComputer hourComputer = new HourComputer(bStore);
-		ProjectComputer projectComputer = new ProjectComputer(bStore, aStore);
-		return new DataAnalysisServiceImpl().addAnalysis(ANALYSIS_HOURS_ID, hourComputer)
-				.addAnalysis(ANALYSIS_PROJECTS_ID, projectComputer);
 	}
 
 	public ObjectStore<Activity> activityStore() {
