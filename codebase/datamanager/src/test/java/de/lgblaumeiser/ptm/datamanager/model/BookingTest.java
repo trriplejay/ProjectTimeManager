@@ -20,6 +20,8 @@ import java.time.LocalTime;
 
 import org.junit.Test;
 
+import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
+
 /**
  * Test of the Booking class
  */
@@ -112,7 +114,7 @@ public class BookingTest {
 	public final void testCalculateTimeSpan() {
 		Booking booking = newBooking().setBookingday(DATE).setUser(USER).setStarttime(TIME1).setEndtime(TIME2)
 				.setActivity(1L).build();
-		TimeSpan testee = booking.calculateTimeSpan();
+		TimeSpan testee = TimeSpan.newTimeSpan(booking);
 		assertEquals(DIFF, testee.getLengthInMinutes().toMinutes());
 	}
 

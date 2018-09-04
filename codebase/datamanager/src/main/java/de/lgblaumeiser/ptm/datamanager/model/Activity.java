@@ -10,21 +10,16 @@ package de.lgblaumeiser.ptm.datamanager.model;
 import static de.lgblaumeiser.ptm.util.Utils.assertState;
 import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 import static java.lang.Long.valueOf;
-import static java.lang.String.format;
-import static java.util.Objects.hash;
+
+import de.lgblaumeiser.ptm.datamanager.model.internal.ActivityImpl;
 
 /**
  * Data structure for representation of an activity. An activity represents a
  * booking number under which work is done. Each work booking is assigned to an
  * activity and there are reports on hours spent on activities.
  */
-public class Activity {
-	private String activityName;
-	private String bookingNumber;
-	private boolean hidden = false;
-	private Long id = valueOf(-1);
-
-	public static class ActivityBuilder {
+public interface Activity {
+	static class ActivityBuilder {
 		private Long id = valueOf(-1);
 		private String activityName;
 		private String bookingNumber;
@@ -67,7 +62,7 @@ public class Activity {
 		 */
 		public Activity build() {
 			checkData();
-			return new Activity(id, activityName, bookingNumber, hidden);
+			return new ActivityImpl(id, activityName, bookingNumber, hidden);
 		}
 
 		private void checkData() {
@@ -81,7 +76,7 @@ public class Activity {
 	 *
 	 * @return A new activity builder, never null
 	 */
-	public static ActivityBuilder newActivity() {
+	static ActivityBuilder newActivity() {
 		return new ActivityBuilder();
 	}
 
@@ -91,68 +86,28 @@ public class Activity {
 	 *
 	 * @return A new activity builder, never null
 	 */
-	public ActivityBuilder changeActivity() {
+	default ActivityBuilder changeActivity() {
 		return new ActivityBuilder(this);
-	}
-
-	private Activity(final Long id, final String activityName, final String bookingNumber, final boolean hidden) {
-		this.id = id;
-		this.activityName = activityName;
-		this.bookingNumber = bookingNumber;
-		this.hidden = hidden;
-	}
-
-	private Activity() {
-		// Only needed for deserialization
-	}
+	};
 
 	/**
 	 * @return The internal id of the activity. Automatically created by storage
 	 *         system
 	 */
-	public Long getId() {
-		return id;
-	}
+	Long getId();
 
 	/**
 	 * @return Name of the activity. Non null
 	 */
-	public String getActivityName() {
-		return activityName;
-	}
+	String getActivityName();
 
 	/**
 	 * @return Booking number of the activities category. Non null
 	 */
-	public String getBookingNumber() {
-		return bookingNumber;
-	}
+	String getBookingNumber();
 
 	/**
 	 * @return true, if activity is hidden
 	 */
-	public boolean isHidden() {
-		return hidden;
-	}
-
-	@Override
-	public String toString() {
-		return format("Activity: Booking Number: %s, Name: %s, Hidden: %b, Id: %d", bookingNumber, activityName, hidden,
-				id);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj instanceof Activity) {
-			Activity act = (Activity) obj;
-			return id == act.id && hidden == act.isHidden() && activityName.equals(act.activityName)
-					&& bookingNumber.equals(act.bookingNumber);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return hash(id, activityName, bookingNumber);
-	}
+	boolean isHidden();
 }

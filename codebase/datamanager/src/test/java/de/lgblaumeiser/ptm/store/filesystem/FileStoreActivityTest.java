@@ -25,11 +25,14 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FileStoreTest {
-	private static final String TESTINDEX = "TestIndex";
-	private static final String TESTCONTENT = "TestContent";
+import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.internal.ActivityImpl;
 
-	private FileStore<TestStoreObject> testee;
+public class FileStoreActivityTest {
+	private static final String TESTNAME = "TestName";
+	private static final String TESTINDEX = "TestIndex";
+
+	private FileStore<Activity> testee;
 
 	private final FilesystemAbstraction stubAccess = new FilesystemAbstraction() {
 		@Override
@@ -82,49 +85,55 @@ public class FileStoreTest {
 
 	@Before
 	public void setUp() {
-		testee = new FileStore<TestStoreObject>(stubAccess) {
+		testee = new FileStore<Activity>(stubAccess) {
 			@Override
-			protected Class<TestStoreObject> getType() {
-				return TestStoreObject.class;
+			protected Class<ActivityImpl> getImplType() {
+				return ActivityImpl.class;
+			}
+
+			@Override
+			protected Class<Activity> getType() {
+				return Activity.class;
 			}
 		};
 	}
 
-	private static final TestStoreObject testData = new TestStoreObject(TESTINDEX, TESTCONTENT);
+	private static final Activity testData = Activity.newActivity().setActivityName(TESTNAME)
+			.setBookingNumber(TESTINDEX).build();
 
 	@Test
 	public void testStore() {
 		testee.store(testData);
-		assertEquals("teststoreobject", getExtension(storageFile.getName()));
-		assertTrue(storageContent.contains("index"));
+		assertEquals("activity", getExtension(storageFile.getName()));
+		assertTrue(storageContent.contains("activityName"));
+		assertTrue(storageContent.contains(TESTNAME));
+		assertTrue(storageContent.contains("bookingNumber"));
 		assertTrue(storageContent.contains(TESTINDEX));
-		assertTrue(storageContent.contains("data"));
-		assertTrue(storageContent.contains(TESTCONTENT));
 		assertTrue(storageContent.contains("id"));
 	}
 
 	@Test
 	public void testRetrieveAll() {
 		testee.store(testData);
-		Collection<TestStoreObject> foundObjs = testee.retrieveAll();
+		Collection<Activity> foundObjs = testee.retrieveAll();
 		assertEquals(1, foundObjs.size());
-		TestStoreObject foundObj = getOnlyFromCollection(foundObjs);
-		assertEquals(TESTINDEX, foundObj.getIndex());
-		assertEquals(TESTCONTENT, foundObj.getData());
+		Activity foundObj = getOnlyFromCollection(foundObjs);
+		assertEquals(TESTNAME, foundObj.getActivityName());
+		assertEquals(TESTINDEX, foundObj.getBookingNumber());
 	}
 
 	@Test
 	public void testRetrieveById() {
-		TestStoreObject returnedObject = testee.store(testData);
+		Activity returnedObject = testee.store(testData);
 		Long id = returnedObject.getId();
-		TestStoreObject foundObj = testee.retrieveById(id).get();
-		assertEquals(TESTINDEX, foundObj.getIndex());
-		assertEquals(TESTCONTENT, foundObj.getData());
+		Activity foundObj = testee.retrieveById(id).get();
+		assertEquals(TESTNAME, foundObj.getActivityName());
+		assertEquals(TESTINDEX, foundObj.getBookingNumber());
 	}
 
 	@Test
 	public void testDeleteById() {
-		TestStoreObject returnedObject = testee.store(testData);
+		Activity returnedObject = testee.store(testData);
 		Long id = returnedObject.getId();
 		assertNotNull(storageContent);
 		assertNotNull(storageFile);
@@ -140,32 +149,5 @@ public class FileStoreTest {
 		Method method = myClass.getDeclaredMethod("getStore");
 		method.setAccessible(true);
 		assertEquals(new File("somedummystring"), (File) method.invoke(testee));
-	}
-}
-
-class TestStoreObject {
-	private String index;
-	private String data;
-	private Long id = Long.valueOf(-1);
-
-	TestStoreObject() {
-		// For json serialization purposes
-	}
-
-	TestStoreObject(final String index, final String data) {
-		this.index = index;
-		this.data = data;
-	}
-
-	public String getData() {
-		return data;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getIndex() {
-		return index;
 	}
 }

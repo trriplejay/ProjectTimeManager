@@ -5,7 +5,7 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.analysis;
+package de.lgblaumeiser.ptm.analysis.impl;
 
 import static de.lgblaumeiser.ptm.util.Utils.assertState;
 import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
@@ -13,6 +13,9 @@ import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.lgblaumeiser.ptm.analysis.Analysis;
+import de.lgblaumeiser.ptm.analysis.DataAnalysisService;
 
 /**
  * Service implementation

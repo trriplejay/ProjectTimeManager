@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -121,7 +122,7 @@ public class HourComputer extends AbstractBaseComputer {
 	private Duration calculateWorktime(final Collection<Booking> bookings) {
 		Duration minutes = Duration.ZERO;
 		for (Booking current : bookings) {
-			minutes = minutes.plus(current.calculateTimeSpan().getLengthInMinutes());
+			minutes = minutes.plus(TimeSpan.newTimeSpan(current).getLengthInMinutes());
 		}
 		return minutes;
 	}
