@@ -7,8 +7,8 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.util.Utils.emptyString;
-import static de.lgblaumeiser.ptm.util.Utils.stringHasContent;
+import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
+import static de.lgblaumeiser.ptm.cli.Utils.stringHasContent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -7,7 +7,7 @@
  */
 package de.lgblaumeiser.ptm.cli.rest;
 
-import static de.lgblaumeiser.ptm.util.Utils.getIndexFromCollection;
+import static de.lgblaumeiser.ptm.cli.Utils.getIndexFromCollection;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;

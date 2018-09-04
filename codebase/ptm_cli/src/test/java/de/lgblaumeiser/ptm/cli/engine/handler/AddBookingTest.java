@@ -7,7 +7,7 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.util.Utils.emptyString;
+import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
