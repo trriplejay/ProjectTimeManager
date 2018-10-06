@@ -20,7 +20,7 @@ public class ChangeActivityTest extends AbstractHandlerTest {
 	public void testChangeAndHideActivityClean() {
 		commandline.runCommand(CHANGE_ACTIVITY_COMMAND, "-a", "1", "-n", ACTIVITY1NAME, "-i", ACTIVITY1NUMBER,
 				"--hidden");
-		assertEquals("/activities", restutils.apiNameGiven);
+		assertEquals("/activities/1", restutils.apiNameGiven);
 		assertEquals(ACTIVITY1NAME, restutils.bodyDataGiven.get("activityName"));
 		assertEquals(ACTIVITY1NUMBER, restutils.bodyDataGiven.get("bookingNumber"));
 		assertEquals("true", restutils.bodyDataGiven.get("hidden"));
@@ -31,7 +31,7 @@ public class ChangeActivityTest extends AbstractHandlerTest {
 	public void testChangeAndEnableActivityClean() {
 		commandline.runCommand(CHANGE_ACTIVITY_COMMAND, "-a", "2", "-n", ACTIVITY1NAME, "-i", ACTIVITY1NUMBER,
 				"--visible");
-		assertEquals("/activities", restutils.apiNameGiven);
+		assertEquals("/activities/2", restutils.apiNameGiven);
 		assertEquals(ACTIVITY1NAME, restutils.bodyDataGiven.get("activityName"));
 		assertEquals(ACTIVITY1NUMBER, restutils.bodyDataGiven.get("bookingNumber"));
 		assertEquals("false", restutils.bodyDataGiven.get("hidden"));
@@ -51,7 +51,7 @@ public class ChangeActivityTest extends AbstractHandlerTest {
 	@Test
 	public void testChangeActivityOneParam() {
 		commandline.runCommand(CHANGE_ACTIVITY_COMMAND, "-a", "1", "-n", ACTIVITY1NAME);
-		assertEquals("/activities", restutils.apiNameGiven);
+		assertEquals("/activities/1", restutils.apiNameGiven);
 		assertEquals(ACTIVITY1NAME, restutils.bodyDataGiven.get("activityName"));
 		assertEquals(ACTIVITY1NUMBER, restutils.bodyDataGiven.get("bookingNumber"));
 		assertEquals("false", restutils.bodyDataGiven.get("hidden"));
@@ -61,7 +61,7 @@ public class ChangeActivityTest extends AbstractHandlerTest {
 	@Test
 	public void testChangeActivityNoParam() {
 		commandline.runCommand(CHANGE_ACTIVITY_COMMAND, "-a", "1", "--hidden");
-		assertEquals("/activities", restutils.apiNameGiven);
+		assertEquals("/activities/1", restutils.apiNameGiven);
 		assertEquals(ACTIVITY1NAME, restutils.bodyDataGiven.get("activityName"));
 		assertEquals(ACTIVITY1NUMBER, restutils.bodyDataGiven.get("bookingNumber"));
 		assertEquals("true", restutils.bodyDataGiven.get("hidden"));

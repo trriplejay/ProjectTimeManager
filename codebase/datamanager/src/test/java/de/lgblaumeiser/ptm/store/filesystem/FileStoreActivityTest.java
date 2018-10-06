@@ -110,6 +110,9 @@ public class FileStoreActivityTest {
 		assertTrue(storageContent.contains("bookingNumber"));
 		assertTrue(storageContent.contains(TESTINDEX));
 		assertTrue(storageContent.contains("id"));
+		Long id = testData.getId();
+		testee.store(testData.changeActivity().setHidden(false).build());
+		assertEquals(id, testData.getId());
 	}
 
 	@Test

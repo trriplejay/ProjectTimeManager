@@ -92,6 +92,7 @@ public class ActivityControllerTest {
 		mockMvc.perform(get("/activities").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andDo(print())
 				.andExpect(status().isOk()).andExpect(content().string(containsString("true")))
 				.andExpect(content().string(containsString("MyOtherTestActivity")))
-				.andExpect(content().string(containsString("4711")));
+				.andExpect(content().string(containsString("4711")))
+				.andExpect(content().string(containsString("\"id\":1")));
 	}
 }

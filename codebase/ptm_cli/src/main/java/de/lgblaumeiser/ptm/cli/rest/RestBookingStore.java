@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
+import de.lgblaumeiser.ptm.datamanager.model.internal.BookingImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -31,13 +32,13 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 	}
 
 	public Collection<Booking> retrieveForDay(final LocalDate day) {
-		return asList(getRestUtils().<Booking[]>get("/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE),
-				Booking[].class));
+		return asList(getRestUtils().<BookingImpl[]>get("/bookings/day/" + day.format(DateTimeFormatter.ISO_LOCAL_DATE),
+				BookingImpl[].class));
 	}
 
 	@Override
 	public Optional<Booking> retrieveById(final Long id) {
-		return Optional.ofNullable(getRestUtils().<Booking>get("/bookings/id/" + id.toString(), Booking.class));
+		return Optional.ofNullable(getRestUtils().<BookingImpl>get("/bookings/id/" + id.toString(), BookingImpl.class));
 	}
 
 	@Override
