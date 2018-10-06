@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
+import de.lgblaumeiser.ptm.datamanager.model.internal.ActivityImpl;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 
 /**
@@ -25,12 +26,13 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
 public class RestActivityStore extends RestBaseService implements ObjectStore<Activity> {
 	@Override
 	public Collection<Activity> retrieveAll() {
-		return asList(getRestUtils().<Activity[]>get("/activities", Activity[].class));
+		return asList(getRestUtils().<ActivityImpl[]>get("/activities", ActivityImpl[].class));
 	}
 
 	@Override
 	public Optional<Activity> retrieveById(final Long id) {
-		return Optional.ofNullable(getRestUtils().<Activity>get("/activities/" + id.toString(), Activity.class));
+		return Optional
+				.ofNullable(getRestUtils().<ActivityImpl>get("/activities/" + id.toString(), ActivityImpl.class));
 	}
 
 	@Override
@@ -40,7 +42,11 @@ public class RestActivityStore extends RestBaseService implements ObjectStore<Ac
 			bodyData.put("activityName", activity.getActivityName());
 			bodyData.put("bookingNumber", activity.getBookingNumber());
 			bodyData.put("hidden", Boolean.toString(activity.isHidden()));
-			Long id = getRestUtils().post("/activities", bodyData);
+			String apiName = "/activities";
+			if (activity.getId() > 0) {
+				apiName = apiName + "/" + activity.getId().toString();
+			}
+			Long id = getRestUtils().post(apiName, bodyData);
 			Field idField = activity.getClass().getDeclaredField("id");
 			idField.setAccessible(true);
 			idField.set(activity, id);
