@@ -68,7 +68,6 @@ public class ServiceRestController {
 		try {
 			Resource resource = new ClassPathResource("license_info.txt");
 			String licenseData = IOUtils.toString(resource.getInputStream(), "UTF-8");
-			;
 			logger.info("Result: License data read, returning to requester");
 			return ResponseEntity.ok(licenseData);
 		} catch (IOException e) {
