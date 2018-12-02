@@ -30,8 +30,10 @@ public class BookingServiceImpl implements BookingService {
 	public Booking addBooking(final LocalDate bookingday, final String user, final Activity activity,
 			final LocalTime starttime, final Optional<LocalTime> endtime, final Optional<String> comment) {
 		getLastOpenBooking(bookingday).ifPresent(b -> {
-			Booking changed = b.changeBooking().setEndtime(starttime).build();
-			bookingStore.store(changed);
+			if (b.getStarttime().isBefore(starttime)) {
+				Booking changed = b.changeBooking().setEndtime(starttime).build();
+				bookingStore.store(changed);
+			}
 		});
 		assertState(!activity.isHidden());
 		Booking.BookingBuilder newBookingBuilder = newBooking().setBookingday(bookingday).setUser(user)
