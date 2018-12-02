@@ -23,8 +23,9 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
+import de.lgblaumeiser.ptm.datamanager.model.TimeSpan;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+import de.lgblaumeiser.ptm.util.Utils;
 
 /**
  * An analysis that counts all hours in the month given as parameter
@@ -32,6 +33,8 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
 public class HourComputer extends AbstractBaseComputer {
 	private static final String BREAKTIME_COMMENT = "Break too short!";
 	private static final String WORKTIME_COMMENT = "> 10 hours worktime!";
+	private static final String INCOMPLETE_COMMENT = "Day has unfinished bookings!";
+	private static final String OVERLAPPING_COMMENT = "Day has overlapping bookings!";
 
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
@@ -47,24 +50,51 @@ public class HourComputer extends AbstractBaseComputer {
 		LocalDate currentday = requestedPeriod.firstDay;
 		while (currentday.isBefore(requestedPeriod.firstDayAfter)) {
 			Collection<Booking> currentBookings = getBookingsForDay(currentday);
-			if (hasCompleteBookings(currentBookings)) {
+			if (!currentBookings.isEmpty()) {
 				String day = currentday.format(DateTimeFormatter.ISO_LOCAL_DATE);
-				LocalTime starttime = getFirstFromCollection(currentBookings).getStarttime();
-				LocalTime endtime = getLastFromCollection(currentBookings).getEndtime();
-				Duration presence = calculatePresence(starttime, endtime);
-				Duration worktime = calculateWorktime(currentBookings);
-				Duration breaktime = calculateBreaktime(presence, worktime);
-				totaltime = totaltime.plus(worktime);
-				Duration currentOvertime = calculateOvertime(worktime, currentday);
-				overtime = overtime.plus(currentOvertime);
-				result.add(Arrays.asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
-						endtime.format(DateTimeFormatter.ofPattern("HH:mm")), formatDuration(presence),
-						formatDuration(worktime), formatDuration(breaktime), formatDuration(totaltime),
-						formatDuration(overtime), validate(worktime, breaktime)));
+				if (hasCompleteBookings(currentBookings)) {
+					if (bookingsWithOverlaps(currentBookings)) {
+						result.add(Arrays.asList(day, Utils.emptyString(), Utils.emptyString(), Utils.emptyString(),
+								Utils.emptyString(), Utils.emptyString(), Utils.emptyString(), Utils.emptyString(),
+								OVERLAPPING_COMMENT));
+					} else {
+						LocalTime starttime = getFirstFromCollection(currentBookings).getStarttime();
+						LocalTime endtime = getLastFromCollection(currentBookings).getEndtime();
+						Duration presence = calculatePresence(starttime, endtime);
+						Duration worktime = calculateWorktime(currentBookings);
+						Duration breaktime = calculateBreaktime(presence, worktime);
+						totaltime = totaltime.plus(worktime);
+						Duration currentOvertime = calculateOvertime(worktime, currentday);
+						overtime = overtime.plus(currentOvertime);
+						result.add(Arrays.asList(day, starttime.format(DateTimeFormatter.ofPattern("HH:mm")),
+								endtime.format(DateTimeFormatter.ofPattern("HH:mm")), formatDuration(presence),
+								formatDuration(worktime), formatDuration(breaktime), formatDuration(totaltime),
+								formatDuration(overtime), validate(worktime, breaktime)));
+					}
+				} else {
+					result.add(Arrays.asList(day, Utils.emptyString(), Utils.emptyString(), Utils.emptyString(),
+							Utils.emptyString(), Utils.emptyString(), Utils.emptyString(), Utils.emptyString(),
+							INCOMPLETE_COMMENT));
+
+				}
 			}
 			currentday = currentday.plusDays(1);
 		}
 		return result;
+	}
+
+	private boolean bookingsWithOverlaps(Collection<Booking> bookings) {
+		for (Booking current : bookings) {
+			TimeSpan currentSpan = TimeSpan.newTimeSpan(current);
+			for (Booking toCheck : bookings) {
+				if (!current.equals(toCheck)) {
+					if (currentSpan.overlapsWith(TimeSpan.newTimeSpan(toCheck))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private Collection<Booking> getBookingsForDay(final LocalDate currentday) {

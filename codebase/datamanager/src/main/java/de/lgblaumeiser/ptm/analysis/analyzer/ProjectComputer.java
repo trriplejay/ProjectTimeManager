@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
-import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
+import de.lgblaumeiser.ptm.datamanager.model.TimeSpan;
 import de.lgblaumeiser.ptm.store.ObjectStore;
 import de.lgblaumeiser.ptm.util.Utils;
 

@@ -30,8 +30,8 @@ public class HourComputerTest extends AbstractComputerTest {
 	@Test
 	public void testHourComputerMonth() {
 		Collection<Collection<Object>> analysisResults = testee.analyze(asList("month", "2017-03"));
-		assertEquals(6, analysisResults.size());
-		assertEquals("-07:30", getIndexFromCollection(getIndexFromCollection(analysisResults, 5), 7));
+		assertEquals(7, analysisResults.size());
+		assertEquals("-07:30", getIndexFromCollection(getIndexFromCollection(analysisResults, 6), 7));
 	}
 
 	@Test

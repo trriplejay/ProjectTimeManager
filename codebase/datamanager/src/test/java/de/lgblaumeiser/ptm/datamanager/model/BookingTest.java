@@ -20,8 +20,6 @@ import java.time.LocalTime;
 
 import org.junit.Test;
 
-import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
-
 /**
  * Test of the Booking class
  */
