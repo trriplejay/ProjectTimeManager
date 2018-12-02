@@ -34,10 +34,11 @@ public class ProjectComputer extends AbstractBaseComputer {
 	@Override
 	public Collection<Collection<Object>> analyze(final Collection<String> parameter) {
 		Collection<Collection<Object>> result = new ArrayList<>();
-		result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
 		Duration totalMinutes = Duration.ZERO;
 		Map<Long, Duration> activityToMinutesMap = new HashMap<>();
-		for (Booking current : getBookingsForPeriod(getCalculationPeriod(parameter))) {
+		Map<Long, String> activityToCommentMap = new HashMap<>();
+		CalculationPeriod calcPeriod = getCalculationPeriod(parameter);
+		for (Booking current : getBookingsForPeriod(calcPeriod)) {
 			if (current.hasEndtime()) {
 				Long currentActivity = current.getActivity();
 				Duration accumulatedMinutes = activityToMinutesMap.get(currentActivity);
@@ -48,15 +49,33 @@ public class ProjectComputer extends AbstractBaseComputer {
 				totalMinutes = totalMinutes.plus(activityLength);
 				accumulatedMinutes = accumulatedMinutes.plus(activityLength);
 				activityToMinutesMap.put(currentActivity, accumulatedMinutes);
+				if (calcPeriod.isDayPeriod && Utils.stringHasContent(current.getComment())) {
+					String currentComments = activityToCommentMap.get(currentActivity);
+					if (currentComments == null) {
+						currentComments = current.getComment();
+					} else {
+						currentComments = currentComments + ", " + current.getComment();
+					}
+					activityToCommentMap.put(currentActivity, currentComments);
+				}
 			}
 		}
-		result.addAll(computeResultLines(totalMinutes, activityToMinutesMap));
-		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%"));
+		if (calcPeriod.isDayPeriod) {
+			result.add(Arrays.asList("Activity", "Booking number", "Hours", "%", "Comments"));
+		} else {
+			result.add(Arrays.asList("Activity", "Booking number", "Hours", "%"));
+		}
+		result.addAll(computeResultLines(totalMinutes, activityToMinutesMap, activityToCommentMap));
+		if (calcPeriod.isDayPeriod) {
+			result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%", ""));
+		} else {
+			result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%"));
+		}
 		return result;
 	}
 
 	private Collection<Collection<Object>> computeResultLines(Duration totalMinutes,
-			Map<Long, Duration> activityToMinutesMap) {
+			Map<Long, Duration> activityToMinutesMap, Map<Long, String> activityToCommentsMap) {
 		Collection<Collection<Object>> valueList = new ArrayList<>();
 		for (Entry<Long, Duration> currentActivity : activityToMinutesMap.entrySet()) {
 			Long activityId = currentActivity.getKey();
@@ -64,8 +83,14 @@ public class ProjectComputer extends AbstractBaseComputer {
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
 			String percentageString = String.format("%2.1f", percentage * 100.0) + "%";
 			Activity activity = activityStore.retrieveById(activityId).orElseThrow(IllegalStateException::new);
-			valueList.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
-					formatDuration(totalMinutesId), percentageString));
+			String comments = activityToCommentsMap.get(activityId);
+			if (comments == null) {
+				valueList.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
+						formatDuration(totalMinutesId), percentageString));
+			} else {
+				valueList.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
+						formatDuration(totalMinutesId), percentageString, comments));
+			}
 		}
 		return valueList.stream()
 				.sorted((line1, line2) -> Utils.getIndexFromCollection(line1, 1).toString()

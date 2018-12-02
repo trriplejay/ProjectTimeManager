@@ -24,10 +24,12 @@ public abstract class AbstractBaseComputer implements Analysis {
 	static class CalculationPeriod {
 		LocalDate firstDay;
 		LocalDate firstDayAfter;
+		boolean isDayPeriod;
 
 		public CalculationPeriod(final LocalDate firstDay, final LocalDate firstDayAfter) {
 			this.firstDay = firstDay;
 			this.firstDayAfter = firstDayAfter;
+			isDayPeriod = firstDay.equals(firstDayAfter.minusDays(1));
 		}
 	}
 
