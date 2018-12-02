@@ -121,12 +121,6 @@ public class BookingServiceTest {
 		assertEquals(TIME2, getFirstFromCollection(mockStore.retrieveAll()).getEndtime());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testAddBooking1WithSameStarttime() {
-		testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
-		testee.addBooking(DATE1, USER, ACTIVITY2, TIME1, Optional.empty(), Optional.of(COMMENT2));
-	}
-
 	@Test
 	public void testEndBooking() {
 		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
