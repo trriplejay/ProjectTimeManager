@@ -20,6 +20,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Activity;
 import de.lgblaumeiser.ptm.datamanager.model.Booking;
 import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
 import de.lgblaumeiser.ptm.store.ObjectStore;
+import de.lgblaumeiser.ptm.util.Utils;
 
 /**
  * An analysis to compute the amount of hours per a activity. The computer
@@ -49,17 +50,27 @@ public class ProjectComputer extends AbstractBaseComputer {
 				activityToMinutesMap.put(currentActivity, accumulatedMinutes);
 			}
 		}
+		result.addAll(computeResultLines(totalMinutes, activityToMinutesMap));
+		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%"));
+		return result;
+	}
+
+	private Collection<Collection<Object>> computeResultLines(Duration totalMinutes,
+			Map<Long, Duration> activityToMinutesMap) {
+		Collection<Collection<Object>> valueList = new ArrayList<>();
 		for (Entry<Long, Duration> currentActivity : activityToMinutesMap.entrySet()) {
 			Long activityId = currentActivity.getKey();
 			Duration totalMinutesId = currentActivity.getValue();
 			double percentage = (double) totalMinutesId.toMinutes() / (double) totalMinutes.toMinutes();
 			String percentageString = String.format("%2.1f", percentage * 100.0) + "%";
 			Activity activity = activityStore.retrieveById(activityId).orElseThrow(IllegalStateException::new);
-			result.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
+			valueList.add(Arrays.asList(activity.getActivityName(), activity.getBookingNumber(),
 					formatDuration(totalMinutesId), percentageString));
 		}
-		result.add(Arrays.asList("Total", "", formatDuration(totalMinutes), "100.0%"));
-		return result;
+		return valueList.stream()
+				.sorted((line1, line2) -> Utils.getIndexFromCollection(line1, 1).toString()
+						.compareToIgnoreCase(Utils.getIndexFromCollection(line2, 1).toString()))
+				.collect(Collectors.toList());
 	}
 
 	private Collection<Booking> getBookingsForPeriod(final CalculationPeriod period) {

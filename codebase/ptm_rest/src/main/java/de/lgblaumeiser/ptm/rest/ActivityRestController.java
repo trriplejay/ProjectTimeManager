@@ -13,6 +13,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,9 @@ public class ActivityRestController {
 	@RequestMapping(method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Collection<Activity> getActivities() {
 		logger.info("Request: Get all Activities");
-		return services.activityStore().retrieveAll();
+		return services.activityStore().retrieveAll().stream()
+				.sorted((a1, a2) -> a1.getBookingNumber().compareToIgnoreCase(a2.getBookingNumber()))
+				.collect(Collectors.toList());
 	}
 
 	static class ActivityBody {
