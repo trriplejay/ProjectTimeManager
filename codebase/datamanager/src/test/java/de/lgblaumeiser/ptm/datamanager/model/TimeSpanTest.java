@@ -5,9 +5,9 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.datamanager.model.internal;
+package de.lgblaumeiser.ptm.datamanager.model;
 
-import static de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan.newTimeSpan;
+import static de.lgblaumeiser.ptm.datamanager.model.TimeSpan.newTimeSpan;
 import static java.time.LocalTime.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,8 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalTime;
 
 import org.junit.Test;
-
-import de.lgblaumeiser.ptm.datamanager.model.internal.TimeSpan;
 
 /**
  * Test class for the class TimeSpan
@@ -37,6 +35,22 @@ public class TimeSpanTest {
 	public final void testNewTimeSpanPositive() {
 		TimeSpan newTimeSpan = newTimeSpan(TIME2, TIME3);
 		assertEquals(DIFF23, newTimeSpan.getLengthInMinutes().toMinutes());
+	}
+
+	@Test
+	public final void testOverlapPositive() {
+		assertFalse(newTimeSpan(TIME1, TIME2).overlapsWith(newTimeSpan(TIME2, TIME3)));
+		assertFalse(newTimeSpan(TIME1, TIME2).overlapsWith(newTimeSpan(TIME3, TIME4)));
+		assertFalse(newTimeSpan(TIME2, TIME3).overlapsWith(newTimeSpan(TIME1, TIME2)));
+		assertFalse(newTimeSpan(TIME3, TIME4).overlapsWith(newTimeSpan(TIME1, TIME2)));
+	}
+
+	@Test
+	public final void testOverlapNegative() {
+		assertTrue(newTimeSpan(TIME1, TIME3).overlapsWith(newTimeSpan(TIME2, TIME4)));
+		assertTrue(newTimeSpan(TIME2, TIME4).overlapsWith(newTimeSpan(TIME1, TIME3)));
+		assertTrue(newTimeSpan(TIME2, TIME3).overlapsWith(newTimeSpan(TIME1, TIME4)));
+		assertTrue(newTimeSpan(TIME1, TIME3).overlapsWith(newTimeSpan(TIME1, TIME3)));
 	}
 
 	/**

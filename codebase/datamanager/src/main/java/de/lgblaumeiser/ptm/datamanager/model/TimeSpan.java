@@ -5,7 +5,7 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.datamanager.model.internal;
+package de.lgblaumeiser.ptm.datamanager.model;
 
 import static de.lgblaumeiser.ptm.util.Utils.assertState;
 import static java.lang.String.format;
@@ -16,8 +16,6 @@ import static java.util.Objects.hash;
 
 import java.time.Duration;
 import java.time.LocalTime;
-
-import de.lgblaumeiser.ptm.datamanager.model.Booking;
 
 /**
  * Class for storing a time span, i.e., a span of time defined by a start time
@@ -55,6 +53,14 @@ public final class TimeSpan {
 
 	public Duration getLengthInMinutes() {
 		return ofMinutes(MINUTES.between(starttime, endtime));
+	}
+
+	public boolean overlapsWith(TimeSpan theOther) {
+		if (starttime.equals(theOther.endtime) || endtime.equals(theOther.starttime)
+				|| starttime.isAfter(theOther.endtime) || endtime.isBefore(theOther.starttime)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
