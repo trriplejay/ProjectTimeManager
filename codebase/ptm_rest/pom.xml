@@ -11,7 +11,7 @@
 
 	<groupId>de.lgblaumeiser</groupId>
 	<artifactId>ptm_rest</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>ptm_rest</name>
@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>de.lgblaumeiser</groupId>
 			<artifactId>datamanager</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
   	</dependencies>
 

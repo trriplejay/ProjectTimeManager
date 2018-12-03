@@ -6,5 +6,5 @@
 
 FROM openjdk:11-jre
 VOLUME /var/ptm
-COPY ptm_rest-1.3.jar app.jar
+COPY ptm_rest-1.4.jar app.jar
 ENTRYPOINT ["java","-Dptm.filestore=/var/ptm", "-jar","/app.jar"]
