@@ -22,6 +22,18 @@ public class AddBookingTest extends AbstractHandlerTest {
 	private static final String ADD_BOOKING_COMMAND = "add_booking";
 
 	@Test
+	public void testAddBookingTwoParam() {
+		commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-s", TIME1.toString());
+		assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+				restutils.apiNameGiven);
+		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
+		assertEquals(System.getProperty("user.name"), restutils.bodyDataGiven.get("user"));
+		assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
+		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals(4, restutils.bodyDataGiven.size());
+	}
+
+	@Test
 	public void testAddBookingThreeParam() {
 		commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER, "-s", TIME1.toString());
 		assertEquals("/bookings/day/" + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -65,13 +77,8 @@ public class AddBookingTest extends AbstractHandlerTest {
 	}
 
 	@Test(expected = ParameterException.class)
-	public void testAddBookingOneParam() {
+	public void testAddBookingTimeMissing() {
 		commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1");
-	}
-
-	@Test(expected = ParameterException.class)
-	public void testAddBookingTwoParam() {
-		commandline.runCommand(ADD_BOOKING_COMMAND, "-a", "1", "-u", USER);
 	}
 
 	@Test(expected = DateTimeParseException.class)

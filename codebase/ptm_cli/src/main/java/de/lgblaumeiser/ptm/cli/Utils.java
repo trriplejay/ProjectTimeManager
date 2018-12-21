@@ -47,13 +47,4 @@ public class Utils {
 	public static <T> T getFirstFromCollection(final Collection<T> col) {
 		return getIndexFromCollection(col, 0);
 	}
-
-//	public static <T> T getLastFromCollection(final Collection<T> col) {
-//		return getIndexFromCollection(col, col.size() - 1);
-//	}
-//
-//	public static <T> T getOnlyFromCollection(final Collection<T> col) {
-//		assertState(col.size() == 1);
-//		return getFirstFromCollection(col);
-//	}
 }
