@@ -21,10 +21,6 @@ public class Utils {
 		return (toBeChecked != null) && !toBeChecked.isEmpty();
 	}
 
-	public static String emptyString() {
-		return "";
-	}
-
 	public static void assertState(final boolean condition) {
 		if (!condition) {
 			throw new IllegalStateException();
