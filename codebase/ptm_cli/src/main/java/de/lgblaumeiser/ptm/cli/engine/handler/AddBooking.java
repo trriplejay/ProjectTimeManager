@@ -7,10 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.cli.Utils.assertState;
-import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
-import static de.lgblaumeiser.ptm.cli.Utils.stringHasContent;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -30,7 +26,7 @@ public class AddBooking extends AbstractCommandHandler {
 	private static final String USER_PROPERTY = "user.name";
 
 	@Parameter(names = { "-d",
-			"--day" }, description = "Optional day for booking", converter = LocalDateConverter.class)
+			"--day" }, description = "Optional day for booking, either a iso date format or -<days>", converter = LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 
 	@Parameter(names = { "-a", "--activity" }, description = "Activity id of the bookings activity", required = true)
@@ -44,25 +40,22 @@ public class AddBooking extends AbstractCommandHandler {
 			"--endtime" }, description = "End time of the booked time frame", converter = LocalTimeConverter.class)
 	private Optional<LocalTime> endtime = Optional.empty();
 
-	@Parameter(names = { "-u", "--user" }, description = "User for which time frame is booked")
-	private String user = emptyString();
+	@Parameter(names = { "-u",
+			"--user" }, description = "User for which time frame is booked", converter = OptionalStringConverter.class)
+	private Optional<String> user = Optional.ofNullable(System.getProperty(USER_PROPERTY));
 
-	@Parameter(names = { "-c", "--comment" }, description = "Comment on booked time frame")
-	private String comment = emptyString();
+	@Parameter(names = { "-c",
+			"--comment" }, description = "Comment on booked time frame", converter = OptionalStringConverter.class)
+	private Optional<String> comment = Optional.empty();
 
 	@Override
 	public void handleCommand() {
 		getLogger().log("Add new booking ...");
-		if (!stringHasContent(user)) {
-			user = System.getProperty(USER_PROPERTY);
-			assertState(stringHasContent(user));
-		}
-		BookingBuilder newBooking = Booking.newBooking().setBookingday(bookingDay).setUser(user).setActivity(activityId)
+		BookingBuilder newBooking = Booking.newBooking().setBookingday(bookingDay).setActivity(activityId)
 				.setStarttime(starttime.get());
+		user.ifPresentOrElse(newBooking::setUser, IllegalStateException::new);
 		endtime.ifPresent(newBooking::setEndtime);
-		if (stringHasContent(comment)) {
-			newBooking.setComment(comment);
-		}
+		comment.ifPresent(newBooking::setComment);
 		Booking addedBooking = getServices().getBookingsStore().store(newBooking.build());
 		getLogger().log(" ... booking added with data: " + addedBooking.toString());
 	}

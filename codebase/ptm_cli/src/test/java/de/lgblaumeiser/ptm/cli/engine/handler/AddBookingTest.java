@@ -7,7 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
 		assertEquals(System.getProperty("user.name"), restutils.bodyDataGiven.get("user"));
 		assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
-		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals("", restutils.bodyDataGiven.get("comment"));
 		assertEquals(4, restutils.bodyDataGiven.size());
 	}
 
@@ -41,7 +40,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
 		assertEquals(USER, restutils.bodyDataGiven.get("user"));
 		assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
-		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals("", restutils.bodyDataGiven.get("comment"));
 		assertEquals(4, restutils.bodyDataGiven.size());
 	}
 
@@ -55,7 +54,7 @@ public class AddBookingTest extends AbstractHandlerTest {
 		assertEquals(USER, restutils.bodyDataGiven.get("user"));
 		assertEquals(TIME1.toString(), restutils.bodyDataGiven.get("starttime"));
 		assertEquals(TIME2.toString(), restutils.bodyDataGiven.get("endtime"));
-		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals("", restutils.bodyDataGiven.get("comment"));
 		assertEquals(5, restutils.bodyDataGiven.size());
 	}
 

@@ -7,7 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalTime;
@@ -30,7 +29,7 @@ public class ChangeBookingTest extends AbstractHandlerTest {
 		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
 		assertEquals(TIME3.toString(), restutils.bodyDataGiven.get("starttime"));
 		assertEquals(TIME2.toString(), restutils.bodyDataGiven.get("endtime"));
-		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals("", restutils.bodyDataGiven.get("comment"));
 		assertEquals(5, restutils.bodyDataGiven.size());
 	}
 
@@ -42,7 +41,7 @@ public class ChangeBookingTest extends AbstractHandlerTest {
 		assertEquals("1", restutils.bodyDataGiven.get("activityId"));
 		assertEquals(TIME3.toString(), restutils.bodyDataGiven.get("starttime"));
 		assertEquals(TIME4.toString(), restutils.bodyDataGiven.get("endtime"));
-		assertEquals(emptyString(), restutils.bodyDataGiven.get("comment"));
+		assertEquals("", restutils.bodyDataGiven.get("comment"));
 		assertEquals(5, restutils.bodyDataGiven.size());
 	}
 
