@@ -7,9 +7,6 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
-import static de.lgblaumeiser.ptm.cli.Utils.emptyString;
-import static de.lgblaumeiser.ptm.cli.Utils.stringHasContent;
-
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -39,8 +36,9 @@ public class ChangeBooking extends AbstractCommandHandler {
 			"--endtime" }, description = "End time of the booked time frame", converter = LocalTimeConverter.class)
 	private Optional<LocalTime> endtime = Optional.empty();
 
-	@Parameter(names = { "-c", "--comment" }, description = "Comment on booked time frame")
-	private String comment = emptyString();
+	@Parameter(names = { "-c",
+			"--comment" }, description = "Comment on booked time frame", converter = OptionalStringConverter.class)
+	private Optional<String> comment = Optional.empty();
 
 	@Override
 	public void handleCommand() {
@@ -52,9 +50,7 @@ public class ChangeBooking extends AbstractCommandHandler {
 		}
 		starttime.ifPresent(changedBookingBuilder::setStarttime);
 		endtime.ifPresent(changedBookingBuilder::setEndtime);
-		if (stringHasContent(comment)) {
-			changedBookingBuilder.setComment(comment);
-		}
+		comment.ifPresent(changedBookingBuilder::setComment);
 		Booking changed = getServices().getBookingsStore().store(changedBookingBuilder.build());
 		getLogger().log("... new booking data: " + changed.toString());
 	}

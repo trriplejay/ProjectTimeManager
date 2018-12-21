@@ -26,7 +26,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking;
 @Parameters(commandDescription = "List all bookings of a day")
 public class ListBookings extends AbstractCommandHandler {
 	@Parameter(names = { "-d",
-			"--day" }, description = "Optional day for bookings", converter = LocalDateConverter.class)
+			"--day" }, description = "Optional day for bookings, either a iso date format or -<days>", converter = LocalDateConverter.class)
 	private LocalDate bookingDay = LocalDate.now();
 
 	@Override

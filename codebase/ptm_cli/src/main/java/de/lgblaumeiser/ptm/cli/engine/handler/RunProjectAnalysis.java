@@ -9,6 +9,7 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Optional;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -29,11 +30,12 @@ public class RunProjectAnalysis extends AbstractRunAnalysis {
 	private LocalDate bookingDayInWeek = null;
 
 	@Parameter(names = { "-d",
-			"--day" }, description = "Day for project analysis", converter = LocalDateConverter.class)
+			"--day" }, description = "Day for project analysis, either a iso date format or -<days>", converter = LocalDateConverter.class)
 	private LocalDate bookingDay = null;
 
 	@Override
 	public void handleCommand() {
-		runAnalysis(ANALYSIS_PROJECTS_ID, bookingMonth, bookingDayInWeek, bookingDay);
+		runAnalysis(ANALYSIS_PROJECTS_ID, Optional.ofNullable(bookingMonth), Optional.ofNullable(bookingDayInWeek),
+				Optional.ofNullable(bookingDay));
 	}
 }

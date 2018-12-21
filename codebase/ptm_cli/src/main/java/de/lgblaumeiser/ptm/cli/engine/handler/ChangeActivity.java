@@ -7,6 +7,8 @@
  */
 package de.lgblaumeiser.ptm.cli.engine.handler;
 
+import java.util.Optional;
+
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -21,11 +23,13 @@ public class ChangeActivity extends AbstractCommandHandler {
 	@Parameter(names = { "-a", "--activity" }, description = "Id of activity to change", required = true)
 	private Long id;
 
-	@Parameter(names = { "-n", "--name" }, description = "New name of the activity")
-	private String name;
+	@Parameter(names = { "-n",
+			"--name" }, description = "New name of the activity", converter = OptionalStringConverter.class)
+	private Optional<String> name = Optional.empty();
 
-	@Parameter(names = { "-i", "--identifier" }, description = "Change the project identifier of the activity")
-	private String identifier;
+	@Parameter(names = { "-i",
+			"--identifier" }, description = "Change the project identifier of the activity", converter = OptionalStringConverter.class)
+	private Optional<String> identifier = Optional.empty();
 
 	@Parameter(names = { "--hidden" }, description = "Hide the activity")
 	private boolean hidden = false;
@@ -38,10 +42,8 @@ public class ChangeActivity extends AbstractCommandHandler {
 		getLogger().log("Change activity with id " + id);
 		Activity oldAct = getActivityById(id);
 		Activity.ActivityBuilder chgAct = oldAct.changeActivity();
-		if (name != null)
-			chgAct.setActivityName(name);
-		if (identifier != null)
-			chgAct.setBookingNumber(identifier);
+		name.ifPresent(chgAct::setActivityName);
+		identifier.ifPresent(chgAct::setBookingNumber);
 		if (oldAct.isHidden() && visible)
 			chgAct.setHidden(false);
 		if (!oldAct.isHidden() && hidden)
