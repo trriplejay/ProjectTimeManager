@@ -9,6 +9,7 @@ package de.lgblaumeiser.ptm.cli.engine.handler;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
@@ -59,6 +60,20 @@ public class RunAnalysisTest extends AbstractHandlerTest {
 	public void testRunProjectsAnalysisGivenDay() {
 		commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-d", DATE_FOR_ANALYSIS);
 		assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/day/" + DATE_FOR_ANALYSIS, restutils.apiNameGiven);
+	}
+
+	@Test
+	public void testRunProjectsAnalysisGivenDayToday() {
+		commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-d", "0");
+		assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/day/" + LocalDate.now().format(DateTimeFormatter.ISO_DATE),
+				restutils.apiNameGiven);
+	}
+
+	@Test
+	public void testRunProjectsAnalysisGivenDayYesterday() {
+		commandline.runCommand(PROJECTS_ANALYSIS_COMMAND, "-d", "-1");
+		assertEquals("/analysis/" + ANALYSIS_PROJECTS_ID + "/day/"
+				+ LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_DATE), restutils.apiNameGiven);
 	}
 
 	@Test

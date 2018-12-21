@@ -14,6 +14,15 @@ import com.beust.jcommander.IStringConverter;
 class LocalDateConverter implements IStringConverter<LocalDate> {
 	@Override
 	public LocalDate convert(final String s) {
-		return LocalDate.parse(s);
+		try {
+			long deltaDays = Long.parseLong(s);
+			LocalDate returnDate = LocalDate.now();
+			if (deltaDays < 0) {
+				returnDate = returnDate.minusDays(Math.abs(deltaDays));
+			}
+			return returnDate;
+		} catch (NumberFormatException e) {
+			return LocalDate.parse(s);
+		}
 	}
 }
