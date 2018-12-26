@@ -20,7 +20,7 @@ import de.lgblaumeiser.ptm.datamanager.model.Booking.BookingBuilder;
 /**
  * End a booking that has been started with start booking command
  */
-@Parameters(commandDescription = "Add an end time to an existing booking")
+@Parameters(commandDescription = "Changes properties of an existing booking")
 public class ChangeBooking extends AbstractCommandHandler {
 	@Parameter(names = { "-b", "--booking" }, description = "Booking id of the booking to end", required = true)
 	private Long id;

@@ -43,6 +43,7 @@ public class BookingServiceTest {
 	private static final String USER = "TestUser";
 	private static final String COMMENT1 = "Test Comment";
 	private static final String COMMENT2 = "";
+	private static final Integer BREAKDURATION = 45;
 	private BookingService testee;
 	private ObjectStore<Booking> mockStore;
 
@@ -192,5 +193,55 @@ public class BookingServiceTest {
 		testee.changeBooking(first, Optional.of(DATE1.plusDays(2)),
 				Optional.of(ACTIVITY2.changeActivity().setHidden(true).build()), Optional.of(TIME3), Optional.of(TIME2),
 				Optional.empty());
+	}
+
+	@Test
+	public void testAddBreak() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME3), Optional.of(COMMENT1));
+		Booking returnedBooking = testee.addBreakToBooking(booking, TIME2, Optional.empty());
+		assertEquals(2, mockStore.retrieveAll().size());
+		assertEquals(TIME2.plusMinutes(30), returnedBooking.getStarttime());
+		assertEquals(TIME3, returnedBooking.getEndtime());
+		Booking beforeBreak = getFirstFromCollection(mockStore.retrieveAll());
+		assertEquals(booking.getId(), beforeBreak.getId());
+		assertEquals(TIME1, beforeBreak.getStarttime());
+		assertEquals(TIME2, beforeBreak.getEndtime());
+	}
+
+	@Test
+	public void testAddBreakDuration() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME3), Optional.of(COMMENT1));
+		Booking returnedBooking = testee.addBreakToBooking(booking, TIME2, Optional.of(BREAKDURATION));
+		assertEquals(2, mockStore.retrieveAll().size());
+		assertEquals(TIME2.plusMinutes(BREAKDURATION), returnedBooking.getStarttime());
+		assertEquals(TIME3, returnedBooking.getEndtime());
+		Booking beforeBreak = getFirstFromCollection(mockStore.retrieveAll());
+		assertEquals(booking.getId(), beforeBreak.getId());
+		assertEquals(TIME1, beforeBreak.getStarttime());
+		assertEquals(TIME2, beforeBreak.getEndtime());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testAddBreakWithoutEndtime() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.empty(), Optional.of(COMMENT1));
+		testee.addBreakToBooking(booking, TIME2, Optional.empty());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testAddBreakTimeAfterBooking() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME2), Optional.of(COMMENT1));
+		testee.addBreakToBooking(booking, TIME3, Optional.empty());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testAddBreakTimeBeforeBooking() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME2, Optional.of(TIME3), Optional.of(COMMENT1));
+		testee.addBreakToBooking(booking, TIME1, Optional.empty());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testAddBreakTimeDurationTooLong() {
+		Booking booking = testee.addBooking(DATE1, USER, ACTIVITY1, TIME1, Optional.of(TIME3), Optional.of(COMMENT1));
+		testee.addBreakToBooking(booking, TIME2, Optional.of(120));
 	}
 }

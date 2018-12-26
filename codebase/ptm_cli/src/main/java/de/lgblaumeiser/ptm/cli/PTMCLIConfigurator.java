@@ -15,6 +15,7 @@ import de.lgblaumeiser.ptm.cli.engine.PrettyPrinter;
 import de.lgblaumeiser.ptm.cli.engine.ServiceManager;
 import de.lgblaumeiser.ptm.cli.engine.handler.AddActivity;
 import de.lgblaumeiser.ptm.cli.engine.handler.AddBooking;
+import de.lgblaumeiser.ptm.cli.engine.handler.AddBreakToBooking;
 import de.lgblaumeiser.ptm.cli.engine.handler.Backup;
 import de.lgblaumeiser.ptm.cli.engine.handler.ChangeActivity;
 import de.lgblaumeiser.ptm.cli.engine.handler.ChangeBooking;
@@ -51,6 +52,8 @@ public class PTMCLIConfigurator {
 	private static final String DELETE_BOOKING_COMMAND_ABBRV = "db";
 	private static final String CHANGE_BOOKING_COMMAND = "change_booking";
 	private static final String CHANGE_BOOKING_COMMAND_ABBRV = "cb";
+	private static final String ADD_BREAK_COMMAND = "add_break";
+	private static final String ADD_BREAK_COMMAND_ABBRV = "br";
 	private static final String LIST_BOOKING_COMMAND = "list_bookings";
 	private static final String LIST_BOOKING_COMMAND_ABBRV = "lb";
 	private static final String HOURS_ANALYSIS_COMMAND = "hour_analysis";
@@ -97,6 +100,7 @@ public class PTMCLIConfigurator {
 				.addCommand(ADD_BOOKING_COMMAND, new AddBooking(), ADD_BOOKING_COMMAND_ABBRV)
 				.addCommand(DELETE_BOOKING_COMMAND, new DeleteBooking(), DELETE_BOOKING_COMMAND_ABBRV)
 				.addCommand(CHANGE_BOOKING_COMMAND, new ChangeBooking(), CHANGE_BOOKING_COMMAND_ABBRV)
+				.addCommand(ADD_BREAK_COMMAND, new AddBreakToBooking(), ADD_BREAK_COMMAND_ABBRV)
 				.addCommand(LIST_BOOKING_COMMAND, new ListBookings(), LIST_BOOKING_COMMAND_ABBRV)
 				.addCommand(HOURS_ANALYSIS_COMMAND, new RunHourAnalysis(), HOURS_ANALYSIS_COMMAND_ABBRV)
 				.addCommand(PROJECTS_ANALYSIS_COMMAND, new RunProjectAnalysis(), PROJECTS_ANALYSIS_COMMAND_ABBRV)

@@ -67,6 +67,8 @@ public class BookingRestController {
 		public String starttime;
 		public String endtime;
 		public String comment;
+		public String breakstart;
+		public String breaklength;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -78,6 +80,11 @@ public class BookingRestController {
 		Booking newBooking = services.bookingService().addBooking(day, newData.user, activity, parse(newData.starttime),
 				newData.endtime != null ? Optional.of(parse(newData.endtime)) : Optional.empty(),
 				stringHasContent(newData.comment) ? Optional.of(newData.comment) : Optional.empty());
+		if (newData.breakstart != null) {
+			newBooking = services.bookingService().addBreakToBooking(newBooking, parse(newData.breakstart),
+					newData.breaklength != null ? Optional.of(Integer.parseInt(newData.breaklength))
+							: Optional.empty());
+		}
 		URI location = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString()
 				+ "/bookings/id/" + newBooking.getId());
 		logger.info("Result: Booking created with Id " + newBooking.getId());
@@ -95,11 +102,16 @@ public class BookingRestController {
 			@RequestBody final BookingBody changeData) {
 		logger.info("Request: Post changes for Booking with Id " + booking);
 		Optional<Activity> activity = services.activityStore().retrieveById(valueOf(changeData.activityId));
-		services.bookingStore().retrieveById(valueOf(booking))
-				.ifPresent(b -> services.bookingService().changeBooking(b, Optional.empty(), activity,
-						changeData.starttime != null ? Optional.of(parse(changeData.starttime)) : Optional.empty(),
-						changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
-						stringHasContent(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
+		Optional<Booking> relevantBooking = services.bookingStore().retrieveById(valueOf(booking));
+		relevantBooking.ifPresent(b -> services.bookingService().changeBooking(b, Optional.empty(), activity,
+				changeData.starttime != null ? Optional.of(parse(changeData.starttime)) : Optional.empty(),
+				changeData.endtime != null ? Optional.of(parse(changeData.endtime)) : Optional.empty(),
+				stringHasContent(changeData.comment) ? Optional.of(changeData.comment) : Optional.empty()));
+		if (changeData.breakstart != null) {
+			relevantBooking.ifPresent(b -> services.bookingService().addBreakToBooking(b, parse(changeData.breakstart),
+					changeData.breaklength != null ? Optional.of(Integer.parseInt(changeData.breaklength))
+							: Optional.empty()));
+		}
 		logger.info("Result: Booking changed with Id " + booking);
 		return ResponseEntity.ok().build();
 	}

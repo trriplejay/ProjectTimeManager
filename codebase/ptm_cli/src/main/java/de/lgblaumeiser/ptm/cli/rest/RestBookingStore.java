@@ -11,6 +11,7 @@ import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,6 +68,28 @@ public class RestBookingStore extends RestBaseService implements ObjectStore<Boo
 			}
 			return booking;
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public Long breakAt(final Booking booking, final LocalTime startOfBreak, final Optional<Integer> duration) {
+		try {
+			Map<String, String> bodyData = new HashMap<>();
+			bodyData.put("activityId", booking.getActivity().toString());
+			bodyData.put("user", booking.getUser());
+			bodyData.put("comment", booking.getComment());
+			bodyData.put("starttime", booking.getStarttime().format(DateTimeFormatter.ofPattern("HH:mm")));
+			if (booking.hasEndtime()) {
+				bodyData.put("endtime", booking.getEndtime().format(DateTimeFormatter.ofPattern("HH:mm")));
+			}
+			bodyData.put("breakstart", startOfBreak.format(DateTimeFormatter.ofPattern("HH:mm")));
+			if (duration.isPresent()) {
+				bodyData.put("breaklength", duration.get().toString());
+			}
+			String apiName = "/bookings/";
+			apiName = apiName + "id/" + booking.getId().toString();
+			return getRestUtils().post(apiName, bodyData);
+		} catch (SecurityException | IllegalArgumentException e) {
 			throw new IllegalStateException(e);
 		}
 	}

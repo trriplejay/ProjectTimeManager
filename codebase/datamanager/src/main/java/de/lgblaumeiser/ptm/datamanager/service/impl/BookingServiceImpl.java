@@ -24,6 +24,8 @@ import de.lgblaumeiser.ptm.store.ObjectStore;
  * The implementation of the DayBookings service
  */
 public class BookingServiceImpl implements BookingService {
+	private static final int DEFAULTBREAKTIME = 30;
+
 	private final ObjectStore<Booking> bookingStore;
 
 	@Override
@@ -36,8 +38,13 @@ public class BookingServiceImpl implements BookingService {
 			}
 		});
 		assertState(!activity.isHidden());
+		return createBooking(bookingday, user, activity.getId(), starttime, endtime, comment);
+	}
+
+	private Booking createBooking(final LocalDate bookingday, final String user, final Long activity,
+			final LocalTime starttime, final Optional<LocalTime> endtime, final Optional<String> comment) {
 		Booking.BookingBuilder newBookingBuilder = newBooking().setBookingday(bookingday).setUser(user)
-				.setStarttime(starttime).setActivity(activity.getId());
+				.setStarttime(starttime).setActivity(activity);
 		endtime.ifPresent(newBookingBuilder::setEndtime);
 		comment.ifPresent(c -> {
 			if (stringHasContent(c))
@@ -73,6 +80,27 @@ public class BookingServiceImpl implements BookingService {
 		Booking changedBooking = bookingBuilder.build();
 		bookingStore.store(changedBooking);
 		return changedBooking;
+	}
+
+	@Override
+	public Booking addBreakToBooking(Booking booking, LocalTime breakstart, Optional<Integer> duration) {
+		assertState(booking != null);
+		assertState(breakstart != null);
+		assertState(duration != null);
+		long internalDuration = duration.orElse(DEFAULTBREAKTIME);
+		checkParameters(booking, breakstart, internalDuration);
+		changeBooking(booking, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(breakstart),
+				Optional.empty());
+		Booking afterBreak = createBooking(booking.getBookingday(), booking.getUser(), booking.getActivity(),
+				breakstart.plusMinutes(internalDuration), Optional.ofNullable(booking.getEndtime()),
+				Optional.of(booking.getComment()));
+		return afterBreak;
+	}
+
+	private void checkParameters(Booking booking, LocalTime breakstart, long internalDuration) {
+		assertState(booking.getStarttime().isBefore(breakstart));
+		assertState(booking.getEndtime() != null);
+		assertState(booking.getEndtime().isAfter(breakstart.plusMinutes(internalDuration)));
 	}
 
 	/**
