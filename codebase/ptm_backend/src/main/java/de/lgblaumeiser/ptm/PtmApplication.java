@@ -5,7 +5,7 @@
  * 
  * SPDX-License-Identifier: MIT
  */
-package de.lgblaumeiser.ptm.rest;
+package de.lgblaumeiser.ptm;
 
 import static org.springframework.boot.SpringApplication.run;
 
@@ -15,9 +15,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class PtmRestApplication {
+public class PtmApplication {
 	public static void main(final String[] args) {
-		run(PtmRestApplication.class, args);
+		run(PtmApplication.class, args);
 	}
 
 	@Bean

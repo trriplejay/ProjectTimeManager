@@ -49,11 +49,11 @@ public class ProjectComputer extends AbstractBaseComputer {
 				totalMinutes = totalMinutes.plus(activityLength);
 				accumulatedMinutes = accumulatedMinutes.plus(activityLength);
 				activityToMinutesMap.put(currentActivity, accumulatedMinutes);
-				if (calcPeriod.isDayPeriod && Utils.stringHasContent(current.getComment())) {
+				if (calcPeriod.isDayPeriod) {
 					String currentComments = activityToCommentMap.get(currentActivity);
-					if (currentComments == null) {
+					if (!Utils.stringHasContent(currentComments)) {
 						currentComments = current.getComment();
-					} else {
+					} else if (Utils.stringHasContent(current.getComment())) {
 						currentComments = currentComments + ", " + current.getComment();
 					}
 					activityToCommentMap.put(currentActivity, currentComments);
