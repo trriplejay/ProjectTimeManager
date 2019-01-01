@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +40,7 @@ public class ActivityRestController {
 	@Autowired
 	private ServiceMapper services;
 
-	@RequestMapping(method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET)
 	Collection<Activity> getActivities() {
 		logger.info("Request: Get all Activities");
 		return services.activityStore().retrieveAll().stream()
@@ -55,7 +54,7 @@ public class ActivityRestController {
 		public boolean hidden;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST)
 	ResponseEntity<?> addActivity(@RequestBody final ActivityBody activityData) {
 		logger.info("Request: Post new Activity");
 		Activity newActivity = services.activityStore().store(newActivity().setActivityName(activityData.activityName)
@@ -66,13 +65,13 @@ public class ActivityRestController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/{activityId}")
 	Activity getActivity(@PathVariable final String activityId) {
 		logger.info("Request: Get Activity with Id " + activityId);
 		return services.activityStore().retrieveById(valueOf(activityId)).orElseThrow(IllegalStateException::new);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/{activityId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/{activityId}")
 	ResponseEntity<?> changeActivity(@PathVariable final String activityId,
 			@RequestBody final ActivityBody activityData) {
 		logger.info("Request: Post changed Activity, id Id for change: " + activityId);

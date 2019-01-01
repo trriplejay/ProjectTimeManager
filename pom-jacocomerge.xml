@@ -41,7 +41,7 @@
                   <filtering>false</filtering>
                 </resource>
                 <resource>
-                  <directory>codebase/ptm_rest/target/classes</directory>
+                  <directory>codebase/ptm_backend/target/classes</directory>
                   <filtering>false</filtering>
                 </resource>
                 <resource>
@@ -73,7 +73,7 @@
                   </includes>
                 </fileSet>
                 <fileSet>
-                  <directory>${project.basedir}/codebase/ptm_rest/target</directory>
+                  <directory>${project.basedir}/codebase/ptm_backend/target</directory>
                   <includes>
                    <include>*.exec</include>
                   </includes>

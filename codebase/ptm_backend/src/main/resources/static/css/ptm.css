@@ -1,0 +1,30 @@
+/*
+ * Copyright by Lars Geyer-Blaumeiser <lgblaumeiser@gmail.com>
+ *
+ * Licensed under MIT license
+ *  
+ * SPDX-License-Identifier: MIT
+ */
+
+
+.nowrap {
+  white-space:nowrap;
+}
+
+ table {
+   font-size: 0.8em;
+   border-collapse: collapse;
+ }
+
+ td, th {
+     border: 1px solid DarkOliveGreen;
+ }
+
+ tr:nth-child(even){background-color: LightGreen;}
+
+ tr:hover {background-color: DarkOliveGreen;}
+
+ th {
+     background-color: Green;
+     color: white;
+ }

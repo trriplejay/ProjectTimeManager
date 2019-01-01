@@ -13,3 +13,4 @@ shippable/
 *.iml
 .idea/
 bin/
+.springBeans

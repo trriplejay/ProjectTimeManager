@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<!--
+  Copyright by Lars Geyer-Blaumeiser <lars@lgblaumeiser.de>
+ 
+  Licensed under MIT license
+  
+  SPDX-License-Identifier: MIT
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+    	<title>Project Time Manager Overview App</title>
+    	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    		integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
+    	<link rel="stylesheet" href="/css/ptm.css" />
+    	<link rel="shortcut icon" type="image/x-icon" href="/icons/ptm.ico">
+	</head>
+	<body>
+    	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-info border-bottom shadow-sm">
+  			<h3 class="my-0 mr-md-auto font-weight-normal"><img src="/icons/ptm.ico" /> Project Time Manager Overview App</h5>
+  			<h5 class="text-right">by Lars Geyer-Blaumeiser <a href="https://github.com/lgblaumeiser/ProjectTimeManager" class="text-light">Info</a></h5>
+  		</div>
+		
+		<div>&nbsp;</div>
+		
+		<div class="card-deck ml-2 mr-2">
+			<div class="card">
+				<h4 class="card-header text-center" th:text="|Project Analysis for Day ${date}|" />
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+						    <thead>
+   								<tr>
+						    		<th th:each="elem : ${projectAnalysisTodayHeadline}" th:text="|${elem}|" />
+								</tr>
+   							</thead>
+   							<tbody>
+   								<tr th:each="line : ${projectAnalysisToday}">
+									<td th:each="elem : ${line}" th:text="|${elem}|" />
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>				
+			</div>
+			<div class="card">
+				<h4 class="card-header text-center" th:text="|Project Analysis for Month ${month}|" />
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+						    <thead>
+   								<tr>
+						    		<th th:each="elem : ${projectAnalysisMonthHeadline}" th:text="|${elem}|" />
+								</tr>
+   							</thead>
+   							<tbody>
+   								<tr th:each="line : ${projectAnalysisMonth}">
+									<td th:each="elem : ${line}" th:text="|${elem}|" />
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>				
+			</div>
+		</div>
+		
+		<div class="card-deck ml-2 mr-2 mt-2">
+			<div class="card">
+  				<h4 class="card-header text-center" th:text="|Bookings for day ${date}|" />
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="nowrap">Booking Id</th>
+									<th class="nowrap">Starttime</th>
+									<th class="nowrap">Endtime</th>
+									<th class="nowrap">Activity Id</th>
+									<th class="nowrap">Comment</th>
+								</tr>
+							</thead>
+							<tbody>
+   								<tr th:each="book : ${bookingsForDay}">
+   									<td th:text="|${book.id}|" />
+     								<td th:text="|${book.starttime}|" />
+   	 								<td th:text="|${book.endtime}|" />
+   									<td th:text="|${book.activity}|" />
+   									<td th:text="|${book.comment}|" />
+   								</tr>
+   							</tbody>
+   						</table>
+   					</div>
+				</div>
+			</div>
+   			<div class="card">
+   				<h4 class="card-header text-center">Activities</h2>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class=table>
+							<thead>
+								<tr>
+									<th class="nowrap">Id</th>
+									<th class="nowrap">Activity Name</th>
+									<th class="nowrap">Booking Number</th>
+								</tr>
+							</thead>
+							<tbody>
+ 	  							<tr th:each="act : ${allActivities}">
+	    							<td th:text="|${act.getId()}|" />
+		 							<td th:text="|${act.getActivityName()}|" />
+									<td th:text="|${act.getBookingNumber()}|" />
+ 								</tr>
+  							</tbody>
+   						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card-deck ml-2 mr-2 mt-2">
+			<div class="card">
+				<h4 class="card-header text-center" th:text="|Hour Analysis for Month ${month}|" />
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+						    <thead>
+   								<tr>
+						    		<th th:each="elem : ${hourAnalysisHeadline}" th:text="|${elem}|" />
+								</tr>
+   							</thead>
+   							<tbody>
+   								<tr th:each="line : ${hourAnalysis}">
+									<td th:each="elem : ${line}" th:text="|${elem}|" />
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>				
+			</div>
+		</div>
+		
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+			integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous" />
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+			integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous" />
+	</body>
+</html>

@@ -15,7 +15,6 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +33,7 @@ public class AnalysisRestController {
 	@Autowired
 	private ServiceMapper services;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{analyzerId}/{timeframe}/{param}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/{analyzerId}/{timeframe}/{param}")
 	Collection<Collection<Object>> runAnalysis(@PathVariable final String analyzerId,
 			@PathVariable final String timeframe, @PathVariable final String param) {
 		logger.info("Request: Get Analysis Data for " + analyzerId + " for time frame " + timeframe + " " + param);

@@ -22,7 +22,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +52,7 @@ public class BookingRestController {
 				.map(d -> d.format(ISO_LOCAL_DATE)).sorted().collect(toList());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/day/{dayString}")
 	public Collection<Booking> getBookingsForDay(@PathVariable final String dayString) {
 		logger.info("Request: Get Bookings for Day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
@@ -71,7 +70,7 @@ public class BookingRestController {
 		public String breaklength;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/day/{dayString}")
 	public ResponseEntity<?> addBooking(@PathVariable final String dayString, @RequestBody final BookingBody newData) {
 		logger.info("Request: Post new Booking for day " + dayString);
 		LocalDate day = LocalDate.parse(dayString);
@@ -91,7 +90,7 @@ public class BookingRestController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, value = "/id/{booking}")
 	public Booking getBooking(@PathVariable final String booking) {
 		logger.info("Request: Get booking with Id " + booking);
 		return services.bookingStore().retrieveById(valueOf(booking)).orElseThrow(IllegalStateException::new);
