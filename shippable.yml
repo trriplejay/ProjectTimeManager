@@ -8,15 +8,9 @@ jdk:
 build:
   pre_ci_boot:
     image_name: maven
-#   image_name: drydock/u16javall
     image_tag: 3.6-jdk-11-slim
     pull: true
   ci:
-#  - sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-#  - sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
-#  - echo -e "MAVEN_OPTS='-Xms512m -Xmx4g'\nJAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > ~/.mavenrc
-  - java --version
-  - mvn --version
   - mvn install -DskipTests
   - mvn test
   - mvn verify -f pom-jacocomerge.xml
