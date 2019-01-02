@@ -32,19 +32,19 @@ Please read license texts on this page: https://spdx.org/licenses/
 
 Dependencies of "de.lgblaumeiser:datamanager"
 
-* com.fasterxml.jackson.core:jackson-databind.2.9.6
+* com.fasterxml.jackson.core:jackson-databind.2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
   
-* com.fasterxml.jackson.core:jackson-annotations:2.9.6
+* com.fasterxml.jackson.core:jackson-annotations:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
 
-* com.fasterxml.jackson.core:jackson-core:2.9.6 
+* com.fasterxml.jackson.core:jackson-core:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
 
-* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6
+* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
 
@@ -64,17 +64,17 @@ Test Dependencies:
 
 =================================================================================
 
-Dependencies of "de.lgblaumeiser:ptm_rest"
+Dependencies of "de.lgblaumeiser:ptm_backend"
 
-* org.springframework.boot:spring-boot-starter:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-starter:2.1,1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
 
-* org.springframework.boot:spring-boot-starter-web:2.0.4.RELEASE 
+* org.springframework.boot:spring-boot-starter-web:2.1.1.RELEASE 
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
   
-* org.springframework.boot:spring-boot-starter-logging:2.0.4.RELEASE 
+* org.springframework.boot:spring-boot-starter-logging:2.1.1.RELEASE 
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-logging
 
@@ -86,11 +86,11 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
   SPDX-License-Identifier: EPL-1.0
   Reference: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
 
-* org.apache.logging.log4j:log4j-to-slf4j:2.10.0
+* org.apache.logging.log4j:log4j-to-slf4j:2.11.1
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-to-slf4j
 
-* org.apache.logging.log4j:log4j-api:2.10.0
+* org.apache.logging.log4j:log4j-api:2.11.1
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 
@@ -102,39 +102,39 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
   SPDX-License-Identifier: CDDL-1.1
   Reference: https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
   
-* org.yaml:snakeyaml:1.19 
+* org.yaml:snakeyaml:1.23
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.yaml/snakeyaml
 
-* org.springframework.boot:spring-boot-starter-json:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-starter-json:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-json
 
-* com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.6
+* com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8
 
-* com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.6 
+* com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.7 
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-module-parameter-names
 
-* org.springframework.boot:spring-boot-starter-tomcat:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-starter-tomcat:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat
 
-* org.apache.tomcat.embed:tomcat-embed-core:8.5.32
+* org.apache.tomcat.embed:tomcat-embed-core:9.0.13
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
 
-* org.apache.tomcat.embed:tomcat-embed-el:8.5.32
+* org.apache.tomcat.embed:tomcat-embed-el:9.0.13
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-el
 
-* org.apache.tomcat.embed:tomcat-embed-websocket:8.5.32
+* org.apache.tomcat.embed:tomcat-embed-websocket:9.0.13
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-websocket
 
-* org.hibernate.validator:hibernate-validator:6.0.11
+* org.hibernate.validator:hibernate-validator:6.0.13
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
 
@@ -146,51 +146,51 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging
 
-* com.fasterxml:classmate:1.3.4
+* com.fasterxml:classmate:1.4.0
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml/classmate
 
-* org.springframework:spring-web:5.0.8.RELEASE
+* org.springframework:spring-web:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-web
 
-* org.springframework:spring-beans:5.0.8.RELEASE
+* org.springframework:spring-beans:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-beans
 
-* org.springframework:spring-webmvc:5.0.8.RELEASE
+* org.springframework:spring-webmvc:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-webmvc
 
-* org.springframework:spring-aop:5.0.8.RELEASE
+* org.springframework:spring-aop:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-aop
 
-* org.springframework:spring-context:5.0.8.RELEASE
+* org.springframework:spring-context:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-context
 
-* org.springframework:spring-expression:5.0.8.RELEASE
+* org.springframework:spring-expression:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-expression
 
-* org.springframework.boot:spring-boot-starter-thymeleaf:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-starter-thymeleaf:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
 
-* org.thymeleaf:thymeleaf-spring5:3.0.9.RELEASE
+* org.thymeleaf:thymeleaf-spring5:3.0.11.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5
   
-* org.thymeleaf:thymeleaf:3.0.9.RELEASE
+* org.thymeleaf:thymeleaf:3.0.11.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
 
-* org.attoparser:attoparser:2.0.4.RELEASE
+* org.attoparser:attoparser:2.0.5.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.attoparser/attoparser
 
-* org.unbescape:unbescape:1.1.5.RELEASE
+* org.unbescape:unbescape:1.1.6.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.unbescape/unbescape
 
@@ -198,27 +198,27 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
   SPDX-License-Identifier: MIT
   Reference: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 
-* org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.1.RELEASE
+* org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.2.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-java8time
 
-* org.springframework.boot:spring-boot-devtools:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-devtools:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
 
-* org.springframework.boot:spring-boot:2.0.4.RELEASE
+* org.springframework.boot:spring-boot:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot
 
-* org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-autoconfigure:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure
 
-* org.springframework:spring-core:5.0.8.RELEASE
+* org.springframework:spring-core:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-core
 
-* org.springframework:spring-jcl:5.0.8.RELEASE
+* org.springframework:spring-jcl:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-jcl
 
@@ -226,15 +226,15 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
   
-* com.fasterxml.jackson.core:jackson-annotations:2.9.6
+* com.fasterxml.jackson.core:jackson-annotations:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
 
-* com.fasterxml.jackson.core:jackson-core:2.9.6 
+* com.fasterxml.jackson.core:jackson-core:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
 
-* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6
+* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
 
@@ -244,15 +244,15 @@ Dependencies of "de.lgblaumeiser:ptm_rest"
 
 Test Dependencies
 
-* org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-starter-test:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
 
-* org.springframework.boot:spring-boot-test:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-test:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-test
   
-* org.springframework.boot:spring-boot-test-autoconfigure:2.0.4.RELEASE
+* org.springframework.boot:spring-boot-test-autoconfigure:2.1.1.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-test-autoconfigure
 
@@ -268,7 +268,7 @@ Test Dependencies
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/net.minidev/accessors-smart
 
-* org.ow2.asm:asm:5.0.2
+* org.ow2.asm:asm:5.0.4
   SPDX-License-Identifier: BSD-3-Clause
   Reference: https://mvnrepository.com/artifact/org.ow2.asm/asm
 
@@ -276,15 +276,19 @@ Test Dependencies
   SPDX-License-Identifier: EPL-1.0
   Reference: https://mvnrepository.com/artifact/junit/junit
   
-* org.assertj:assertj-core:3.9.1
+* org.assertj:assertj-core:3.11.1
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.assertj/assertj-core
 
-* org.mockito:mockito-core:2.15.0
+* org.mockito:mockito-core:2.23.4
   SPDX-License-Identifier: MIT
   Reference: https://mvnrepository.com/artifact/org.mockito/mockito-core
 
-* net.bytebuddy:byte-buddy-agent:1.7.11 
+* net.bytebuddy:byte-buddy:1.9.5 
+  SPDX-License-Identifier: Apache-2.0
+  Reference: https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-agent
+
+* net.bytebuddy:byte-buddy-agent:1.9.5 
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-agent
 
@@ -308,10 +312,18 @@ Test Dependencies
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.vaadin.external.google/android-json
 
-* org.springframework:spring-test:5.0.8.RELEASE
+* org.springframework:spring-test:5.1.3.RELEASE
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.springframework/spring-test
 
-* org.xmlunit:xmlunit-core:2.5.1
+* org.xmlunit:xmlunit-core:2.6.2
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/org.xmlunit/xmlunit-core
+
+* javax.xml.bin:jaxb-api:2.3.1
+  SPDX-License-Identifier: CDDL-1.1
+  Reference: https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+
+* javax.activation:javax.activation-api:1.2.0
+  SPDX-License-Identifier: CDDL-1.1
+  Reference: https://mvnrepository.com/artifact/javax.activation/javax.activation-api

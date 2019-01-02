@@ -32,19 +32,19 @@ Please read license texts on this page: https://spdx.org/licenses/
 
 Dependencies of "de.lgblaumeiser:ptm_cli"
 
-* com.fasterxml.jackson.core:jackson-databind.2.9.6
+* com.fasterxml.jackson.core:jackson-databind.2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
   
-* com.fasterxml.jackson.core:jackson-annotations:2.9.6
+* com.fasterxml.jackson.core:jackson-annotations:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
 
-* com.fasterxml.jackson.core:jackson-core:2.9.6 
+* com.fasterxml.jackson.core:jackson-core:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
 
-* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.6
+* com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7
   SPDX-License-Identifier: Apache-2.0
   Reference: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
 
