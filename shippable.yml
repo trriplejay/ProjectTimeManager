@@ -3,13 +3,9 @@ language: java
 
 # Version number
 jdk:
-  - oraclejdk8
+  - openjdk11
 
 build:
-  pre_ci_boot:
-    image_name: maven
-    image_tag: 3.6-jdk-11-slim
-    pull: true
   ci:
   - mvn clean install
   - ls -l codebase/ptm_backend/target
