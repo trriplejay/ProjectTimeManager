@@ -11,6 +11,5 @@ build:
     image_tag: 3.6-jdk-11-slim
     pull: true
   ci:
-  - mvn install -DskipTests
-  - mvn test
+  - mvn clean install
   - mvn verify -f pom-jacocomerge.xml
