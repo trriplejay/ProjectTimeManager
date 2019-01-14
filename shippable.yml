@@ -7,6 +7,7 @@ jdk:
 
 build:
   ci:
+  - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
   - mvn clean install
   - ls -l codebase/ptm_backend/target
   - ls -l codebase/ptm_cli/target
