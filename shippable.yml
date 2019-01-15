@@ -7,7 +7,7 @@ jdk:
 
 build:
   ci:
-    #- dpkg --purge --force-depends ca-certificates-java
+    - dpkg --purge --force-depends ca-certificates-java
     - apt-get install ca-certificates-java
     #- sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
     - mvn clean install
