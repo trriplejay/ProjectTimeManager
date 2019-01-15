@@ -9,7 +9,7 @@ build:
   ci:
     - dpkg --purge --force-depends ca-certificates-java
     - apt-get install ca-certificates-java
-    - sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
+    #- sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
     - mvn clean install
     - ls -l codebase/ptm_backend/target
     - ls -l codebase/ptm_cli/target
