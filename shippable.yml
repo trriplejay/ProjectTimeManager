@@ -6,9 +6,12 @@ jdk:
   - openjdk11
 
 build:
+  pre_ci_boot:
+    image_name: trriplejay/u16javall
+    image_tag: test
   ci:
-    - dpkg --purge --force-depends ca-certificates-java
-    - apt-get install ca-certificates-java
+    #- dpkg --purge --force-depends ca-certificates-java
+    #- apt-get install ca-certificates-java
     #- sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure
     - mvn clean install
     - ls -l codebase/ptm_backend/target
